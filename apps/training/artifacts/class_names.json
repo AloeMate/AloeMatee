@@ -1,0 +1,26 @@
+{
+  "class_names": [
+    "Aloe Rot",
+    "Aloe Rust",
+    "Anthracnose",
+    "Healthy",
+    "Leaf Spot",
+    "Sunburn"
+  ],
+  "class_to_idx": {
+    "Aloe Rot": 0,
+    "Aloe Rust": 1,
+    "Anthracnose": 2,
+    "Healthy": 3,
+    "Leaf Spot": 4,
+    "Sunburn": 5
+  },
+  "idx_to_class": {
+    "0": "Aloe Rot",
+    "1": "Aloe Rust",
+    "2": "Anthracnose",
+    "3": "Healthy",
+    "4": "Leaf Spot",
+    "5": "Sunburn"
+  }
+}

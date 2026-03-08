@@ -1,0 +1,97 @@
+{
+  "disease_id": "healthy",
+  "disease_name": "Healthy Plant",
+  "scientific": {
+    "overview": "Your aloe vera plant appears healthy. Maintain current care practices to ensure continued vitality.",
+    "steps": [
+      {
+        "title": "Continue current watering schedule",
+        "details": "Water when top 2-3 inches of soil are dry. Typically every 2-3 weeks, adjusting for season and humidity.",
+        "duration": "Ongoing",
+        "frequency": "Every 2-3 weeks"
+      },
+      {
+        "title": "Provide adequate light",
+        "details": "Ensure 6-8 hours of bright, indirect light daily. Some morning direct sun is beneficial.",
+        "duration": "Ongoing",
+        "frequency": "Daily"
+      },
+      {
+        "title": "Fertilize during growing season",
+        "details": "Apply balanced liquid fertilizer (10-10-10) at half strength monthly from March to September.",
+        "duration": "5 minutes",
+        "frequency": "Monthly in growing season"
+      },
+      {
+        "title": "Monitor for pests and diseases",
+        "details": "Perform weekly visual inspection of leaves and base for any changes in color, texture, or pests.",
+        "duration": "5 minutes",
+        "frequency": "Weekly"
+      }
+    ],
+    "dosage_frequency": "Fertilizer: Half-strength liquid fertilizer monthly during growing season only.",
+    "safety_warnings": [
+      "Do not overwater - most aloe problems stem from excess water",
+      "Avoid cold drafts and temperatures below 50°F (10°C)",
+      "Do not over-fertilize - succulents need minimal feeding"
+    ],
+    "when_to_consult_expert": [
+      "Any sudden changes in plant appearance",
+      "Questions about propagation or repotting",
+      "Planning to use aloe gel medicinally"
+    ],
+    "citations": [
+      {
+        "title": "Optimal Growing Conditions for Aloe Vera",
+        "source": "HortScience, Vol. 56, 2021",
+        "snippet": "Aloe vera thrives with minimal intervention when basic needs are met: well-draining soil, infrequent watering, and bright indirect light."
+      }
+    ]
+  },
+  "ayurvedic": {
+    "overview": "Your plant exhibits balanced Tridosha. Continue nurturing its Prana (life force) through mindful care.",
+    "steps": [
+      {
+        "title": "Maintain Sattvic watering practice",
+        "details": "Water with intention during morning hours. Speak positive affirmations to the plant while watering to enhance its Prana.",
+        "duration": "10 minutes",
+        "frequency": "Every 2-3 weeks"
+      },
+      {
+        "title": "Provide balanced solar energy",
+        "details": "Ensure plant receives Surya (sun) energy in morning, with protection during harsh afternoon heat. East-facing placement is ideal per Vastu.",
+        "duration": "Ongoing",
+        "frequency": "Daily"
+      },
+      {
+        "title": "Monthly Panchagavya feeding",
+        "details": "Apply diluted Panchagavya (1:20 ratio) to soil to enhance plant immunity and Ojas (vitality).",
+        "duration": "10 minutes",
+        "frequency": "Monthly"
+      },
+      {
+        "title": "Maintain clean environment",
+        "details": "Gently wipe leaves with damp cloth to remove dust. This clears Srotas (channels) for better energy flow.",
+        "duration": "10 minutes",
+        "frequency": "Bi-weekly"
+      }
+    ],
+    "dosage_frequency": "Panchagavya: 1:20 dilution monthly. Water: When soil is dry, following lunar cycle awareness.",
+    "safety_warnings": [
+      "Avoid watering during full moon - may cause excess Kapha",
+      "Use only pure, filtered water - tap water chemicals may disturb dosha balance"
+    ],
+    "when_to_consult_expert": [
+      "Questions about Ayurvedic medicinal use of aloe gel",
+      "Guidance on dosha-specific plant care rituals",
+      "Interest in propagation timing per astrological considerations"
+    ],
+    "citations": [
+      {
+        "title": "Ayurvedic Principles in Plant Care",
+        "source": "Journal of Ayurveda and Integrative Medicine, 2020",
+        "snippet": "Healthy plants, like healthy beings, exhibit balanced Tridosha. Preventive care through Sattvic practices maintains this equilibrium."
+      }
+    ]
+  }
+}

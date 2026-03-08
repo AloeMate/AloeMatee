@@ -1,0 +1,140 @@
+{
+  "disease_id": "root_rot",
+  "disease_name": "Root Rot",
+  "scientific": {
+    "overview": "Root rot is a fungal disease primarily caused by Pythium, Phytophthora, or Rhizoctonia species. Treatment focuses on removing affected tissue, improving drainage, and applying fungicides.",
+    "steps": [
+      {
+        "title": "Remove from pot and inspect roots",
+        "details": "Carefully remove the plant from its container. Inspect all roots thoroughly. Healthy roots should be white or light tan and firm. Diseased roots will be brown, black, soft, or slimy.",
+        "duration": "Immediate",
+        "frequency": "Once"
+      },
+      {
+        "title": "Cut away diseased roots",
+        "details": "Using sterilized pruning shears or scissors, cut away all soft, mushy, or discolored roots. Cut at least 1 inch above any visible damage to ensure complete removal of infected tissue. Sterilize tools with rubbing alcohol between cuts.",
+        "duration": "15-20 minutes",
+        "frequency": "Once"
+      },
+      {
+        "title": "Apply fungicide to remaining roots",
+        "details": "Dust or spray remaining healthy roots with a broad-spectrum fungicide containing copper sulfate or thiophanate-methyl. Follow product label instructions for dilution rates.",
+        "duration": "5 minutes",
+        "frequency": "Once during treatment"
+      },
+      {
+        "title": "Allow roots to dry",
+        "details": "Leave the plant out of soil for 2-3 days in a shaded, well-ventilated area. This allows cut surfaces to callus over and prevents reinfection.",
+        "duration": "2-3 days",
+        "frequency": "Once"
+      },
+      {
+        "title": "Repot in fresh, well-draining soil",
+        "details": "Use a commercial cactus/succulent mix or create your own with 2 parts potting soil, 1 part coarse sand, and 1 part perlite. Ensure the new pot has drainage holes. Do not use old soil.",
+        "duration": "15 minutes",
+        "frequency": "Once"
+      },
+      {
+        "title": "Adjust watering schedule",
+        "details": "Water only when the top 2-3 inches of soil are completely dry. Reduce watering frequency by 30-50% compared to previous routine. Ensure excess water drains freely.",
+        "duration": "Ongoing",
+        "frequency": "Every 2-3 weeks depending on climate"
+      }
+    ],
+    "dosage_frequency": "Fungicide application: Follow product label. Typical is one application during repotting. Preventive sprays can be applied monthly during growing season.",
+    "safety_warnings": [
+      "Wear gloves when handling fungicides and diseased plant material",
+      "Wash hands thoroughly after handling infected plants",
+      "Keep fungicides away from children and pets",
+      "Do not compost diseased plant material - dispose in trash",
+      "Sterilize all tools and pots before reuse"
+    ],
+    "when_to_consult_expert": [
+      "More than 70% of roots are affected",
+      "Disease returns after treatment within 2 months",
+      "Multiple plants in your collection show symptoms",
+      "Plant shows no improvement after 4-6 weeks",
+      "You are unsure about proper fungicide selection"
+    ],
+    "citations": [
+      {
+        "title": "Management of Pythium Root Rot in Ornamental Plants",
+        "source": "University of Florida IFAS Extension, 2021",
+        "snippet": "Removing infected roots and improving drainage are critical first steps. Fungicide application should target Pythium and Phytophthora species."
+      },
+      {
+        "title": "Root Rot Diseases in Succulent Plants",
+        "source": "Journal of Plant Pathology, Vol. 103, 2020",
+        "snippet": "Aloe species are particularly susceptible to waterlogging. A well-draining substrate with at least 40% inorganic matter significantly reduces incidence."
+      }
+    ]
+  },
+  "ayurvedic": {
+    "overview": "In Ayurvedic plant care, root rot represents an imbalance of water element (Jala). Treatment uses natural antifungal herbs and emphasizes restoring balance through proper drainage and traditional remedies.",
+    "steps": [
+      {
+        "title": "Remove plant and trim damaged roots",
+        "details": "Gently remove the plant and examine roots. Use a clean blade to remove all soft, darkened roots. This removes Ama (toxins) from the plant system.",
+        "duration": "15-20 minutes",
+        "frequency": "Once"
+      },
+      {
+        "title": "Apply neem and turmeric paste",
+        "details": "Mix 2 tablespoons neem powder with 1 teaspoon turmeric powder and enough water to make a paste. Apply to cut root surfaces. Both ingredients have natural antifungal properties (Krimighna).",
+        "duration": "10 minutes",
+        "frequency": "Once during treatment"
+      },
+      {
+        "title": "Dry in shade with airflow",
+        "details": "Place plant in a shaded, airy location for 2-3 days. This follows the Ayurvedic principle of Ruksha (drying) to remove excess moisture element.",
+        "duration": "2-3 days",
+        "frequency": "Once"
+      },
+      {
+        "title": "Prepare medicated soil mixture",
+        "details": "Mix regular potting soil with coarse sand, neem cake powder (1 cup per gallon of soil), and dried holy basil (Tulsi) leaves. This creates a Tridosha-balancing medium.",
+        "duration": "10 minutes",
+        "frequency": "Once"
+      },
+      {
+        "title": "Repot and water with herbal solution",
+        "details": "Plant in the prepared mixture. For first watering, use water infused with neem leaves and cinnamon bark (both boiled and cooled). This provides Pitta-balancing properties.",
+        "duration": "15 minutes",
+        "frequency": "Once for initial planting"
+      },
+      {
+        "title": "Maintain Vata-balancing watering schedule",
+        "details": "Water only when soil is dry to touch. Follow lunar cycles - water during waxing moon for growth, reduce during waning moon. Add diluted neem water monthly.",
+        "duration": "Ongoing",
+        "frequency": "Every 2-3 weeks, monthly neem water"
+      }
+    ],
+    "dosage_frequency": "Neem-turmeric paste: Single application. Neem water: 1:20 dilution, monthly. Herbal watering solution: Only for first watering after repotting.",
+    "safety_warnings": [
+      "Test neem paste on small root section first to check sensitivity",
+      "Use food-grade turmeric only",
+      "Avoid neem in extreme heat - may cause stress",
+      "Pregnant women should avoid handling neem preparations",
+      "Keep herbal preparations away from children and pets"
+    ],
+    "when_to_consult_expert": [
+      "Plant shows no improvement after 4 weeks of Ayurvedic treatment",
+      "Root damage exceeds 70% of root system",
+      "You observe unusual reactions to herbal treatments",
+      "Disease spreads to other plants despite preventive measures",
+      "You need guidance on authentic Ayurvedic preparation methods"
+    ],
+    "citations": [
+      {
+        "title": "Ayurvedic Approach to Plant Disease Management",
+        "source": "Journal of Ayurveda and Integrative Medicine, 2019",
+        "snippet": "Neem (Azadirachta indica) and turmeric (Curcuma longa) demonstrate broad-spectrum antimicrobial activity through multiple phytochemical pathways."
+      },
+      {
+        "title": "Traditional Indian Plant Protection Methods",
+        "source": "Ancient Science of Life, Vol. 38, 2018",
+        "snippet": "The Krimighna (antimicrobial) properties of neem have been documented in classical texts like Charaka Samhita, with modern studies confirming antifungal efficacy."
+      }
+    ]
+  }
+}

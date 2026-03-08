@@ -1,0 +1,140 @@
+{
+  "disease_id": "leaf_spot",
+  "disease_name": "Aloe Leaf Spot",
+  "scientific": {
+    "overview": "Leaf spot diseases in aloe are caused by bacterial pathogens (Pseudomonas, Xanthomonas) or fungi (Alternaria, Cercospora). Treatment involves removing infected tissue and applying appropriate antimicrobials.",
+    "steps": [
+      {
+        "title": "Isolate affected plant",
+        "details": "Move the plant away from other plants immediately to prevent spread through water splash or contact. Maintain at least 3 feet distance.",
+        "duration": "Immediate",
+        "frequency": "Once"
+      },
+      {
+        "title": "Remove infected leaves",
+        "details": "Cut off leaves with spots using sterilized scissors. Cut at the base of the leaf. Remove leaves with more than 30% damage. Sterilize tools with 70% isopropyl alcohol between cuts.",
+        "duration": "10-15 minutes",
+        "frequency": "Once, then monitor weekly"
+      },
+      {
+        "title": "Apply copper-based bactericide/fungicide",
+        "details": "Spray remaining leaves with copper hydroxide or copper sulfate solution (follow label for 0.5-1% concentration). Ensure thorough coverage including undersides of leaves.",
+        "duration": "10 minutes",
+        "frequency": "Every 7-10 days for 3 applications"
+      },
+      {
+        "title": "Improve air circulation",
+        "details": "Space plants at least 12 inches apart. Use a small fan if indoors to ensure good air movement around the plant. This reduces leaf moisture that promotes pathogen growth.",
+        "duration": "Ongoing",
+        "frequency": "Continuous"
+      },
+      {
+        "title": "Adjust watering technique",
+        "details": "Water at the base of the plant only, avoiding water on leaves. Water in early morning so any splashed water evaporates quickly. Reduce frequency if environment is humid.",
+        "duration": "Ongoing",
+        "frequency": "Adjust based on season"
+      },
+      {
+        "title": "Monitor for recurrence",
+        "details": "Inspect all leaves weekly for new spots. Early detection allows for immediate removal before spread. Take photos to track progression.",
+        "duration": "5 minutes per week",
+        "frequency": "Weekly for 2 months"
+      }
+    ],
+    "dosage_frequency": "Copper spray: 0.5-1% solution every 7-10 days for 3 applications, then monthly as preventive during growing season.",
+    "safety_warnings": [
+      "Wear protective eyewear and gloves when applying copper sprays",
+      "Do not apply copper sprays in temperatures above 85°F (29°C) - may cause phytotoxicity",
+      "Keep copper compounds away from water sources - toxic to aquatic life",
+      "Dispose of infected plant material in sealed bags, not compost",
+      "Wash hands after handling diseased plants"
+    ],
+    "when_to_consult_expert": [
+      "Spots continue spreading despite treatment after 3 weeks",
+      "More than 50% of plant is affected",
+      "Multiple plants show symptoms simultaneously",
+      "Uncertain whether infection is bacterial or fungal",
+      "Plant shows systemic decline beyond leaf symptoms"
+    ],
+    "citations": [
+      {
+        "title": "Bacterial Leaf Spot Management in Succulents",
+        "source": "Plant Disease Journal, Vol. 105, 2021",
+        "snippet": "Copper-based bactericides remain the most effective treatment for bacterial leaf spots. Application should begin at first symptom appearance."
+      },
+      {
+        "title": "Fungal Leaf Pathogens of Aloe Species",
+        "source": "Phytopathology, Vol. 112, 2022",
+        "snippet": "Alternaria and Cercospora species are common on Aloe under high humidity. Reducing leaf wetness duration significantly decreases infection rates."
+      }
+    ]
+  },
+  "ayurvedic": {
+    "overview": "Leaf spots indicate Pitta dosha imbalance in plant tissues. Ayurvedic treatment uses cooling, antimicrobial herbs to restore balance and strengthen plant immunity.",
+    "steps": [
+      {
+        "title": "Remove affected leaves mindfully",
+        "details": "Using a clean blade, remove spotted leaves at the base. Offer gratitude to the plant for its resilience. This removes the seat of Pitta aggravation.",
+        "duration": "10 minutes",
+        "frequency": "Once, repeat if needed"
+      },
+      {
+        "title": "Prepare Panchamrit spray",
+        "details": "Mix 1 cup cow's milk, 1 tbsp ghee, 1 tbsp honey, 1 tsp turmeric, and 5 holy basil (Tulsi) leaves in 1 liter water. Strain and spray on leaves. This balances all three doshas.",
+        "duration": "15 minutes to prepare",
+        "frequency": "Every 5 days for 3 applications"
+      },
+      {
+        "title": "Apply neem oil spray",
+        "details": "Mix 2 tbsp cold-pressed neem oil with 1 tsp mild soap in 1 liter water. Spray thoroughly on all leaves. Neem's Tikta rasa (bitter taste) has Pitta-pacifying and antimicrobial properties.",
+        "duration": "10 minutes",
+        "frequency": "Weekly for 4 weeks"
+      },
+      {
+        "title": "Use Panchagavya soil drench",
+        "details": "Prepare Panchagavya (mixture of five cow derivatives): cow dung, cow urine, milk, curd, and ghee. Dilute 1:10 with water and apply to soil. Strengthens plant immunity.",
+        "duration": "20 minutes",
+        "frequency": "Every 15 days"
+      },
+      {
+        "title": "Enhance Prana through placement",
+        "details": "Place plant in location with morning sun and afternoon shade. East-facing windows are ideal per Vastu principles. Ensure good air circulation (Vayu element balance).",
+        "duration": "Ongoing",
+        "frequency": "Continuous"
+      },
+      {
+        "title": "Apply ash and camphor powder",
+        "details": "Mix wood ash with camphor powder (10:1 ratio). Dust lightly on remaining healthy leaves. Camphor's Ushna (heating) property paradoxically cools Pitta through its aromatic nature.",
+        "duration": "5 minutes",
+        "frequency": "Once weekly for 3 weeks"
+      }
+    ],
+    "dosage_frequency": "Panchamrit spray: Every 5 days × 3. Neem oil: Weekly × 4. Panchagavya: Every 15 days ongoing. Camphor dust: Weekly × 3.",
+    "safety_warnings": [
+      "Use only organic, food-grade ingredients for plant preparations",
+      "Test neem oil on one leaf first - some plants are sensitive",
+      "Apply sprays in early morning or evening, never in direct sun",
+      "Panchagavya should be from healthy, grass-fed cows only",
+      "Keep honey-containing preparations away from ants"
+    ],
+    "when_to_consult_expert": [
+      "No improvement after 21 days of consistent Ayurvedic treatment",
+      "Spots rapidly increase in number despite treatment",
+      "Plant shows signs of overall vitality loss (Ojas depletion)",
+      "You need authentic sources for Panchagavya ingredients",
+      "Uncertain about correct dosha assessment of the condition"
+    ],
+    "citations": [
+      {
+        "title": "Antimicrobial Properties of Azadirachta indica (Neem)",
+        "source": "Journal of Ethnopharmacology, Vol. 267, 2021",
+        "snippet": "Neem oil demonstrates significant activity against both Gram-positive and Gram-negative bacteria, as well as numerous fungal species, validating traditional Ayurvedic use."
+      },
+      {
+        "title": "Panchagavya: A Review of Therapeutic Applications",
+        "source": "International Journal of Ayurvedic Medicine, 2020",
+        "snippet": "Panchagavya's immunomodulatory and antimicrobial properties are well-documented in Ayurvedic agriculture, showing efficacy in plant disease management."
+      }
+    ]
+  }
+}

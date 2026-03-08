@@ -1,0 +1,82 @@
+{
+  "model_name": "efficientnetv2-s",
+  "model_architecture": "EfficientNetV2-S",
+  "framework": "PyTorch",
+  "num_classes": 6,
+  "class_names": [
+    "Aloe Rot",
+    "Aloe Rust",
+    "Anthracnose",
+    "Healthy",
+    "Leaf Spot",
+    "Sunburn"
+  ],
+  "class_to_idx": {
+    "Aloe Rot": 0,
+    "Aloe Rust": 1,
+    "Anthracnose": 2,
+    "Healthy": 3,
+    "Leaf Spot": 4,
+    "Sunburn": 5
+  },
+  "idx_to_class": {
+    "0": "Aloe Rot",
+    "1": "Aloe Rust",
+    "2": "Anthracnose",
+    "3": "Healthy",
+    "4": "Leaf Spot",
+    "5": "Sunburn"
+  },
+  "image_size": 384,
+  "input_shape": [
+    3,
+    384,
+    384
+  ],
+  "normalization": {
+    "mean": [
+      0.485,
+      0.456,
+      0.406
+    ],
+    "std": [
+      0.229,
+      0.224,
+      0.225
+    ],
+    "description": "ImageNet statistics"
+  },
+  "preprocessing": {
+    "resize_to": 416,
+    "center_crop": 384,
+    "channels": "RGB",
+    "dtype": "float32",
+    "range": "[0, 1] after ToTensor, then normalized"
+  },
+  "calibration": {
+    "temperature": 1.3419358730316162,
+    "is_calibrated": true,
+    "thresholds": {
+      "HIGH": 0.8,
+      "MEDIUM": 0.6
+    }
+  },
+  "training": {
+    "epochs": 8,
+    "val_loss": 0.6601344929051786,
+    "val_acc": 0.8178571428571428,
+    "pretrained_on": "ImageNet"
+  },
+  "export": {
+    "exported_at": "2026-01-07T06:52:29.887093",
+    "git_commit": "ecb21ea3ed2e220b67d86a91755acc812bd754ed",
+    "git_branch": "main",
+    "model_size_mb": 77.81
+  },
+  "usage": {
+    "load_model": "model = create_model(num_classes=6); model.load_state_dict(checkpoint['model_state_dict'])",
+    "preprocess": "Resize(416) -> CenterCrop(384) -> ToTensor() -> Normalize(mean, std)",
+    "inference": "logits = model(images); calibrated_logits = logits / temperature; probs = softmax(calibrated_logits)",
+    "confidence_thresholds": "HIGH >= 0.80, MEDIUM [0.60, 0.80), LOW < 0.60"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "name": "aloeveramate-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AloeVeraMate - Aloe Vera Plant Disease Detection & Treatment Guidance",
+  "workspaces": [
+    "apps/mobile",
+    "shared/types"
+  ],
+  "scripts": {
+    "mobile": "cd apps/mobile && npm start",
+    "mobile:android": "cd apps/mobile && npm run android",
+    "mobile:ios": "cd apps/mobile && npm run ios",
+    "server": "cd apps/server && python run.py",
+    "install:mobile": "cd apps/mobile && npm install",
+    "install:server": "cd apps/server && pip install -r requirements.txt",
+    "lint:mobile": "cd apps/mobile && npm run lint",
+    "lint:server": "cd apps/server && black app/ && flake8 app/",
+    "type-check:mobile": "cd apps/mobile && npm run type-check",
+    "type-check:shared": "cd shared/types && npm run type-check"
+  },
+  "keywords": [
+    "aloe-vera",
+    "plant-disease",
+    "react-native",
+    "fastapi",
+    "monorepo"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.13.2",
+    "canvas": "^3.2.0",
+    "form-data": "^4.0.5"
+  }
+}

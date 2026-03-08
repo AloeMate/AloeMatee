@@ -1,0 +1,281 @@
+image_path,label
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rot/AloeVeraOriginalRot0008_sheared_1014.jpg,Aloe Rot
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rot/AloeVeraOriginalRot0009_shifted_2361.jpg,Aloe Rot
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rot/AloeVeraOriginalRot0010_rotated_1117.jpg,Aloe Rot
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rot/AloeVeraOriginalRot0019_noisy_141.jpg,Aloe Rot
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rot/AloeVeraOriginalRot0022_bright_1401.jpg,Aloe Rot
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rot/AloeVeraOriginalRot0023_flipped_260.jpg,Aloe Rot
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rot/AloeVeraOriginalRot0025_flipped_2428.jpg,Aloe Rot
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rot/AloeVeraOriginalRot0026_bright_800.jpg,Aloe Rot
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rot/AloeVeraOriginalRot0026_rotated_2619.jpg,Aloe Rot
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rot/AloeVeraOriginalRot0027_flipped_2393.jpg,Aloe Rot
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/AloeVeraOriginalRust0005_flipped_2473.jpg,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/AloeVeraOriginalRust0005_rotated_2281.jpg,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/AloeVeraOriginalRust0009_zoomed_1948.jpg,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/AloeVeraOriginalRust0010_bright_1724.jpg,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/AloeVeraOriginalRust0012_bright_1946.jpg,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/AloeVeraOriginalRust0013_rotated_2003.jpg,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/AloeVeraOriginalRust0014_flipped_261.jpg,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/AloeVeraOriginalRust0014_zoomed_387.jpg,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/AloeVeraOriginalRust0017_flipped_2550.jpg,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/AloeVeraOriginalRust0020_zoomed_1221.jpg,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/AloeVeraOriginalRust0021_shifted_2362.jpg,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/AloeVeraOriginalRust0028_noisy_873.jpg,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/processed_img_Aloe Rust00105.JPG,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/processed_img_Aloe Rust00123.png,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/processed_img_Aloe Rust00129.png,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/processed_img_Aloe Rust0013.jpeg,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/processed_img_Aloe Rust00137.jpeg,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/processed_img_Aloe Rust00155.jpg,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/processed_img_Aloe Rust00161.jpeg,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/processed_img_Aloe Rust00177.jpeg,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/processed_img_Aloe Rust00195.JPG,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/processed_img_Aloe Rust00200.JPG,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/processed_img_Aloe Rust00202.jpeg,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/processed_img_Aloe Rust00208.png,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/processed_img_Aloe Rust0023.jpeg,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/processed_img_Aloe Rust0032.jpg,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/processed_img_Aloe Rust0036.jpg,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/processed_img_Aloe Rust0050.png,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/processed_img_Aloe Rust0060.jpeg,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/processed_img_Aloe Rust0088.JPG,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Aloe Rust/processed_img_Aloe Rust0095.png,Aloe Rust
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose001.jpeg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00101.jpg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00107.jpg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00119.jpg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00141.jpg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00150.png,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00185.jpg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00189.jpeg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00203.jpg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00208.JPG,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00211.jpg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00228.jpeg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00229.JPG,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00235.JPG,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00237.jpeg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00240.jpeg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00259.jpeg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00265.jpeg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00295.jpeg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00297.jpeg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00299.jpeg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose003.jpeg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00304.jpg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00312.JPG,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00313.jpeg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00323.JPG,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00343.JPG,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00355.jpg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00359.JPG,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose0036.jpeg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00379.JPG,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00386.JPG,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00391.jpeg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00400.JPG,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00405.png,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose0041.jpeg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00418.JPG,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose0042.jpeg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00431.JPG,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00434.jpeg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00452.JPG,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00453.JPG,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00455.jpg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00482.JPG,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00488.jpg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00494.png,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose00500.png,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose0054.jpeg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose0058.jpeg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Anthracnose/processed_img_Anthracnose009.jpeg,Anthracnose
+Aloe Vera Leaf Disease Detection Dataset/Healthy/AloeVeraOriginalFresh0002_bright_2880.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/AloeVeraOriginalFresh0002_bright_575.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/AloeVeraOriginalFresh0006_flipped_951.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/AloeVeraOriginalFresh0006_shifted_1774.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/AloeVeraOriginalFresh0008_shifted_2225.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/AloeVeraOriginalFresh0009_sheared_1586.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/AloeVeraOriginalFresh0019_flipped_2240.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/AloeVeraOriginalFresh0019_rotated_180.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11108.JPG,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11114.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11127.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11131.jpeg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11134.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11137.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy1115.jpeg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11157.jpeg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11163.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy1117.jpeg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11183.JPG,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11185.png,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11209.png,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11210.jpeg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11213.png,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11220.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11227.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11241.png,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11243.jpeg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11258.png,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11262.jpeg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11274.png,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11275.png,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11292.jpeg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11296.png,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11304.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11309.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11347.png,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11360.jpeg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11370.png,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11379.png,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11389.png,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11391.png,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11405.png,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11407.png,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11421.png,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy1143.jpeg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11431.png,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11439.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11462.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11470.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11474.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11482.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11500.jpeg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11501.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11511.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11525.jpeg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11526.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy1153.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11532.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11538.jpeg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11544.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11545.jpeg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11547.jpeg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy1155.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11554.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11555.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy1157.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11570.jpeg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11587.jpeg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11598.jpeg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11607.jpeg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11648.JPG,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11660.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11661.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11668.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11682.JPG,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11683.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11708.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11711.JPG,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11717.JPG,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11729.jpeg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11753.png,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11754.png,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11762.png,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11767.png,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11768.png,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11773.png,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy11774.png,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Healthy/processed_img_Healthy1185.jpg,Healthy
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00100.jpg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00109.jpg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00118.jpg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot0013.jpeg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00174.jpg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00177.jpg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00191.JPG,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00199.jpg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00208.jpg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00209.jpg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00212.jpg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00216.jpg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00230.jpeg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00233.jpeg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00241.jpeg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00268.jpg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00282.jpg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00285.jpeg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00317.png,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00324.jpg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00336.JPG,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00362.JPG,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00366.jpg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00369.jpg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot0037.jpeg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00377.jpg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot0038.jpeg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00381.JPG,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00384.jpg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00385.JPG,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00394.jpeg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00398.jpg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00413.JPG,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00415.JPG,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00416.JPG,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00419.JPG,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00424.jpg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00436.jpeg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00448.JPG,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot0045.jpeg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00450.png,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot0047.jpeg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00473.jpeg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00484.png,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot00495.png,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot0054.jpg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot0065.jpg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot0086.jpg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot0088.jpg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Leaf Spot/processed_img_Leaf Spot0093.jpg,Leaf Spot
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00102.jpeg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00109.jpeg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00110.jpeg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00120.jpeg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00132.jpeg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00136.jpeg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00142.jpeg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00159.jpg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00164.jpg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00174.jpg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn0019.jpeg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00200.jpg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00204.jpg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00215.jpg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00226.jpg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00227.jpeg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00229.jpg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00245.jpeg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00246.jpeg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00275.jpeg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00301.jpg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00318.jpeg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00321.jpeg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00330.png,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00334.jpg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00343.png,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00356.jpeg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00358.jpg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00361.jpeg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00379.png,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00383.jpg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn0039.jpeg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00397.JPG,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00406.jpg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00411.jpg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00455.png,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00458.jpg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00459.jpg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00463.jpg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00464.jpg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00465.jpeg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn00485.png,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn0051.jpeg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn0053.jpeg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn0059.jpeg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn0060.jpeg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn0071.jpeg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn0087.jpeg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn0090.jpeg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn0095.jpeg,Sunburn
+Aloe Vera Leaf Disease Detection Dataset/Sunburn/processed_img_Sunburn0096.jpeg,Sunburn

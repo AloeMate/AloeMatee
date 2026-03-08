@@ -1,0 +1,43 @@
+======================================================================
+ALOE VERA DISEASE DETECTION - EVALUATION SUMMARY
+======================================================================
+
+OVERALL PERFORMANCE
+----------------------------------------------------------------------
+Accuracy:        77.86%
+Macro Precision: 80.42%
+Macro Recall:    79.63%
+Macro F1-Score:  79.60%
+ECE:             0.0353
+
+STRONGEST CLASS
+----------------------------------------------------------------------
+Class: Aloe Rot
+F1-Score: 100.00%
+Precision: 100.00%
+Recall: 100.00%
+Support: 10
+
+WEAKEST CLASS
+----------------------------------------------------------------------
+Class: Sunburn
+F1-Score: 65.17%
+Precision: 76.32%
+Recall: 56.86%
+Support: 51
+
+MOST CONFUSED PAIRS (Top 3)
+----------------------------------------------------------------------
+1. True: Sunburn -> Predicted: Healthy
+   Count: 9 samples
+   Percentage: 17.65% of Sunburn samples
+
+2. True: Anthracnose -> Predicted: Leaf Spot
+   Count: 8 samples
+   Percentage: 16.00% of Anthracnose samples
+
+3. True: Sunburn -> Predicted: Leaf Spot
+   Count: 5 samples
+   Percentage: 9.80% of Sunburn samples
+
+======================================================================
