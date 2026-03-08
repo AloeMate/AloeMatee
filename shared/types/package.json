@@ -1,0 +1,16 @@
+{
+  "name": "@aloeveramate/shared-types",
+  "version": "1.0.0",
+  "description": "Shared TypeScript types for AloeVeraMate monorepo",
+  "main": "index.ts",
+  "types": "index.ts",
+  "scripts": {
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": ["types", "typescript", "shared"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.1.3"
+  }
+}

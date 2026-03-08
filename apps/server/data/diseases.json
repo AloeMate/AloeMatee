@@ -1,0 +1,58 @@
+{
+  "diseases": [
+    {
+      "disease_id": "aloe_rot",
+      "disease_name": "Aloe Rot",
+      "name": "Aloe Rot",
+      "description": "Fungal or bacterial infection causing tissue breakdown and rot in aloe plants",
+      "severity": "HIGH",
+      "common_symptoms": ["Soft mushy tissue", "Brown/black discoloration", "Foul odor", "Rapid deterioration"],
+      "keywords": ["rot", "mushy", "soft", "decay", "bacterial", "fungal", "smell"]
+    },
+    {
+      "disease_id": "aloe_rust",
+      "disease_name": "Aloe Rust",
+      "name": "Aloe Rust",
+      "description": "Fungal disease causing reddish-brown pustules on leaves",
+      "severity": "MEDIUM",
+      "common_symptoms": ["Reddish-brown spots", "Raised pustules", "Powdery texture", "Leaf discoloration"],
+      "keywords": ["rust", "reddish", "brown", "pustule", "powder", "fungal", "spot"]
+    },
+    {
+      "disease_id": "anthracnose",
+      "disease_name": "Anthracnose",
+      "name": "Anthracnose",
+      "description": "Fungal disease causing dark lesions and leaf spots, often in humid conditions",
+      "severity": "HIGH",
+      "common_symptoms": ["Dark brown/black spots", "Sunken lesions", "Leaf tip dieback", "Spreading pattern"],
+      "keywords": ["anthracnose", "lesion", "dark", "spot", "fungal", "humid", "dieback"]
+    },
+    {
+      "disease_id": "healthy",
+      "disease_name": "Healthy",
+      "name": "Healthy",
+      "description": "Plant shows no signs of disease or stress",
+      "severity": "NONE",
+      "common_symptoms": ["Vibrant green color", "Firm leaves", "Healthy growth", "No discoloration"],
+      "keywords": ["healthy", "green", "vibrant", "firm", "normal", "good"]
+    },
+    {
+      "disease_id": "leaf_spot",
+      "disease_name": "Leaf Spot",
+      "name": "Leaf Spot",
+      "description": "Bacterial or fungal infection causing circular brown or black spots on leaves",
+      "severity": "MEDIUM",
+      "common_symptoms": ["Circular spots on leaves", "Brown or black lesions", "Spots with yellow halos", "Spreading pattern"],
+      "keywords": ["spot", "leaf", "circular", "brown", "black", "lesion", "bacterial", "fungal"]
+    },
+    {
+      "disease_id": "sunburn",
+      "disease_name": "Sunburn",
+      "name": "Sunburn",
+      "description": "Physical damage from excessive sun exposure causing white or brown patches",
+      "severity": "LOW",
+      "common_symptoms": ["White patches", "Brown dry areas", "Leaf bleaching", "Crispy texture"],
+      "keywords": ["sun", "burn", "white", "brown", "bleach", "crispy", "dry", "exposure"]
+    }
+  ]
+}

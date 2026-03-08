@@ -1,0 +1,59 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv/
+*.egg-info/
+dist/
+build/
+
+# Environment
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs
+*.log
+
+# ML Models (exclude large binary files, include metadata)
+*.pkl
+models/*.pkl
+models/*.h5
+!models/.gitkeep
+
+# Model artifacts (exclude model.pt but include metadata)
+artifacts/model.pt
+artifacts/*.h5
+# Include model metadata and calibration
+!artifacts/model_metadata.json
+!artifacts/calibration.json
+!artifacts/README.md
+!artifacts/download_model.ps1
+
+# Data - Exclude generated/uploaded data but INCLUDE curated content
+data/uploads/
+data/raw/
+data/processed/
+data/temp/
+data/*.db
+data/*.sqlite
+data/*.sqlite3
+data/feedback.db
+# Include diseases.json and knowledge base (these are curated content!)
+!data/diseases.json
+!data/knowledge/
+!data/treatments/

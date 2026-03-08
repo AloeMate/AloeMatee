@@ -1,0 +1,28 @@
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+python-multipart==0.0.6
+python-dotenv==1.0.0
+pydantic==2.5.3
+pydantic-settings==2.1.0
+pillow==10.2.0
+numpy==1.26.3
+opencv-python==4.9.0.80
+
+# For ML inference (placeholder - replace with actual model dependencies)
+# torch==2.1.2
+# torchvision==0.16.2
+tensorflow>=2.15.0  # For optional harvest ML model (demo)
+
+# For RAG (if implementing real RAG)
+# langchain==0.1.0
+# chromadb==0.4.22
+# sentence-transformers==2.3.1
+
+# Testing
+pytest==7.4.4
+httpx==0.26.0
+
+# Linting
+black==23.12.1
+flake8==7.0.0
+mypy==1.8.0

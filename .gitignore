@@ -1,0 +1,129 @@
+# ==================================================
+# General
+# ==================================================
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.swp
+*.bak
+
+# ==================================================
+# Node / React Native / Expo
+# ==================================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Expo
+.expo/
+.expo-shared/
+web-build/
+dist/
+build/
+
+# Mobile assets (generated)
+apps/mobile/assets/adaptive-icon.png
+apps/mobile/assets/favicon.png
+apps/mobile/assets/splash.png
+# Keep actual project assets
+!apps/mobile/assets/logo.jpeg
+!apps/mobile/assets/icon.png
+
+# React Native (native builds)
+ios/Pods/
+ios/build/
+android/build/
+android/app/build/
+android/.gradle/
+android/local.properties
+
+# ==================================================
+# Environment variables
+# ==================================================
+.env
+.env.local
+.env.production
+.env.development
+# Always include example env files
+!.env.example
+!**/.env.example
+
+# ==================================================
+# Python / FastAPI
+# ==================================================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Python virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# FastAPI / Uvicorn / local DBs
+*.sqlite3
+*.db
+
+# ==================================================
+# Machine Learning / Data
+# ==================================================
+
+# Datasets (DO NOT COMMIT)
+dataset/
+datasets/
+data/raw/
+data/images/
+
+# Training artifacts / model weights (large files)
+apps/training/artifacts/*.pt
+apps/training/artifacts/*.h5
+apps/server/artifacts/*.pt
+apps/server/artifacts/*.h5
+# But include model metadata
+!apps/server/artifacts/model_metadata.json
+!apps/server/artifacts/calibration.json
+!apps/server/artifacts/README.md
+!apps/server/artifacts/download_model.ps1
+
+models/
+checkpoints/
+
+# Model files (large binaries)
+*.pt
+*.pth
+*.onnx
+*.h5
+*.pkl
+# Exception: keep small IoT model
+!apps/server/app/ml_models/iot_disease_model.pkl
+
+# ==================================================
+# Uploads & temporary files
+# ==================================================
+uploads/
+tmp/
+cache/
+
+# ==================================================
+# Logs & reports (generated)
+# ==================================================
+logs/
+reports/
+
+# ==================================================
+# VS Code / IDE
+# ==================================================
+.vscode/
+!.vscode/extensions.json
+.idea/
+
+# ==================================================
+# OS-specific
+# ==================================================
+*.orig

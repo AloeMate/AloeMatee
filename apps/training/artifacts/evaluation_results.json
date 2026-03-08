@@ -1,0 +1,99 @@
+{
+  "accuracy": 0.7785714285714286,
+  "macro_precision": 0.8041998936735779,
+  "macro_recall": 0.7963034998945814,
+  "macro_f1": 0.7959840059851621,
+  "weighted_precision": 0.7821605149236728,
+  "weighted_recall": 0.7785714285714286,
+  "weighted_f1": 0.7756251045189637,
+  "calibration_ece": 0.035304393725735794,
+  "temperature": 1.3419358730316162,
+  "per_class_metrics": {
+    "Aloe Rot": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "support": 10
+    },
+    "Aloe Rust": {
+      "precision": 0.7272727272727273,
+      "recall": 0.7741935483870968,
+      "f1_score": 0.75,
+      "support": 31
+    },
+    "Anthracnose": {
+      "precision": 0.8409090909090909,
+      "recall": 0.74,
+      "f1_score": 0.7872340425531915,
+      "support": 50
+    },
+    "Healthy": {
+      "precision": 0.8105263157894737,
+      "recall": 0.875,
+      "f1_score": 0.8415300546448088,
+      "support": 88
+    },
+    "Leaf Spot": {
+      "precision": 0.6833333333333333,
+      "recall": 0.82,
+      "f1_score": 0.7454545454545455,
+      "support": 50
+    },
+    "Sunburn": {
+      "precision": 0.7631578947368421,
+      "recall": 0.5686274509803921,
+      "f1_score": 0.651685393258427,
+      "support": 51
+    }
+  },
+  "confusion_matrix": [
+    [
+      10,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      24,
+      0,
+      2,
+      2,
+      3
+    ],
+    [
+      0,
+      1,
+      37,
+      2,
+      8,
+      2
+    ],
+    [
+      0,
+      3,
+      0,
+      77,
+      4,
+      4
+    ],
+    [
+      0,
+      1,
+      3,
+      5,
+      41,
+      0
+    ],
+    [
+      0,
+      4,
+      4,
+      9,
+      5,
+      29
+    ]
+  ]
+}
