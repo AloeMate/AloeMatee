@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import Constants from 'expo-constants';
+import { Platform } from 'react-native';
 
 // API Configuration
 const API_BASE_URL = Constants.expoConfig?.extra?.apiUrl || 'http://192.168.8.194:8000';
@@ -129,11 +130,16 @@ async function apiCall<T>(
       // Don't retry client errors (4xx)
       if (axiosError.response && axiosError.response.status >= 400 && axiosError.response.status < 500) {
         const errorData = axiosError.response.data as any;
-        throw new ApiError(
-          errorData?.detail || 'Invalid request',
-          axiosError.response.status,
-          error
-        );
+        const detail = errorData?.detail;
+        let message: string;
+        if (typeof detail === 'string') {
+          message = detail;
+        } else if (Array.isArray(detail)) {
+          message = detail.map((d: any) => d?.msg || d?.message || JSON.stringify(d)).join('; ');
+        } else {
+          message = 'Invalid request';
+        }
+        throw new ApiError(message, axiosError.response.status, error);
       }
       
       // Retry on network errors or 5xx errors
@@ -173,15 +179,25 @@ export const apiClient = {
     const imageFields = ['image1', 'image2', 'image3'];
     for (let i = 0; i < imageUris.length && i < 3; i++) {
       const uri = imageUris[i];
-      const fileName = uri.split('/').pop() || `photo_${i + 1}.jpg`;
-      const fileType = `image/${fileName.split('.').pop() || 'jpg'}`;
+      const rawName = uri.split('/').pop()?.split('?')[0] || `photo_${i + 1}.jpg`;
+      const ext = rawName.split('.').pop()?.toLowerCase() || 'jpg';
+      const fileName = rawName.includes('.') ? rawName : `photo_${i + 1}.jpg`;
+      const fileType = `image/${ext === 'jpg' ? 'jpeg' : ext}`;
 
-      // Expo FormData format
-      formData.append(imageFields[i], {
-        uri,
-        type: fileType,
-        name: fileName,
-      } as any);
+      if (Platform.OS === 'web') {
+        // On web, fetch the blob from the data/blob URL and create a proper File
+        const fetchResp = await fetch(uri);
+        const blob = await fetchResp.blob();
+        const file = new File([blob], fileName, { type: blob.type || fileType });
+        formData.append(imageFields[i], file);
+      } else {
+        // React Native FormData understands {uri, type, name}
+        formData.append(imageFields[i], {
+          uri,
+          type: fileType,
+          name: fileName,
+        } as any);
+      }
     }
 
     return apiCall<PredictResponse>({
@@ -336,6 +352,9 @@ export function getErrorMessage(error: unknown): string {
       const detail = (error.response.data as any)?.detail;
       if (typeof detail === 'string') {
         return detail;
+      }
+      if (Array.isArray(detail)) {
+        return detail.map((d: any) => d?.msg || d?.message || JSON.stringify(d)).join('; ');
       }
       return `Server error: ${error.response.status}`;
     }

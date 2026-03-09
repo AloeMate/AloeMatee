@@ -16,6 +16,8 @@ class PredictResponse(BaseModel):
     recommended_next_step: Literal["RETAKE", "SHOW_TREATMENT"]
     symptoms_summary: str
     retake_message: Optional[str] = Field(None, description="Message with tips for retaking photos (only for LOW confidence)")
+    is_aloe_vera: bool = Field(True, description="False when the image doesn't appear to be an aloe vera plant")
+    not_aloe_vera_message: Optional[str] = Field(None, description="User-facing message shown when is_aloe_vera is False")
 
 
 class DiseaseInfo(BaseModel):

@@ -1,0 +1,68 @@
+DISEASE: Aloe Rot
+SCIENTIFIC NAME: Fusarium solani, Phytophthora spp., Pythium spp.
+CATEGORY: Root and Stem Rot (Fungal/Oomycete)
+AFFECTS: Roots, stem base, and lower leaves of Aloe vera
+
+SYMPTOMS:
+- Soft, mushy, water-soaked areas at the base of the plant or on leaves
+- Brown to black discolouration at the stem base or root system
+- Foul, unpleasant odour from roots or soil
+- Leaves turning yellow, becoming soft and collapsing inward
+- Plant becomes unstable and wobbly in the pot
+- White or grey mould visible at soil surface or plant base
+- In advanced cases, the entire plant collapses suddenly
+
+CAUSES:
+- Overwatering is the primary cause - aloe vera requires very little water
+- Poorly draining soil or pots without drainage holes
+- Heavy clay soils that retain too much moisture
+- Planting too deep, trapping moisture around the stem
+- Root damage from repotting allowing pathogen entry
+- Cold, wet conditions during winter
+
+SCIENTIFIC TREATMENT:
+Step 1 - Stop watering immediately: Do not water the plant at all. Root rot cannot survive without moisture. Allow the soil to dry completely before any further action.
+Step 2 - Remove from pot and inspect: Carefully unpot the plant. Healthy roots are white or light tan and firm. Rotted roots are brown or black, soft, mushy and may smell foul.
+Step 3 - Cut away all rotted material: Using sterilized scissors or a sharp knife (wiped with 10% bleach solution), remove all brown/black roots and any soft mushy stem tissue. Cut back to healthy white tissue. If cutting into the stem, ensure the cut surface shows healthy green tissue.
+Step 4 - Treat cut surfaces: Dust all cut root surfaces with powdered sulfur or a systemic fungicide powder containing thiophanate-methyl. Allow cut surfaces to callous and dry for 24-48 hours before repotting. Do not rush this step.
+Step 5 - Repot in fresh well-draining mix: Prepare a new potting mix: 50% coarse sand or perlite + 50% cactus/succulent mix. Ensure the new pot has drainage holes. Do not reuse old soil - it contains the pathogen.
+Step 6 - Withhold water after repotting: Do not water for 2-3 weeks after repotting to allow roots to establish and to prevent reinfection. Place in a bright, warm location.
+Step 7 - Monitor recovery: New root growth and firm upright leaves indicate recovery. Resume very light watering only when the soil is completely dry.
+
+AYURVEDIC / NATURAL TREATMENT:
+Step 1 - Remove rotted tissue as described above.
+Step 2 - Neem cake soil treatment: Mix powdered neem cake (byproduct of neem oil extraction) into the new potting mix (1 part neem cake to 10 parts soil). Neem cake has natural fungicidal properties and improves soil health.
+Step 3 - Cinnamon powder on cut surfaces: Dust cut surfaces with ground cinnamon powder instead of chemical fungicide. Cinnamon contains cinnamaldehyde, a natural antifungal compound that helps prevent pathogen entry on fresh cuts.
+Step 4 - Trichoderma treatment: Add Trichoderma viride powder to the new soil (1 teaspoon per pot). This beneficial fungus colonises roots and naturally suppresses Fusarium and Phytophthora pathogens.
+Step 5 - Panchagavya soil drench (optional): After 2 weeks, apply a diluted Panchagavya solution (1:10 ratio with water) to strengthen root immunity and encourage beneficial soil microorganisms.
+
+DOSAGE AND FREQUENCY:
+- After repotting, water only every 3-4 weeks in winter, every 2-3 weeks in summer
+- Always check soil dryness before watering - insert finger 5cm into soil, if any moisture - do not water
+- Never let the pot sit in standing water
+
+SAFETY WARNINGS:
+- Thiophanate-methyl fungicide is a potential carcinogen - wear gloves and a mask when applying
+- Dispose of all rotted plant material and old soil in sealed bags with household waste
+- Do not compost diseased material - rot pathogens can survive in compost
+- Bleach solution (10%) is corrosive - avoid contact with skin and eyes
+- Wash all tools thoroughly after treating a plant with rot before using on healthy plants
+
+PREVENTION:
+- Water aloe vera only when the top 2-3 inches of soil are completely dry
+- Always use pots with drainage holes - never let water pool at the bottom
+- Use well-draining cactus/succulent mix - never regular garden soil
+- During winter (cool, low-light periods), reduce watering to once per month or less
+- When repotting, allow any broken roots to callous for 1-2 days before planting
+
+WHEN TO CONSULT AN EXPERT:
+- The rot has spread to more than half the stem
+- Despite treatment, the plant continues to collapse
+- The entire root system is destroyed and no healthy roots remain
+- You are unsure whether to attempt saving the plant or start over from cuttings
+- Multiple plants in the same area develop rot simultaneously (may indicate systemic soil contamination)
+
+RESEARCH CITATIONS:
+- Amorim, L. et al. (2018). Root rot in succulent plants: Fusarium species diversity and fungicide efficacy. Fitopatologia Brasileira, 43(2), 112-119.
+- Sid Ahmed, A. et al. (2015). Biological control of root rot in ornamental plants using Trichoderma species. Biocontrol Science and Technology, 25(7), 825-840.
+- Mishra, J. et al. (2020). Trichoderma: a comprehensive review of biocontrol against soilborne plant pathogens. Fungal Biology Reviews, 34, 1-25.

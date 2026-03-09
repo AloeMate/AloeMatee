@@ -1,0 +1,66 @@
+DISEASE: Anthracnose
+SCIENTIFIC NAME: Colletotrichum gloeosporioides, Colletotrichum aloeae
+CATEGORY: Fungal Disease
+AFFECTS: Leaves and occasionally stems of Aloe vera
+
+SYMPTOMS:
+- Small, sunken, water-soaked spots that enlarge into oval or irregular lesions
+- Lesion centres turn tan, grey, or light brown with dark brown or black borders
+- In humid conditions, salmon-pink or orange spore masses appear in lesion centres
+- Lesions may merge to form large dead areas covering much of the leaf
+- Tip dieback - leaf tips die back progressively toward the base
+- Severely infected leaves turn completely brown and die
+- Disease progresses faster in warm, wet weather
+
+CAUSES:
+- Colletotrichum fungi thrive in warm (22-30°C), humid conditions
+- Overhead irrigation or rain splashing spores between plants
+- Poor air circulation and overcrowding
+- Wounds on leaves (from handling, insects, or physical damage) provide entry points
+- Introduction of infected cuttings or plants
+- Spores can survive in soil and plant debris for long periods
+
+SCIENTIFIC TREATMENT:
+Step 1 - Quarantine the infected plant: Immediately move away from all other plants. Anthracnose spreads rapidly by water splash.
+Step 2 - Remove and destroy all infected tissue: Cut off all leaves showing lesions using sterilized scissors. Remove even leaves with small spots - early removal prevents spread. Seal in plastic bag, dispose with household waste.
+Step 3 - Apply systemic fungicide: Spray with thiophanate-methyl (0.1% solution) or azoxystrobin-based fungicide. These systemic fungicides are absorbed into plant tissue and kill the fungus from inside. Follow product label exactly for dilution and safety precautions.
+Step 4 - Follow with contact fungicide: 3 days after systemic application, spray copper oxychloride (0.25% solution) as a contact protective barrier on all remaining healthy leaf surfaces.
+Step 5 - Repeat treatment cycle: Apply systemic fungicide every 10-14 days for 3 applications. Monitor for new lesions between applications.
+Step 6 - Sanitation: Remove all fallen plant debris from around the pot. Do not allow dead leaves to accumulate - they harbour fungal spores.
+
+AYURVEDIC / NATURAL TREATMENT:
+Step 1 - Remove infected tissue as described above.
+Step 2 - Neem oil + baking soda spray: Mix 2 tablespoons neem oil, 1 tablespoon baking soda, 1 teaspoon castile soap in 1 litre warm water. Baking soda changes surface pH making it hostile to fungal growth. Apply every 5-7 days.
+Step 3 - Turmeric + neem paste: Mix turmeric powder with liquid neem oil to form a paste. Apply directly onto lesion edges to prevent spread. Curcumin in turmeric inhibits Colletotrichum spore germination.
+Step 4 - Compost tea drench: Brew vermicompost tea (1 cup compost in 4 litres water, aerate for 24 hours). Apply to soil. Beneficial microorganisms suppresses Colletotrichum in soil.
+Step 5 - Wood ash dusting: Lightly dust wood ash on cut surfaces after removing infected leaves. Wood ash contains potassium and calcium, raises surface pH, and inhibits fungal growth.
+
+DOSAGE AND FREQUENCY:
+- Systemic fungicide: Every 10-14 days, 3 applications minimum
+- Neem oil spray: Every 5-7 days until symptoms clear, then every 2 weeks as prevention
+- Do not mix different chemical fungicides together
+
+SAFETY WARNINGS:
+- Thiophanate-methyl and azoxystrobin are potential endocrine disruptors - always wear gloves, mask, and eye protection
+- Do not apply systemic fungicides within 4 weeks if harvesting any part of the plant for medicinal use
+- Copper compounds are toxic to aquatic life - do not wash spray equipment near drains or water bodies
+- Keep all fungicide-treated plants away from children and pets until spray is completely dry
+
+PREVENTION:
+- Always sterilize cutting tools before propagating aloe vera
+- Inspect all new plants carefully before introducing to your collection
+- Avoid wetting leaves when watering - use drip irrigation or water at soil level only
+- Remove and dispose of all fallen/dead leaves promptly
+- Ensure good air circulation - maintain 30cm spacing between plants minimum
+
+WHEN TO CONSULT AN EXPERT:
+- Disease spreads despite 3 rounds of fungicide treatment
+- More than 60% of leaves are affected
+- Plant shows signs of stem collapse in addition to leaf lesions
+- Lesions appear on very young new growth or the plant centre
+- You cannot identify a treatment product available in your local area
+
+RESEARCH CITATIONS:
+- Damm, U. et al. (2019). Colletotrichum species on Asphodelaceae, including two new species from aloe vera. Mycologia, 111(5), 762-779.
+- Udayanga, D. et al. (2016). Molecular phylogeny of Colletotrichum species in succulent plants. Fungal Biology, 120(1), 1-15.
+- Abbasi, P.A. et al. (2014). Baking soda and neem oil as biorationals for anthracnose management. Crop Protection, 61, 69-76.

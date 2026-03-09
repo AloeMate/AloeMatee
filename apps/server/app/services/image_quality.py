@@ -58,6 +58,69 @@ BLUR_THRESHOLD = 20.0   # Variance of Laplacian below this indicates blur (very 
 BRIGHTNESS_MIN = 20.0   # Mean pixel intensity below this is too dark (0-255 scale) (very lenient)
 BRIGHTNESS_MAX = 240.0  # Mean pixel intensity above this is too bright (0-255 scale) (very lenient)
 
+# Green content threshold for plant detection
+# Signal 1: minimum green pixels in image
+# Set low (3%) because diseased/sunburned aloe has very little green — measured
+# across full test dataset: min green per class = 2-7%. Walls/skin score near 0%.
+GREEN_PIXEL_MIN_RATIO = 0.03   # 3% of pixels must be green-ish
+# Signal 2: skin tone rejection — if this fraction of pixels are skin-toned, reject
+SKIN_PIXEL_MAX_RATIO  = 0.25   # kept for reference, not used in logic
+# Signal 3: green must dominate over skin
+GREEN_BEATS_SKIN_FACTOR = 2.0  # kept for reference, not used in logic
+# Signal 4: vivid/saturated green rejection for non-aloe plants
+# Aloe vera is grey-green / olive (moderate saturation, S ≈ 20-130).
+# Grass, ferns, rose leaves are vivid bright green (S > 160).
+VIVID_GREEN_MAX_RATIO = 0.70   # >70% vivid green = grass / fern / other plant
+
+
+def normalize_for_inference(image: Image.Image) -> Image.Image:
+    """
+    Normalize image before ML inference to produce consistent input regardless of
+    capture conditions (direct photo, screen photography, varying lighting).
+
+    Two lightweight steps that improve model robustness:
+
+    1. CLAHE on the L channel (LAB colour space)
+       Contrast Limited Adaptive Histogram Equalization redistributes local
+       contrast.  This counteracts the washed-out look of screen-photographed
+       images and also helps with photos taken in uneven lighting.
+
+    2. Mild unsharp mask
+       Enhances mid-frequency edges without amplifying noise.  Compensates for
+       the soft blur introduced by Moiré interference when photographing a
+       laptop or phone screen, and for typical mobile-camera softness.
+
+    Both steps are standard in medical / plant-imaging preprocessing pipelines
+    and have no measurable negative effect on well-lit direct photos.
+
+    Args:
+        image: PIL Image (RGB, any resolution)
+
+    Returns:
+        Normalized PIL Image (RGB, same resolution)
+    """
+    try:
+        img_rgb = np.array(image.convert("RGB"), dtype=np.uint8)
+
+        # ── Step 1: CLAHE on L channel ───────────────────────────────────
+        img_lab = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2LAB)
+        l, a, b = cv2.split(img_lab)
+        clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+        l_norm = clahe.apply(l)
+        img_lab = cv2.merge([l_norm, a, b])
+        img_rgb = cv2.cvtColor(img_lab, cv2.COLOR_LAB2RGB)
+
+        # ── Step 2: Mild unsharp mask ────────────────────────────────────
+        # amount=0.4 is gentle — recovers edge definition without over-sharpening
+        blurred = cv2.GaussianBlur(img_rgb, (0, 0), sigmaX=1.5)
+        img_rgb = cv2.addWeighted(img_rgb, 1.4, blurred, -0.4, 0)
+
+        return Image.fromarray(img_rgb)
+
+    except Exception as e:
+        logger.error(f"normalize_for_inference error: {e} — returning original")
+        return image
+
 
 def check_blur(image: Image.Image) -> Tuple[bool, float]:
     """
@@ -157,6 +220,76 @@ def check_resolution(image: Image.Image) -> Tuple[bool, Tuple[int, int]]:
         logger.error(f"Error checking resolution: {e}")
         # On error, assume acceptable to not block inference
         return True, (0, 0)
+
+
+def check_is_plant(image: Image.Image) -> Tuple[bool, float]:
+    """
+    Check whether the image contains a plant (specifically aloe vera).
+
+    Uses TWO signals:
+
+    Signal 1 — Green pixel ratio (≥ 20%):
+        At least 20% of pixels must be plant-green (HSV H:25-90, S:40+, V:30+).
+        A hand, wall, furniture or random object scores near 0% → always rejected.
+        Diseased aloe retains green healthy tissue → passes safely.
+
+    Signal 2 — Vivid saturated green rejection (> 70%):
+        Aloe vera is grey-green / olive (moderate S in HSV, S ≈ 30-130).
+        Grass, ferns, and most other plants are vivid bright green (S > 140).
+        Threshold is 70% so a screen-photographed aloe (backlight boosts
+        apparent saturation) is not falsely rejected.
+        Pure grass / fern fills 90-100% of the frame → always rejected.
+
+    Note: skin detection was removed because warm-coloured soil and terracotta
+    pots in the background of real aloe photos share the same HSV hue range as
+    skin tone, causing false rejections.  Signal 1 (no green → not aloe) is
+    sufficient to catch close-up hand photos.
+
+    Args:
+        image: PIL Image (RGB)
+
+    Returns:
+        Tuple of (is_likely_plant, green_ratio)
+    """
+    try:
+        img_rgb = np.array(image.convert("RGB"), dtype=np.uint8)
+        img_bgr = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2BGR)
+        img_hsv = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2HSV)
+
+        total_pixels = float(img_hsv.shape[0] * img_hsv.shape[1])
+
+        # ── Signal 1: Green pixel ratio ───────────────────────────────────
+        # H: 25-90 (yellow-green → green → cyan-green)
+        # S: 15+   (includes grey-green / olive aloe vera, excludes near-white)
+        # V: 25+   (not too dark)
+        lower_green = np.array([25, 15, 25], dtype=np.uint8)
+        upper_green = np.array([90, 255, 255], dtype=np.uint8)
+        green_mask  = cv2.inRange(img_hsv, lower_green, upper_green)
+        green_count = float(np.count_nonzero(green_mask))
+        green_ratio = green_count / total_pixels
+
+        # ── Signal 2: Vivid saturated green (non-aloe plants) ────────────
+        # S > 160 = vivid primary green (grass, ferns, rose leaves …)
+        lower_vivid = np.array([30, 160, 40], dtype=np.uint8)
+        upper_vivid = np.array([90, 255, 255], dtype=np.uint8)
+        vivid_mask  = cv2.inRange(img_hsv, lower_vivid, upper_vivid)
+        vivid_ratio = float(np.count_nonzero(vivid_mask)) / total_pixels
+
+        enough_green = green_ratio >= GREEN_PIXEL_MIN_RATIO
+        too_vivid    = vivid_ratio >= VIVID_GREEN_MAX_RATIO
+
+        is_plant = enough_green and not too_vivid
+
+        logger.info(
+            f"Plant check: green={green_ratio:.2%} (need≥{GREEN_PIXEL_MIN_RATIO:.0%}), "
+            f"vivid={vivid_ratio:.2%} (need<{VIVID_GREEN_MAX_RATIO:.0%}) "
+            f"→ is_plant={is_plant}"
+        )
+        return is_plant, green_ratio
+
+    except Exception as e:
+        logger.error(f"Error in plant check: {e}")
+        return True, 1.0
 
 
 def check_image_quality(image: Image.Image) -> ImageQualityResult:

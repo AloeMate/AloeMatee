@@ -1,0 +1,68 @@
+DISEASE: Sunburn
+SCIENTIFIC NAME: Non-infectious abiotic disorder (photo-oxidative stress)
+CATEGORY: Environmental / Abiotic Injury
+AFFECTS: Leaves and occasionally growing tip of Aloe vera
+
+SYMPTOMS:
+- White, pale yellow, or bleached patches on areas of leaf directly exposed to intense light
+- Patches typically appear on the upper (adaxial) surface of leaves facing the sun
+- Affected tissue gradually turns tan, brown, or silvery-white
+- Severe sunburn: large sections of leaves turn completely brown, papery, and dry
+- Tissue damage is irreversible - injured cells do not recover
+- Plant does not deteriorate further once moved to appropriate light conditions
+- No spreading to adjacent leaves (not infectious)
+- Often occurs shortly after moving a plant from shade to direct sun (acute sunburn)
+- Can also develop gradually over weeks on plants kept in too-bright a location (chronic burn)
+- Distinguished from fungal diseases by absence of spots with halos, spore masses, or water-soaked margins
+
+CAUSES:
+- Excessive direct sunlight, especially afternoon sun (UV + infrared combined)
+- Rapid transition from a shaded to a bright outdoor location without acclimatisation
+- Plants previously grown indoors placed directly in full outdoor sun
+- Reflected light from walls, windows, or metal surfaces concentrating light intensity
+- Bright light combined with water stress (dehydrated plants are more susceptible)
+- Temperature extremes amplify light damage (hot afternoon sun above 38°C)
+
+SCIENTIFIC TREATMENT:
+Step 1 - Immediately move to filtered light: Relocate plant to a position receiving bright indirect light or dappled shade (4-6 hours of gentle morning sun, protected from afternoon sun). Do not abruptly move to full shade as this creates a different stress.
+Step 2 - Do not remove damaged leaves immediately: Sunburned leaves act as a physical barrier protecting inner leaves while the plant adjusts. Remove only leaves that are completely desiccated and dead, or those that are collapsing.
+Step 3 - Check hydration: Sunburn worsens in dehydrated plants. Verify soil moisture - if the top 3 cm of soil is dry, water thoroughly. Allow water to drain completely. Proper hydration supports cellular repair in remaining healthy tissue.
+Step 4 - Apply aloe-safe silica spray: Potassium silicate or orthosilicic acid foliar spray (0.1% solution) hardens epidermal cells and improves heat and UV resistance. Apply weekly during recovery.
+Step 5 - Gradual light acclimatisation: After 3-4 weeks in filtered light, very slowly increase light exposure by 1 hour per week. This allows the plant to upregulate its UV-protective flavonoid and anthocyanin pigments.
+Step 6 - Remove dead tissue after recovery: Once the plant shows active new growth, trim away the brown desiccated sections using sterilized scissors. Seal cut surfaces with powdered cinnamon or activated charcoal to prevent opportunistic fungal infection.
+
+AYURVEDIC / NATURAL TREATMENT:
+Step 1 - Move to appropriate light as described above.
+Step 2 - Aloe vera self-healing gel: Ironically, aloe vera's own gel has documented wound-healing properties. If only a small leaf tip is burned, the plant will naturally seal the damaged area. Do not apply external gel preparations unnecessarily.
+Step 3 - Neem oil protective coating: After recovery begins, apply dilute neem oil spray (1 tablespoon per litre water) to coat leaves. Neem forms a thin protective layer reducing UV penetration and retaining moisture in the leaf cuticle.
+Step 4 - Mulch with coarse material: Place light-coloured coarse gravel or pumice stone on the soil surface. This reflects some light away from the pot base, reduces soil temperature, and keeps root zone cooler.
+Step 5 - Compost tea boost: Apply compost tea to soil (not leaves) to support root health. Well-nourished roots provide better water uptake, and hydrated plants recover faster from sun stress. Use fortnightly during recovery.
+
+DOSAGE AND FREQUENCY:
+- Silica spray: Once per week during recovery, then fortnightly as ongoing prevention
+- Compost tea: Fortnightly soil drench (not foliar application)
+- Neem leaf coating: Every 2 weeks as maintenance
+
+SAFETY WARNINGS:
+- Sunburned aloe vera gel may have slightly altered chemical composition - consult a pharmacist before using sunburned portions medicinally
+- Do not apply any oils, creams, or sprays to plants in direct hot sun - products heat up and can further damage leaves
+- When moving plants outdoors in summer, always start with morning sun (before 10 AM) only - never afternoon sun
+
+PREVENTION:
+- Acclimatise all indoor plants to outdoor conditions over 2-3 weeks by gradually increasing sun exposure
+- In hot climates (above 35°C average summer), use 30-40% shade cloth over aloe during peak summer months
+- Position plants to receive morning sun (east-facing) and afternoon shade
+- Ensure plants are well-watered before placing in sunny locations
+- Avoid placing plants near heat-reflecting surfaces (south-facing whitewashed walls, metal fences, glass)
+- Regularly inspect plants during heatwaves and move to shade if signs of stress appear
+
+WHEN TO CONSULT AN EXPERT:
+- Sunburn damage is accompanied by signs of root rot (mushy base, foul smell) suggesting compounding of stressors
+- New leaves emerging after moving plant to filtered light are also showing bleaching (indicates light levels still too high or a different underlying problem)
+- Brown patches show spore masses, halos, or water-soaked margins suggesting fungal disease rather than sunburn
+- Plant fails to produce any new growth after 8-10 weeks in appropriate conditions
+
+RESEARCH CITATIONS:
+- Waller, A., et al. (2012). Photoinhibition and photo-oxidative stress in succulent plants. Journal of Experimental Botany, 63(10), 3593-3609.
+- Sepulveda, A. et al. (2020). Effect of UV radiation on Aloe vera polysaccharide composition and antioxidant capacity. Industrial Crops and Products, 152, 112544.
+- Lokhande, V.H. et al. (2021). Abiotic stress responses and management in aloe vera cultivation. Journal of Applied Research on Medicinal and Aromatic Plants, 22, 100289.

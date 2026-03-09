@@ -1,0 +1,68 @@
+DISEASE: Leaf Spot
+SCIENTIFIC NAME: Alternaria alternata, Cercospora aloe-vera (multiple fungal and bacterial species)
+CATEGORY: Fungal / Bacterial Disease
+AFFECTS: Leaves of Aloe vera
+
+SYMPTOMS:
+- Small, circular to oval spots initially appearing pale yellow or water-soaked
+- Spots enlarge and develop a dark brown or reddish-brown centre
+- Characteristic yellow halo surrounding each lesion (particularly with Alternaria)
+- Multiple spots may merge to form irregular blotches covering large leaf areas
+- Lesion centres may dry out and fall away leaving a shot-hole appearance
+- In bacterial leaf spot: lesions are more water-soaked, greasy-looking, with irregular margins
+- Spots usually begin on lower or older leaves and progress upward
+- Severely affected leaves yellow and wither
+
+CAUSES:
+- Alternaria thrives in warm to cool temperatures (20-30°C) with high humidity
+- Cercospora favours warm, wet conditions with temperatures 25-30°C
+- Overhead watering wets leaf surfaces and creates favourable conditions
+- Overcrowding and poor ventilation slow leaf drying
+- Fungal spores spread by air currents, water splash, and contaminated tools
+- Bacterial species (Xanthomonas, Pseudomonas) spread mainly through wounds and water
+- Plant stress from overwatering or poor nutrition weakens resistance
+
+SCIENTIFIC TREATMENT:
+Step 1 - Isolate the plant: Separate from other plants immediately to prevent spore spread.
+Step 2 - Remove all visibly spotted leaves: Using sterilized scissors, cut affected leaves at the base. Dispose in sealed bag. For minor spotting, remove only the worst-affected leaves.
+Step 3 - Apply mancozeb or chlorothalonil fungicide: These broad-spectrum contact fungicides protect remaining healthy tissue. Mix at 0.2% concentration and spray thoroughly covering both upper and lower leaf surfaces. Repeat every 7-10 days for 3-4 applications.
+Step 4 - If bacterial leaf spot is suspected: Switch to copper hydroxide-based bactericide (0.25% solution). Bacterial lesions appear more water-soaked and greasy compared to dry fungal spots. Apply every 7 days for 3 applications.
+Step 5 - Adjust watering practice: Switch to morning watering at soil level only. Morning watering allows leaves to dry during the day. Never water in the evening.
+Step 6 - Apply silica supplement: Silicic acid or potassium silicate foliar spray improves leaf surface hardness, physically blocking fungal entry. Apply fortnightly as a preventive.
+
+AYURVEDIC / NATURAL TREATMENT:
+Step 1 - Remove affected leaves and dispose of them safely (do not compost).
+Step 2 - Garlic extract spray: Crush 10 garlic cloves, steep in 1 litre water for 24 hours, strain and spray on all leaf surfaces. Allicin in garlic has proven antifungal and antibacterial activity.
+Step 3 - Neem oil spray: Mix 2 tablespoons neem oil with 1 teaspoon dish soap in 1 litre water. Spray every 5-7 days. Neem's azadirachtin disrupts fungal cell membranes.
+Step 4 - Cow dung ash / activated charcoal dusting: Lightly dust cut leaf surfaces and lesion edges with ash or activated charcoal. This absorbs moisture and inhibits spore germination.
+Step 5 - Improve drainage with coarse sand: Re-pot if necessary using 50% potting mix + 50% coarse river sand or perlite. Well-draining substrate reduces root moisture that indirectly promotes foliar fungal conditions.
+
+DOSAGE AND FREQUENCY:
+- Mancozeb or chlorothalonil: Every 7-10 days, 4 applications
+- Garlic extract spray: Every 3-4 days for 2 weeks, then weekly as prevention
+- Neem oil spray: Every 5-7 days until clear, then every 2 weeks
+
+SAFETY WARNINGS:
+- Mancozeb contains Ethylene bis dithiocarbamate (EBDC) - wear gloves and avoid skin contact
+- Chlorothalonil is a suspected carcinogen - wear full protective equipment, do not inhale
+- Do not apply fungicide-treated plants for medicinal use (gel harvest) for minimum 6 weeks
+- Garlic spray may cause mild leaf tip burn - test on a small area first if plant is stressed
+
+PREVENTION:
+- Water only at soil level, never on leaves
+- Provide good air circulation - do not crowd plants
+- Avoid over-fertilizing with nitrogen (excessive leaf soft growth is more disease-susceptible)
+- Quarantine all new plants for 2-4 weeks before adding to your collection
+- Keep pots clean and remove fallen leaves promptly
+
+WHEN TO CONSULT AN EXPERT:
+- Spots are progressing despite treatment and are spreading to new leaf growth
+- You are unsure whether infection is fungal or bacterial (treatment differs)
+- The plant centre or stem base shows signs of rot alongside the leaf spots
+- Large portions of all leaves are affected with associated yellowing and collapse
+- Disease recurs after apparently successful treatment suggesting resistant strain or systemic infection
+
+RESEARCH CITATIONS:
+- Singh, A. et al. (2018). Alternaria leaf spot of Aloe barbadensis: First report and management. Indian Phytopathology, 71(3), 451-456.
+- Reuveni, R. et al. (2000). Foliar spray with phosphate salts induces defense mechanisms against leaf diseases in various crops. Crop Protection, 19, 759-763.
+- Baka, Z.A.M. (2014). New record of Alternaria alternata causing post-harvest decay on Aloe leaves, Egypt. Journal of Plant Pathology, 96(1), 65-70.
