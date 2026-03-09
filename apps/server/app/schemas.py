@@ -97,7 +97,7 @@ class SensorReadingCreate(BaseModel):
     deviceId: str = Field(..., description="Unique device identifier")
     temperature: float = Field(..., description="Temperature in Celsius")
     humidity: float = Field(..., ge=0, le=100, description="Humidity percentage")
-    soilMoisture: float = Field(..., ge=0, le=100, description="Soil moisture percentage")
+    soilMoisture: Optional[float] = Field(None, ge=0, le=100, description="Soil moisture percentage (None if sensor not connected)")
 
 
 class SensorReadingResponse(BaseModel):

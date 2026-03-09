@@ -59,6 +59,15 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="harvest"
+        options={{
+          title: 'Harvest',
+          tabBarIcon: ({ color }) => (
+            <TabIcon icon="📊" active={color === '#4CAF50'} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }

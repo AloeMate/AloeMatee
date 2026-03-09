@@ -12,7 +12,7 @@ import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import Button from '../../components/Button';
 
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://192.168.8.139:8000';
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://192.168.8.194:8000';
 const DEVICE_ID = 'DEV001';
 
 interface Alert {
@@ -375,7 +375,8 @@ const styles = StyleSheet.create({
   emptySubtext: {
     fontSize: 14,
     color: '#9E9E9E',
-  },sContainer: {
+  },
+  alertsContainer: {
     padding: 16,
     paddingTop: 0,
   },

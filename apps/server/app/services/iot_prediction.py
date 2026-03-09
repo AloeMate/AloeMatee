@@ -31,7 +31,7 @@ class IoTPredictionService:
         except Exception as e:
             logger.error(f"❌ Failed to load IoT model: {e}")
     
-    def _calculate_risk_score(self, temperature: float, humidity: float, soil_moisture: float) -> float:
+    def _calculate_risk_score(self, temperature: float, humidity: float, soil_moisture: float = None) -> float:
         """Calculate overall risk score based on environmental conditions"""
         risk_factors = []
         
@@ -51,20 +51,21 @@ class IoTPredictionService:
         else:
             risk_factors.append(0.2)
         
-        # Soil moisture risk (optimal: 30-60%)
-        if soil_moisture < 20:
-            risk_factors.append(0.7)
-        elif soil_moisture > 70:
-            risk_factors.append(0.85)
-        elif soil_moisture < 25 or soil_moisture > 65:
-            risk_factors.append(0.4)
-        else:
-            risk_factors.append(0.15)
+        # Soil moisture risk — skip if sensor not connected
+        if soil_moisture is not None:
+            if soil_moisture < 20:
+                risk_factors.append(0.7)
+            elif soil_moisture > 70:
+                risk_factors.append(0.85)
+            elif soil_moisture < 25 or soil_moisture > 65:
+                risk_factors.append(0.4)
+            else:
+                risk_factors.append(0.15)
         
         # Overall risk is weighted average
         return sum(risk_factors) / len(risk_factors)
     
-    def _get_preventive_actions(self, temperature: float, humidity: float, soil_moisture: float, disease: str) -> List[str]:
+    def _get_preventive_actions(self, temperature: float, humidity: float, soil_moisture: float = None, disease: str = '') -> List[str]:
         """Generate preventive action recommendations based on conditions"""
         actions = []
         
@@ -85,16 +86,19 @@ class IoTPredictionService:
         elif humidity > 70:
             actions.append("💨 Moderate-high humidity - Ensure good ventilation")
         
-        # Soil moisture-based actions
-        if soil_moisture < 20:
-            actions.append("🏜️ Soil too dry - Water plants immediately and establish regular watering schedule")
-        elif soil_moisture < 30:
-            actions.append("🌱 Soil moisture low - Increase watering frequency")
-        elif soil_moisture > 70:
-            actions.append("⚠️ Soil waterlogged - Stop watering and improve drainage immediately")
-            actions.append("🔍 Check for root rot symptoms")
-        elif soil_moisture > 60:
-            actions.append("💦 Soil moisture high - Reduce watering and monitor drainage")
+        # Soil moisture-based actions — skip if sensor not connected
+        if soil_moisture is not None:
+            if soil_moisture < 20:
+                actions.append("🏜️ Soil too dry - Water plants immediately and establish regular watering schedule")
+            elif soil_moisture < 30:
+                actions.append("🌱 Soil moisture low - Increase watering frequency")
+            elif soil_moisture > 70:
+                actions.append("⚠️ Soil waterlogged - Stop watering and improve drainage immediately")
+                actions.append("🔍 Check for root rot symptoms")
+            elif soil_moisture > 60:
+                actions.append("💦 Soil moisture high - Reduce watering and monitor drainage")
+        else:
+            actions.append("🔌 Soil moisture sensor not connected - Manual soil checks recommended")
         
         # Disease-specific actions
         if disease and disease.lower() not in ['healthy', 'no risk', 'error']:
@@ -122,7 +126,7 @@ class IoTPredictionService:
         self, 
         temperature: float, 
         humidity: float, 
-        soil_moisture: float
+        soil_moisture: float = None
     ) -> Dict[str, any]:
         """
         Predict disease risk from environmental conditions
@@ -130,7 +134,7 @@ class IoTPredictionService:
         Args:
             temperature: Temperature in Celsius
             humidity: Humidity percentage (0-100)
-            soil_moisture: Soil moisture percentage (0-100)
+            soil_moisture: Soil moisture percentage (0-100), or None if sensor not connected
             
         Returns:
             Dictionary with disease prediction, confidence, and factors
@@ -149,8 +153,10 @@ class IoTPredictionService:
             }
         
         try:
+            # Use 50.0 as neutral default when soil sensor is not connected
+            soil_for_model = soil_moisture if soil_moisture is not None else 50.0
             # Prepare features array
-            X = np.array([[temperature, humidity, soil_moisture]], dtype=float)
+            X = np.array([[temperature, humidity, soil_for_model]], dtype=float)
             
             # Get prediction
             disease = self.model.predict(X)[0]

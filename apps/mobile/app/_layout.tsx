@@ -45,6 +45,26 @@ export default function RootLayout() {
           name="treatment" 
           options={{ title: 'Treatment Plan' }} 
         />
+        <Stack.Screen 
+          name="monitor/dashboard" 
+          options={{ title: 'IoT Dashboard', headerBackTitle: 'Back' }} 
+        />
+        <Stack.Screen 
+          name="monitor/alerts" 
+          options={{ title: 'Alerts & Warnings', headerBackTitle: 'Back' }} 
+        />
+        <Stack.Screen 
+          name="care-plan/overview" 
+          options={{ title: 'Care Plan', headerBackTitle: 'Back' }} 
+        />
+        <Stack.Screen 
+          name="camera/index" 
+          options={{ title: 'Harvest Maturity Scan', headerBackTitle: 'Back', headerShown: false }} 
+        />
+        <Stack.Screen 
+          name="result/index" 
+          options={{ title: 'Maturity Result', headerBackTitle: 'Back' }} 
+        />
       </Stack>
     </SafeAreaProvider>
   );

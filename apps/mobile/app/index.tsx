@@ -120,13 +120,13 @@ export default function HomeScreen() {
                 <Text style={styles.moduleBadgeText}>Market</Text>
               </View>
             </View>
-            <Text style={styles.moduleTitle}>Harvest & Market Insights</Text>
+            <Text style={styles.moduleTitle}>Harvest Data Prediction</Text>
             <Text style={styles.moduleDescription}>
               Track harvest readiness and get real-time market price recommendations.
             </Text>
             <Button
               title="Open"
-              onPress={() => router.push('/(tabs)/harvest')}
+              onPress={() => router.push('/(tabs)/harvest' as any)}
               variant="gradient"
               style={styles.moduleButton}
             />

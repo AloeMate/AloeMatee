@@ -38,17 +38,17 @@ async def create_sensor_reading(reading: SensorReadingCreate):
             "deviceId": reading.deviceId,
             "temperature": reading.temperature,
             "humidity": reading.humidity,
-            "soilMoisture": reading.soilMoisture,
+            "soilMoisture": reading.soilMoisture,  # None if soil sensor not connected
             "recordedAt": datetime.utcnow()
         }
         result = await db.sensor_readings.insert_one(reading_doc)
         logger.info(f"Stored sensor reading for device {reading.deviceId}")
         
-        # 2. Predict disease from environment
+        # 2. Predict disease from environment (soil moisture optional)
         prediction = predict_from_environment(
             reading.temperature, 
             reading.humidity, 
-            reading.soilMoisture
+            reading.soilMoisture  # May be None
         )
         
         # 3. Save prediction to database
@@ -92,6 +92,12 @@ async def create_sensor_reading(reading: SensorReadingCreate):
             "alert": alert
         }
         
+    except RuntimeError as e:
+        logger.warning(f"MongoDB not available: {e}")
+        raise HTTPException(
+            status_code=503,
+            detail="IoT monitoring features require MongoDB. Please start MongoDB service."
+        )
     except Exception as e:
         logger.error(f"Error processing sensor reading: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -213,6 +219,11 @@ async def get_alerts(
         
         return {"success": True, "data": alerts, "count": len(alerts)}
         
+    except RuntimeError:
+        raise HTTPException(
+            status_code=503,
+            detail="IoT monitoring features require MongoDB. Please start MongoDB service."
+        )
     except Exception as e:
         logger.error(f"Error fetching alerts: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -232,6 +243,11 @@ async def acknowledge_alert_endpoint(alert_id: str):
         
     except HTTPException:
         raise
+    except RuntimeError:
+        raise HTTPException(
+            status_code=503,
+            detail="IoT monitoring features require MongoDB. Please start MongoDB service."
+        )
     except Exception as e:
         logger.error(f"Error acknowledging alert: {e}")
         raise HTTPException(status_code=500, detail=str(e))

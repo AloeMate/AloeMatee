@@ -463,6 +463,10 @@ const styles = StyleSheet.create({
   retakeTipsCard: {
     backgroundColor: '#E3F2FD',
   },
+  retakeButton: {
+    marginTop: 8,
+    marginBottom: 16,
+  },
   retakeTipsTitle: {
     fontSize: 18,
     fontWeight: 'bold',

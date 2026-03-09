@@ -11,7 +11,7 @@ import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import Button from '../../components/Button';
 
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://192.168.8.139:8000';
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://192.168.8.194:8000';
 const DEVICE_ID = 'DEV001';
 
 export default function MonitorDashboardScreen() {
@@ -110,7 +110,7 @@ export default function MonitorDashboardScreen() {
             title="Back to Home"
             onPress={() => router.back()}
             style={styles.backHomeButton}
-            variant="outline"
+            variant="secondary"
           />
         </View>
       </View>
@@ -167,9 +167,15 @@ export default function MonitorDashboardScreen() {
               <View style={styles.divider} />
               <View style={styles.metricRow}>
                 <Text style={styles.metricLabel}>Soil Moisture</Text>
-                <Text style={[styles.metricValue, { color: reading.soilMoisture < 20 ? '#D32F2F' : reading.soilMoisture < 30 ? '#FF9800' : '#4CAF50' }]}>
-                  {reading.soilMoisture}%
-                </Text>
+                {reading.soilMoisture !== null && reading.soilMoisture !== undefined ? (
+                  <Text style={[styles.metricValue, { color: reading.soilMoisture < 20 ? '#D32F2F' : reading.soilMoisture < 30 ? '#FF9800' : '#4CAF50' }]}>
+                    {reading.soilMoisture}%
+                  </Text>
+                ) : (
+                  <View style={styles.sensorDisconnectedBadge}>
+                    <Text style={styles.sensorDisconnectedText}>🔌 Sensor Disconnected</Text>
+                  </View>
+                )}
               </View>
             </>
           ) : (
@@ -399,6 +405,19 @@ const styles = StyleSheet.create({
   divider: {
     height: 1,
     backgroundColor: '#E0E0E0',
+  },
+  sensorDisconnectedBadge: {
+    backgroundColor: '#F5F5F5',
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderWidth: 1,
+    borderColor: '#BDBDBD',
+  },
+  sensorDisconnectedText: {
+    fontSize: 13,
+    color: '#9E9E9E',
+    fontStyle: 'italic',
   },
   noData: {
     fontSize: 14,
