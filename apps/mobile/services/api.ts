@@ -43,7 +43,7 @@ async function resolveBaseUrl(): Promise<string> {
 
 let _resolvedUrl: string | null = null;
 
-async function getResolvedUrl(): Promise<string> {
+export async function getResolvedUrl(): Promise<string> {
   if (!_resolvedUrl) {
     _resolvedUrl = await resolveBaseUrl();
   }

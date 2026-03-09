@@ -65,6 +65,10 @@ export default function RootLayout() {
           name="result/index" 
           options={{ title: 'Maturity Result', headerBackTitle: 'Back' }} 
         />
+        <Stack.Screen 
+          name="harvest-yield/index" 
+          options={{ title: 'Harvest Yield Prediction', headerBackTitle: 'Back' }} 
+        />
       </Stack>
     </SafeAreaProvider>
   );

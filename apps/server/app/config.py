@@ -37,6 +37,10 @@ class Settings(BaseSettings):
     RAG_COLLECTION: str = "aloe_treatment_knowledge"
     RAG_TOP_K: int = 4                            # chunks to retrieve per query
     
+    # OpenWeather API (used by Harvest Yield Prediction)
+    OPENWEATHER_API_KEY: Optional[str] = None
+    OPENWEATHER_BASE_URL: str = "https://api.openweathermap.org"
+
     # MongoDB
     MONGODB_URI: Optional[str] = None
     

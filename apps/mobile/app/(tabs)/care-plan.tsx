@@ -48,6 +48,21 @@ export default function CarePlanTabScreen() {
           <Text style={styles.infoText}>• Health tracking</Text>
           <Text style={styles.infoText}>• Expert recommendations</Text>
         </Card>
+
+        <Card style={styles.yieldCard}>
+          <Text style={styles.yieldTitle}>⚖️ Harvest Yield Prediction</Text>
+          <Text style={styles.yieldText}>
+            Enter your farm details to predict Aloe Vera harvest yield in kilograms.
+            Uses live weather data for your district automatically.
+          </Text>
+          <Button
+            title="Predict Harvest Yield"
+            onPress={() => router.push('/harvest-yield' as any)}
+            variant="gradient"
+            style={styles.button}
+            icon="🌿"
+          />
+        </Card>
       </View>
     </View>
   );
@@ -118,5 +133,23 @@ const styles = StyleSheet.create({
     color: '#1B5E20',
     marginBottom: 8,
     lineHeight: 22,
+  },
+  yieldCard: {
+    marginTop: 16,
+    backgroundColor: '#F1F8E9',
+    borderWidth: 1,
+    borderColor: '#C8E6C9',
+  },
+  yieldTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#2E7D32',
+    marginBottom: 10,
+  },
+  yieldText: {
+    fontSize: 14,
+    color: '#546E7A',
+    lineHeight: 22,
+    marginBottom: 16,
   },
 });
