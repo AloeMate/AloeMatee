@@ -12,7 +12,7 @@ from PIL import Image
 
 from app.schemas import DiseasePrediction, PredictResponse
 from app.services.inference import get_inference_service
-from app.services.image_quality import check_image_quality, ImageQualityIssue
+from app.services.image_quality import check_image_quality, check_is_plant, ImageQualityIssue
 
 logger = logging.getLogger(__name__)
 
@@ -41,42 +41,44 @@ class DiseasePredictor:
     
     def _check_if_aloe_vera(self, predictions: List[DiseasePrediction]) -> tuple[bool, Optional[str]]:
         """
-        Detect if the image might not be an aloe vera plant
-        
-        Strategy: If predictions are evenly distributed across multiple classes,
-        the model is confused, which often indicates non-aloe vera input
-        
-        Args:
-            predictions: List of disease predictions with probabilities
-            
-        Returns:
-            Tuple of (is_likely_aloe_vera, warning_message)
+        Detect if the image is likely NOT an aloe vera plant using:
+        1. Shannon entropy — high entropy across all predictions = model confused
+        2. Spread check — top-3 probs too close together = uncertain
+        3. Absolute threshold — max prob too low
         """
+        import math
         if not predictions:
             return False, "No predictions available"
-        
-        # Get top predictions (sorted by probability)
+
         sorted_preds = sorted(predictions, key=lambda x: x.prob, reverse=True)
         top_prob = sorted_preds[0].prob
-        
-        # Check if probabilities are evenly distributed (model is confused)
+
+        # Shannon entropy over available predictions (higher = more uncertain)
+        probs = [p.prob for p in sorted_preds if p.prob > 0]
+        entropy = -sum(p * math.log(p + 1e-9) for p in probs)
+        # Max entropy for 3 equal probs = log(3) ≈ 1.099; for 6 = log(6) ≈ 1.79
+        max_entropy_3 = math.log(3)
+        normalised_entropy = entropy / max_entropy_3  # 0=certain, >1=very uncertain
+
+        NOT_ALOE_MSG = (
+            "This doesn't look like an aloe vera plant. "
+            "This app only analyses aloe vera diseases. "
+            "Please photograph your aloe vera plant and try again."
+        )
+
+        # High entropy + low confidence → very likely not aloe vera
+        # Threshold raised to 0.95: sunburn aloe has entropy ~0.89 (still aloe);
+        # a random non-aloe object produces entropy ~1.6 (normalised by log(3)).
+        if normalised_entropy > 0.95 and top_prob < 0.40:
+            return False, NOT_ALOE_MSG
+
+        # Top-3 too close together → model has no idea
         if len(sorted_preds) >= 3:
-            second_prob = sorted_preds[1].prob
             third_prob = sorted_preds[2].prob
-            
-            # If top 3 predictions are within 20% of each other, model is very uncertain
-            prob_range = top_prob - third_prob
-            if prob_range < 0.20 and top_prob < 0.50:
-                return False, (
-                    "⚠️ WARNING: This doesn't appear to be an aloe vera plant!\n\n"
-                    "The AI model is trained specifically for aloe vera diseases and cannot "
-                    "identify other plants (like mango, tomato, etc.).\n\n"
-                    "Please ensure you're photographing an ALOE VERA plant. "
-                    "The model detected very similar probabilities across multiple disease classes, "
-                    "which typically means the input is not an aloe vera plant."
-                )
-        
-        # Additional check: If highest confidence is still very low with distributed predictions
+            if (top_prob - third_prob) < 0.18 and top_prob < 0.52:
+                return False, NOT_ALOE_MSG
+
+        # Absolute low confidence check
         if top_prob < 0.35 and len(sorted_preds) >= 2:
             second_prob = sorted_preds[1].prob
             if abs(top_prob - second_prob) < 0.10:  # Very close probabilities
@@ -103,11 +105,10 @@ class DiseasePredictor:
         Returns:
             Tuple of (confidence_status, recommended_next_step, retake_message)
         """
-        # TEMPORARILY DISABLED: Skip aloe vera check to debug confidence issues
-        # First check if this might not be an aloe vera plant
-        # is_aloe_vera, warning_msg = self._check_if_aloe_vera(predictions)
-        # if not is_aloe_vera:
-        #     return "LOW", "RETAKE", warning_msg
+        # OOD check: detect non-aloe vera images
+        is_aloe_vera, warning_msg = self._check_if_aloe_vera(predictions)
+        if not is_aloe_vera:
+            return "LOW", "RETAKE", warning_msg
         
         # Get thresholds from model info
         model_info = self.inference_service.get_model_info()
@@ -219,9 +220,47 @@ class DiseasePredictor:
                 logger.error(f"Request {request_id}: Error checking quality of image {i+1}: {e}")
                 # Continue with inference on error to not crash
         
+        # ── Pre-inference plant check ────────────────────────────────────────
+        # Check each image for green content before running the ML model.
+        # A hand, wall, or random object has very little green → not aloe vera.
+        not_plant_count = 0
+        for image_path in image_paths:
+            try:
+                img_check = Image.open(image_path)
+                is_plant, green_ratio = check_is_plant(img_check)
+                logger.info(f"Request {request_id}: plant check green_ratio={green_ratio:.3f} is_plant={is_plant}")
+                if not is_plant:
+                    not_plant_count += 1
+            except Exception as e:
+                logger.error(f"Request {request_id}: plant check error: {e}")
+
+        # If majority of images look non-plant, reject before inference
+        if not_plant_count > len(image_paths) // 2:
+            placeholder_preds = [
+                DiseasePrediction(disease_id=d["disease_id"], disease_name=d["disease_name"], prob=round(1.0/len(self.diseases[:3]), 3))
+                for d in self.diseases[:3]
+            ]
+            return PredictResponse(
+                request_id=request_id,
+                num_images_received=len(image_paths),
+                predictions=placeholder_preds,
+                confidence_status="LOW",
+                recommended_next_step="RETAKE",
+                symptoms_summary="Unable to detect an aloe vera plant in the image.",
+                retake_message=None,
+                is_aloe_vera=False,
+                not_aloe_vera_message=(
+                    "This doesn't appear to be an aloe vera plant.\n\n"
+                    "This app is designed specifically for aloe vera disease detection. "
+                    "It cannot analyse other plant types (grass, ferns, roses, etc.) or non-plant objects.\n\n"
+                    "Please photograph your aloe vera plant directly and try again."
+                )
+            )
+        # ────────────────────────────────────────────────────────────────────
+
         # Load images as bytes
         images_bytes = self._load_images_as_bytes(image_paths)
-        
+
         # Call inference service (this is where ML model runs)
         inference_results = self.inference_service.predict(images_bytes)
         
@@ -242,12 +281,20 @@ class DiseasePredictor:
         confidence_status, recommended_next_step, retake_message = self._determine_confidence_status(
             max_prob, len(image_paths), predictions
         )
-        
+
         logger.info(f"Request {request_id}: Confidence={confidence_status} (max_prob={max_prob:.3f}), Action={recommended_next_step}")
-        
+
+        # Determine whether this is an aloe vera image
+        is_aloe_vera, not_aloe_vera_message = self._check_if_aloe_vera(predictions)
+        if not is_aloe_vera:
+            # Override to LOW/RETAKE with the OOD message
+            confidence_status = "LOW"
+            recommended_next_step = "RETAKE"
+            retake_message = not_aloe_vera_message
+
         # Generate symptoms summary
         symptoms_summary = self._generate_symptoms_summary(predictions)
-        
+
         return PredictResponse(
             request_id=request_id,
             num_images_received=len(image_paths),
@@ -255,7 +302,9 @@ class DiseasePredictor:
             confidence_status=confidence_status,
             recommended_next_step=recommended_next_step,
             symptoms_summary=symptoms_summary,
-            retake_message=retake_message
+            retake_message=retake_message,
+            is_aloe_vera=is_aloe_vera,
+            not_aloe_vera_message=not_aloe_vera_message
         )
     
     def get_all_diseases(self) -> List[dict]:

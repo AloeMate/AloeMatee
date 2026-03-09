@@ -1,8 +1,8 @@
 {
   "temperature": 1.3419358730316162,
   "thresholds": {
-    "HIGH": 0.8,
-    "MEDIUM": 0.6
+    "HIGH": 0.65,
+    "MEDIUM": 0.40
   },
   "metrics": {
     "before_scaling": {

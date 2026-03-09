@@ -18,6 +18,7 @@ from app.schemas import (
 )
 from app.services.disease_prediction import disease_predictor
 from app.services.treatment_retrieval import treatment_retriever
+from app.services.rag_treatment import rag_treatment_service
 from app.services.inference import get_inference_service
 from app.services.feedback import get_feedback_db
 from app.services.rate_limiter import get_rate_limiter
@@ -288,11 +289,23 @@ async def get_treatment(request: TreatmentRequest):
     Raises:
         HTTPException 404: When curated knowledge is not available (includes safe fallback message)
     """
-    treatment = treatment_retriever.get_treatment(
-        disease_id=request.disease_id,
-        mode=request.mode
-    )
-    
+    # Try RAG-augmented guidance first (requires Gemini API key + ingested ChromaDB)
+    treatment = None
+    if settings.RAG_ENABLED and rag_treatment_service.is_ready:
+        treatment = rag_treatment_service.get_treatment(
+            disease_id=request.disease_id,
+            mode=request.mode,
+        )
+        if treatment:
+            logger.info("Treatment served by RAG for %s/%s", request.disease_id, request.mode)
+
+    # Fallback: curated JSON knowledge base (always available, no API key required)
+    if not treatment:
+        treatment = treatment_retriever.get_treatment(
+            disease_id=request.disease_id,
+            mode=request.mode,
+        )
+
     if not treatment:
         # SAFETY: Return informative error with expert consultation guidance
         # DO NOT attempt to generate treatment advice

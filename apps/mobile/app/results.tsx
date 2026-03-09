@@ -20,6 +20,8 @@ interface DiseaseResponse {
   recommended_next_step: 'RETAKE' | 'SHOW_TREATMENT';
   symptoms_summary: string;
   retake_message?: string;
+  is_aloe_vera?: boolean;
+  not_aloe_vera_message?: string;
 }
 
 export default function ResultsScreen() {
@@ -65,6 +67,42 @@ export default function ResultsScreen() {
   const handleRetake = () => {
     router.replace('/camera-capture');
   };
+
+  // Not aloe vera — show dedicated screen
+  if (result.is_aloe_vera === false) {
+    return (
+      <ScrollView contentContainerStyle={styles.container}>
+        <Card style={[styles.uncertainCard, { borderColor: '#FF6B35', borderWidth: 2 }]}>
+          <Text style={{ fontSize: 48, textAlign: 'center', marginBottom: 8 }}>🌵</Text>
+          <Text style={[styles.uncertainTitle, { color: '#FF6B35' }]}>Not an Aloe Vera Plant</Text>
+          <Text style={[styles.uncertainSubtitle, { marginTop: 12 }]}>
+            {result.not_aloe_vera_message ||
+              'This app is designed specifically for aloe vera disease detection. Please photograph an aloe vera plant and try again.'}
+          </Text>
+        </Card>
+
+        <Card style={styles.retakeTipsCard}>
+          <Text style={styles.retakeTipsTitle}>📸 What to photograph</Text>
+          <View style={styles.retakeTip}>
+            <Text style={styles.retakeTipNumber}>1</Text>
+            <View style={styles.retakeTipContent}>
+              <Text style={styles.retakeTipTitle}>🌿 Aloe Vera Leaf</Text>
+              <Text style={styles.retakeTipText}>Make sure the plant is aloe vera — thick, fleshy triangular leaves with serrated edges.</Text>
+            </View>
+          </View>
+          <View style={styles.retakeTip}>
+            <Text style={styles.retakeTipNumber}>2</Text>
+            <View style={styles.retakeTipContent}>
+              <Text style={styles.retakeTipTitle}>🎯 Focus on the Affected Area</Text>
+              <Text style={styles.retakeTipText}>Capture close-up photos of leaves showing discolouration, spots, or damage.</Text>
+            </View>
+          </View>
+        </Card>
+
+        <Button title="Try Again" onPress={handleRetake} style={styles.retakeButton} />
+      </ScrollView>
+    );
+  }
 
   // Low confidence - suggest retake
   if (result.recommended_next_step === 'RETAKE') {

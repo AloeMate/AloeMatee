@@ -1,0 +1,65 @@
+DISEASE: Aloe Rust
+SCIENTIFIC NAME: Phakopsora pachyrhizi (related rust fungus affecting succulents)
+CATEGORY: Fungal Disease
+AFFECTS: Aloe vera leaves (primarily older, lower leaves)
+
+SYMPTOMS:
+- Orange, yellow, or brown powdery pustules on leaf surfaces
+- Pustules break open to release rusty-coloured spores
+- Infected leaves turn yellow, then brown and die
+- Spores spread easily by wind and water splash
+- Typically starts on lower leaves and moves upward
+- Leaves may shrivel and drop prematurely
+
+CAUSES:
+- Fungal pathogen in humid, warm conditions (20-30°C)
+- Poor air circulation around the plant
+- Overhead watering or water remaining on leaves
+- Overcrowded pots or growing areas
+- Introduction of infected plants nearby
+
+SCIENTIFIC TREATMENT:
+Step 1 - Isolate immediately: Move the plant away from other plants to prevent spore spread. Rust spores are airborne and highly contagious.
+Step 2 - Remove infected leaves: Using sterilized scissors (wiped with 70% isopropyl alcohol), remove all leaves with orange pustules. Seal in plastic bag and dispose in household waste - never compost.
+Step 3 - Apply sulfur-based fungicide: Spray all remaining leaf surfaces with wettable sulfur (2g/L water) or copper oxychloride solution. Cover both upper and lower leaf surfaces thoroughly. Apply in the early morning when temperature is below 30°C.
+Step 4 - Repeat fungicide treatment: Apply every 7-10 days for 3-4 consecutive treatments. Continue even after visible symptoms disappear to prevent recurrence.
+Step 5 - Improve air circulation: Repot into a larger container with more spacing. Ensure good ventilation. Use a small fan indoors.
+Step 6 - Change watering habits: Water only at soil level, never overhead. Water in the morning so leaves dry quickly. Allow soil to dry between waterings.
+
+AYURVEDIC / NATURAL TREATMENT:
+Step 1 - Remove infected tissue: Remove affected leaves as described above.
+Step 2 - Neem oil spray: Mix 2 tablespoons cold-pressed neem oil with 1 teaspoon castile soap in 1 litre warm water. Shake well and spray on all leaf surfaces. Neem oil has natural antifungal properties and disrupts the spore lifecycle. Apply every 5-7 days.
+Step 3 - Turmeric paste: Mix 1 tablespoon turmeric powder with 1 tablespoon coconut oil into a paste. Apply directly on pustule areas. Turmeric (Curcuma longa) contains curcumin which has proven antifungal activity.
+Step 4 - Garlic spray: Blend 4-5 garlic cloves in 500ml water, strain, dilute 1:5 with water. Spray on leaves. Allicin in garlic has natural antifungal properties.
+Step 5 - Improve soil health: Add vermicompost to soil to strengthen plant immunity. Healthy soil microbiome naturally suppresses fungal pathogens.
+
+DOSAGE AND FREQUENCY:
+- Sulfur fungicide: Every 7-10 days, maximum 6 applications per season
+- Neem oil: Every 5-7 days until symptoms clear, then monthly as prevention
+- Do not apply any spray when temperature exceeds 35°C (risk of leaf burn)
+
+SAFETY WARNINGS:
+- Always wear gloves and eye protection when applying fungicide
+- Sulfur and copper compounds are toxic to aquatic organisms - keep away from drains and ponds
+- Do not apply fungicide on the same day as neem oil - wait 48 hours between different treatments
+- Wash hands thoroughly after handling diseased plant material
+- Dispose of infected leaves in sealed bags with household waste - NEVER compost
+
+PREVENTION:
+- Inspect new plants for rust pustules before introducing to your collection
+- Maintain spacing of at least 30cm between aloe plants
+- Water at soil level only, never wet the leaves
+- Ensure good air circulation at all times
+- Apply preventive neem oil spray once per month during humid seasons
+
+WHEN TO CONSULT AN EXPERT:
+- Rust spreads to more than 50% of the plant within one week
+- Multiple plants develop rust simultaneously
+- Symptoms do not improve after 3-4 fungicide applications
+- Plant shows additional symptoms: root rot, stem collapse, or severe wilting
+- You are unsure how to safely use fungicide chemicals
+
+RESEARCH CITATIONS:
+- Farr, D.F. & Rossman, A.Y. (2022). Plant rust fungi affecting succulents. Systematic Mycology and Microbiology Laboratory, ARS, USDA.
+- Bekker, S. et al. (2020). Efficacy of copper and sulfur fungicides against rust pathogens in succulent plants. South African Journal of Botany, 132, 178-186.
+- Kumar, S. et al. (2019). Antifungal activity of neem (Azadirachta indica) extracts against plant pathogens. Industrial Crops and Products, 133, 85-92.

@@ -1,0 +1,84 @@
+CONDITION: Healthy
+SCIENTIFIC NAME: Aloe barbadensis Miller (Aloe vera)
+CATEGORY: Healthy Plant - Preventive Care Guide
+AFFECTS: All parts of Aloe vera
+
+DESCRIPTION OF A HEALTHY ALOE VERA:
+- Firm, plump leaves that are succulent and filled with clear gel
+- Leaves are fleshy grey-green to bright green in colour
+- Leaf margins have soft white to pale yellow serrations (teeth)
+- No spots, lesions, discolouration, or sunken areas on leaves
+- Upright rosette form with leaves emanating from a central growing point
+- New leaves emerging from the centre are pale green and unblemished
+- White or pale root system visible if repotting (brown roots indicate stress or rot)
+- Produces offsets (pups) around the base when content in its environment
+- Blooms yellow-orange tubular flowers on a tall stalk when mature (if outdoors)
+- Gel inside leaves is clear, thick, and odourless
+
+OPTIMAL GROWING CONDITIONS:
+Temperature: 13-29°C (optimum), can tolerate up to 35°C in shade. Frost-sensitive below 0°C.
+Light: Bright indirect light indoors. Outdoors: morning sun with afternoon shade in hot climates. 6-8 hours of bright indirect light is ideal.
+Soil: Fast-draining succulent or cactus mix. pH 6.0-8.0. At least 30-50% coarse sand, perlite, or grit.
+Watering: Allow soil to dry completely between waterings. Water thoroughly until it drains from the bottom, then wait. In summer: every 2-3 weeks. In winter: every 4-6 weeks or less.
+Container: Terra cotta or unglazed clay pots allow evaporation through pot walls. Drainage holes are mandatory.
+Fertilizer: Not necessary for healthy plants. Optional: very dilute (quarter-strength) cactus fertilizer once in spring and once in early summer only.
+Humidity: Tolerates low humidity. Do not mist leaves.
+
+ROUTINE CARE SCHEDULE:
+Weekly: Inspect leaves for early signs of spots, discolouration, or pest activity. Remove obviously dead lower leaves.
+Monthly: Check soil drainage, check for pests under leaves, check roots visible through drainage holes for health.
+Every 2-3 months: Rotate pot 90 degrees to ensure even light exposure on all sides.
+Annually (spring): Consider repotting if roots are tightly bound or growing from drainage holes. Refresh top layer of soil. Separate and repot offsets (pups) to propagate.
+
+PREVENTIVE DISEASE MANAGEMENT:
+- Overwatering is the single most common cause of aloe vera death. When in doubt, do not water.
+- Always use well-draining soil. Never use heavy garden soil, potting mixes with peat, or moisture-retaining mixes.
+- Inspect new plants for signs of disease before placing near other plants. Quarantine for 2-4 weeks.
+- Sterilize all cutting tools with 70% isopropyl alcohol between uses to prevent cross-contamination.
+- Keep fallen leaves cleaned up - decomposing organic material attracts fungal pathogens.
+- Ensure adequate air circulation, especially in humid climates. Avoid crowding plants.
+- Do not water during cloudy, cool, or rainy periods when evaporation is low.
+
+SIGNS OF STRESS TO WATCH FOR:
+- Yellowing leaves: Overwatering most likely. Less common: nitrogen deficiency or root rot.
+- Brown leaf tips only: Underwatering, fluoride sensitivity, or salt build-up from over-fertilizing. Flush soil with clean water.
+- Leaves lying flat: Insufficient light. The plant is reaching for light and spreading leaves out.
+- Leaves curling inward: Underwatering combined with heat stress. Check soil and water if completely dry.
+- Soft, mushy base or stem: Root and basal rot emergency. Immediate action required (see Aloe Rot protocol).
+- Rust-coloured or orange-brown patches: Early fungal rust infection. Treat immediately (see Aloe Rust protocol).
+- Sunken, darkening spots: Anthracnose or Leaf Spot beginning. Begin fungicide treatment promptly.
+
+GEL HARVESTING FOR MEDICINAL USE:
+- Only harvest from mature, healthy leaves (outer leaves nearest the base, minimum 15 cm long)
+- Use a clean, sterilized knife. Cut close to the base.
+- Let the yellow latex (aloin) drain from the cut surface for 10-15 minutes before using the inner gel
+- Aloin is a laxative compound that can cause skin irritation - rinse thoroughly before topical application
+- Store harvested gel refrigerated in a sealed container for up to 1 week
+- Plants require at least 4 months regrowth after extensive leaf harvesting before harvesting again
+
+PROPAGATION TIPS:
+- Separate offsets (pups) when they are at least 8-10 cm tall and have developed their own root system
+- Let cut surfaces dry and callous for 24-48 hours before replanting in dry soil
+- Do not water newly propagated pups for the first 2 weeks to encourage root exploration
+- Leaf cuttings rarely succeed with aloe vera; division of offsets is the recommended method
+
+SCIENTIFIC PREVENTION PRACTICES:
+- Apply potassium silicate spray (0.1% solution) monthly as a preventive - strengthens cell walls against fungal penetration
+- Maintain phosphorus and potassium levels (avoid excessive nitrogen) - promotes disease resistance
+- Beneficial fungi (mycorrhizae) inoculation at planting improves root health and overall disease resistance
+
+AYURVEDIC / TRADITIONAL CARE:
+- Panchagavya soil drench: Traditional Indian preparation of cow products (diluted) applied to soil; believed to enhance microbial soil health and plant immunity
+- Neem cake soil amendment: Incorporate neem cake (de-oiled neem residue) into the potting mix at 10% by volume. Acts as a long-term antifungal and nematode-deterrent in the root zone.
+- Jeevamrutha (liquid compost): Fermented compost liquid applied monthly to soil enriches beneficial micro-organisms and supports plant immunity
+
+WHEN TO CONSULT AN EXPERT:
+- Plant shows unidentified discolouration or symptoms that do not match known disease profiles
+- Despite following all care guidelines, plant repeatedly declines
+- You wish to grow aloe commercially and require crop management advice
+- Plant has sentimental or commercial value and you want a professional assessment
+
+RESEARCH CITATIONS:
+- Grindlay, D. & Reynolds, T. (1986). The Aloe vera phenomenon: A review of the properties and modern uses. Journal of Ethnopharmacology, 16(2-3), 117-151.
+- Surjushe, A. et al. (2008). Aloe vera: A short review. Indian Journal of Dermatology, 53(4), 163-166.
+- Minjares-Fuentes, R. et al. (2020). Aloe vera cultivation, composition and therapeutic uses: A comprehensive review. Journal of Functional Foods, 74, 104164.

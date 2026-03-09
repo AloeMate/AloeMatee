@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
+import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import Button from '../components/Button';
 import ProgressBar from '../components/ProgressBar';
@@ -104,6 +105,28 @@ export default function CameraCaptureScreen() {
     }
   };
 
+  const pickFromGallery = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission Required', 'Gallery access is needed to pick images from your device.');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+
+    if (!result.canceled && result.assets.length > 0) {
+      const newPhotos = [...photos];
+      newPhotos[currentStage] = { uri: result.assets[0].uri, stage: currentStage + 1 };
+      setPhotos(newPhotos);
+      setShowPreview(true);
+    }
+  };
+
   if (showPreview && currentPhoto) {
     return (
       <View style={styles.container}>
@@ -187,7 +210,9 @@ export default function CameraCaptureScreen() {
           <View style={styles.captureButtonInner} />
         </TouchableOpacity>
 
-        <View style={styles.placeholder} />
+        <TouchableOpacity style={styles.galleryButton} onPress={pickFromGallery}>
+          <Text style={styles.galleryIcon}>🖼️</Text>
+        </TouchableOpacity>
       </View>
 
       {currentStage > 0 && (
@@ -296,8 +321,18 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     backgroundColor: '#4CAF50',
   },
-  placeholder: {
+  galleryButton: {
     width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.3)',
+  },
+  galleryIcon: {
+    fontSize: 26,
   },
   preview: {
     flex: 1,
