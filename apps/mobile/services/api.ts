@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import Constants from 'expo-constants';
 
 const AWS_URL    = 'https://vnfzwebnxd.ap-south-1.awsapprunner.com';
@@ -101,14 +102,26 @@ export async function predictMaturity(
 
   const form = new FormData();
 
-  form.append(
-    'cnn_image',
-    { uri: cnnImageUri, name: 'cnn_image.jpg', type: 'image/jpeg' } as unknown as Blob
-  );
-  form.append(
-    'geo_image',
-    { uri: geoImageUri, name: 'geo_image.jpg', type: 'image/jpeg' } as unknown as Blob
-  );
+  if (Platform.OS === 'web') {
+    const cnnResponse = await fetch(cnnImageUri);
+    const cnnBlob = await cnnResponse.blob();
+
+    const geoResponse = await fetch(geoImageUri);
+    const geoBlob = await geoResponse.blob();
+
+    form.append('cnn_image', cnnBlob, 'cnn_image.jpg');
+    form.append('geo_image', geoBlob, 'geo_image.jpg');
+  } else {
+    form.append(
+      'cnn_image',
+      { uri: cnnImageUri, name: 'cnn_image.jpg', type: 'image/jpeg' } as any
+    );
+    form.append(
+      'geo_image',
+      { uri: geoImageUri, name: 'geo_image.jpg', type: 'image/jpeg' } as any
+    );
+  }
+
   form.append('roi_x', String(roi.x));
   form.append('roi_y', String(roi.y));
   form.append('roi_r', String(roi.r));
