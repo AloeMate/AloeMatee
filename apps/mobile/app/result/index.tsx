@@ -251,7 +251,7 @@ export default function ResultScreen() {
 
 function Row({ label, value, last }: { label: string; value: string; last?: boolean }) {
   return (
-    <View style={[s.tableRow, !last && { borderBottomWidth: 1, borderBottomColor: '#252525' }]}>
+    <View style={[s.tableRow, !last && { borderBottomWidth: 1, borderBottomColor: '#E0E0E0' }]}>
       <Text style={s.tableLabel}>{label}</Text>
       <Text style={s.tableValue}>{value}</Text>
     </View>
@@ -259,16 +259,16 @@ function Row({ label, value, last }: { label: string; value: string; last?: bool
 }
 
 const s = StyleSheet.create({
-  safe:    { flex: 1, backgroundColor: '#111' },
+  safe:    { flex: 1, backgroundColor: '#F8F9FA' },
   scroll:  { flex: 1 },
   content: { padding: 16, paddingBottom: 48 },
 
-  actionCard:    { alignItems: 'center', borderWidth: 2, borderRadius: 20, paddingVertical: 26, paddingHorizontal: 20, marginBottom: 14, backgroundColor: '#161616', gap: 10 },
+  actionCard:    { alignItems: 'center', borderWidth: 0, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 8, elevation: 3, borderRadius: 20, paddingVertical: 26, paddingHorizontal: 20, marginBottom: 14, backgroundColor: '#FFFFFF', gap: 10 },
   actionEmoji:   { fontSize: 60 },
   stagePill:     { borderWidth: 1, borderRadius: 20, paddingHorizontal: 16, paddingVertical: 4 },
-  stagePillText: { fontSize: 12, fontWeight: '700', letterSpacing: 1.5 },
-  headline:      { fontSize: 24, fontWeight: 'bold', textAlign: 'center', letterSpacing: 0.5 },
-  detail:        { color: '#bbb', fontSize: 14, textAlign: 'center', lineHeight: 21, paddingHorizontal: 8 },
+  stagePillText: { fontSize: 12, fontWeight: '800', letterSpacing: 1.5 },
+  headline:      { fontSize: 24, fontWeight: '900', textAlign: 'center', letterSpacing: 0.5 },
+  detail:        { color: '#546E7A', fontSize: 14, textAlign: 'center', lineHeight: 21, paddingHorizontal: 8 },
 
   harvestBox: {
     flexDirection: 'row', alignItems: 'center',
@@ -276,39 +276,38 @@ const s = StyleSheet.create({
     paddingHorizontal: 16, paddingVertical: 10, marginTop: 4,
   },
   harvestBoxMature: {
-    // Slightly warmer highlight for the "Morning or Evening" tip
     backgroundColor: 'rgba(76,175,80,0.08)',
   },
-  harvestText: { fontSize: 14, fontWeight: '600' },
+  harvestText: { fontSize: 14, fontWeight: '700' },
 
   confRow:    { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 6, width: '100%', paddingHorizontal: 8 },
-  confLabel:  { color: '#666', fontSize: 12, width: 72 },
-  confBarBg:  { flex: 1, height: 6, backgroundColor: '#2a2a2a', borderRadius: 3, overflow: 'hidden' },
+  confLabel:  { color: '#78909C', fontSize: 12, width: 72, fontWeight: '600' },
+  confBarBg:  { flex: 1, height: 6, backgroundColor: '#E0E0E0', borderRadius: 3, overflow: 'hidden' },
   confBarFill:{ height: '100%', borderRadius: 3 },
-  confValue:  { fontSize: 12, fontWeight: '600', width: 44, textAlign: 'right' },
+  confValue:  { fontSize: 12, fontWeight: '700', width: 44, textAlign: 'right' },
 
-  warningCard: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, backgroundColor: '#2a1f00', borderWidth: 1, borderColor: '#FF9800', borderRadius: 14, padding: 14, marginBottom: 14 },
+  warningCard: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, backgroundColor: '#FFF3E0', borderWidth: 1, borderColor: '#FF9800', borderRadius: 14, padding: 14, marginBottom: 14 },
   warnIcon:    { fontSize: 20 },
-  warnTitle:   { color: '#FF9800', fontWeight: 'bold', fontSize: 13, marginBottom: 4 },
-  warnBody:    { color: '#ccc', fontSize: 13, lineHeight: 19 },
+  warnTitle:   { color: '#E65100', fontWeight: 'bold', fontSize: 13, marginBottom: 4 },
+  warnBody:    { color: '#E65100', fontSize: 13, lineHeight: 19 },
 
   image:     { width: '100%', height: 200, borderRadius: 14, marginBottom: 14 },
-  card:      { backgroundColor: '#1b1b1b', borderRadius: 14, padding: 14, marginBottom: 12, borderWidth: 1, borderColor: '#232323' },
-  cardTitle: { color: '#4CAF50', fontWeight: 'bold', fontSize: 14, marginBottom: 10 },
-  cardBody:  { color: '#bbb', fontSize: 13, lineHeight: 20 },
+  card:      { backgroundColor: '#FFFFFF', borderRadius: 14, padding: 14, marginBottom: 12, borderWidth: 0, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 8, elevation: 3 },
+  cardTitle: { color: '#1B5E20', fontWeight: '800', fontSize: 16, marginBottom: 10 },
+  cardBody:  { color: '#546E7A', fontSize: 13, lineHeight: 20 },
   row2:      { flexDirection: 'row', gap: 10, marginBottom: 12 },
-  miniCard:  { backgroundColor: '#1b1b1b', borderRadius: 14, padding: 14, alignItems: 'center', borderWidth: 1, borderColor: '#232323' },
-  miniTitle: { color: '#888', fontSize: 12, marginBottom: 8 },
-  miniConf:  { color: '#888', fontSize: 12, marginTop: 6 },
-  lowConf:   { color: '#FF9800' },
+  miniCard:  { backgroundColor: '#FFFFFF', borderRadius: 14, padding: 14, alignItems: 'center', borderWidth: 0, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 8, elevation: 3 },
+  miniTitle: { color: '#78909C', fontSize: 12, fontWeight: '600', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.5 },
+  miniConf:  { color: '#263238', fontSize: 13, fontWeight: '800', marginTop: 6 },
+  lowConf:   { color: '#E65100' },
   pill:      { borderWidth: 1, borderRadius: 20, paddingHorizontal: 12, paddingVertical: 4 },
-  pillText:  { fontSize: 13, fontWeight: '600' },
+  pillText:  { fontSize: 13, fontWeight: '700' },
   tableRow:  { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8 },
-  tableLabel:{ color: '#777', fontSize: 13 },
-  tableValue:{ color: '#eee', fontSize: 13, fontWeight: '500' },
+  tableLabel:{ color: '#78909C', fontSize: 13, fontWeight: '600' },
+  tableValue:{ color: '#263238', fontSize: 13, fontWeight: '700' },
 
   primaryBtn:      { backgroundColor: '#4CAF50', padding: 16, borderRadius: 13, alignItems: 'center', marginBottom: 10, marginTop: 6 },
   primaryBtnText:  { color: '#fff', fontWeight: 'bold', fontSize: 16 },
-  secondaryBtn:    { backgroundColor: '#1e1e1e', padding: 14, borderRadius: 13, alignItems: 'center', borderWidth: 1, borderColor: '#2e2e2e' },
-  secondaryBtnText:{ color: '#777', fontSize: 14 },
+  secondaryBtn:    { backgroundColor: '#FFFFFF', padding: 14, borderRadius: 13, alignItems: 'center', borderWidth: 1, borderColor: '#E0E0E0' },
+  secondaryBtnText:{ color: '#546E7A', fontSize: 14, fontWeight: '700' },
 });
