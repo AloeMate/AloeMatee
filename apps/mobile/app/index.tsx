@@ -126,7 +126,7 @@ export default function HomeScreen() {
             </Text>
             <Button
               title="Open"
-              onPress={() => router.push('/(tabs)/harvest')}
+              onPress={() => router.push('/camera')}
               variant="gradient"
               style={styles.moduleButton}
             />
