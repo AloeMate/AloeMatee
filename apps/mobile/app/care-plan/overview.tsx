@@ -1,62 +1,87 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Alert, Modal, TextInput, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import {
+  View, Text, StyleSheet, ScrollView, Alert, Modal, TextInput,
+  KeyboardAvoidingView, Platform, TouchableOpacity, ActivityIndicator,
+} from 'react-native';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import Button from '../../components/Button';
 import Card from '../../components/Card';
+import { sendGeminiMessage, ChatMessage as GeminiChatMessage } from '../../services/gemini';
 
-// Simple in-app chatbot with canned aloe vera care responses
-const CHAT_RESPONSES: Record<string, string> = {
-  default: "I'm your AloeVera Care Assistant 🌿. Ask me about watering, sunlight, disease treatment, or harvesting!",
-  water: "Water aloe vera every 2–3 weeks in summer and once a month in winter. Let the soil dry out completely between waterings. Over-watering is the #1 cause of root rot.",
-  sun: "Aloe vera thrives in bright indirect sunlight — 6 hours per day is ideal. Avoid direct afternoon sun which can cause sunburn (pale/brown patches).",
-  rot: "For root rot: stop watering immediately, remove the plant, cut off all black/brown roots, dust with cinnamon powder (natural fungicide), and repot in fresh dry soil. Resume watering after 1 week.",
-  rust: "For aloe rust (orange spots): remove affected leaves, improve air circulation, avoid wetting foliage when watering, and apply a copper-based fungicide spray.",
-  harvest: "Harvest outer leaves that are at least 20–25 cm long. Cut close to the stem with a clean sharp knife. Never take more than 3–4 leaves at a time. Let the yellow sap drain before use.",
-  fertilizer: "Fertilize sparingly — once in spring and once in summer with a diluted balanced fertilizer (10-40-10). Avoid feeding in winter.",
-  soil: "Use a well-draining cactus/succulent mix. You can add perlite (20–30%) to improve drainage. Avoid heavy soils that retain moisture.",
-};
+const WELCOME_MESSAGE = "Hello! I'm your AI-powered Aloe Vera Care Assistant 🌿\n\nI can help you with watering schedules, disease treatment, harvesting tips, soil & fertilizer advice, and much more. What would you like to know today?";
 
-function getBotReply(input: string): string {
-  const text = input.toLowerCase();
-  if (text.includes('water') || text.includes('irrigat')) return CHAT_RESPONSES.water;
-  if (text.includes('sun') || text.includes('light')) return CHAT_RESPONSES.sun;
-  if (text.includes('rot') || text.includes('root')) return CHAT_RESPONSES.rot;
-  if (text.includes('rust') || text.includes('spot') || text.includes('fungus')) return CHAT_RESPONSES.rust;
-  if (text.includes('harvest') || text.includes('cut') || text.includes('leaf') || text.includes('leaves')) return CHAT_RESPONSES.harvest;
-  if (text.includes('fertil')) return CHAT_RESPONSES.fertilizer;
-  if (text.includes('soil') || text.includes('dirt') || text.includes('potting')) return CHAT_RESPONSES.soil;
-  return "Great question! For best results, diagnose your plant using the Diagnose tab, then I can give you targeted advice. You can also ask me about: watering, sunlight, root rot, rust, harvesting, fertilizer, or soil. 🌱";
+const QUICK_SUGGESTIONS = [
+  'How often should I water?',
+  'Treating root rot',
+  'When to harvest leaves',
+  'Best soil for aloe vera',
+  'Sunlight requirements',
+  'Fertilizer tips',
+];
+
+interface Message {
+  id: number;
+  from: 'user' | 'bot';
+  text: string;
+  isError?: boolean;
 }
-
-interface Message { id: number; from: 'user' | 'bot'; text: string; }
 
 export default function CarePlanOverviewScreen() {
   const router = useRouter();
   const [chatOpen, setChatOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { id: 0, from: 'bot', text: CHAT_RESPONSES.default },
+    { id: 0, from: 'bot', text: WELCOME_MESSAGE },
   ]);
+  const [geminiHistory, setGeminiHistory] = useState<GeminiChatMessage[]>([]);
   const [inputText, setInputText] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  const scrollRef = useRef<ScrollView>(null);
 
-  function sendMessage() {
-    const text = inputText.trim();
-    if (!text) return;
-    const userMsg: Message = { id: Date.now(), from: 'user', text };
-    const botMsg: Message = { id: Date.now() + 1, from: 'bot', text: getBotReply(text) };
-    setMessages(prev => [...prev, userMsg, botMsg]);
+  useEffect(() => {
+    if (messages.length > 0) {
+      setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 100);
+    }
+  }, [messages, isTyping]);
+
+  async function sendMessage(text?: string) {
+    const userText = (text ?? inputText).trim();
+    if (!userText || isTyping) return;
+
+    const userMsg: Message = { id: Date.now(), from: 'user', text: userText };
+    setMessages(prev => [...prev, userMsg]);
     setInputText('');
+    setIsTyping(true);
+
+    try {
+      const reply = await sendGeminiMessage(userText, geminiHistory);
+      const botMsg: Message = { id: Date.now() + 1, from: 'bot', text: reply };
+      setMessages(prev => [...prev, botMsg]);
+      setGeminiHistory(prev => [
+        ...prev,
+        { role: 'user', text: userText },
+        { role: 'model', text: reply },
+      ]);
+    } catch (err) {
+      const reason = err instanceof Error ? err.message : 'Unknown error';
+      const errorMsg: Message = {
+        id: Date.now() + 1,
+        from: 'bot',
+        text: `Sorry, I couldn't get a response right now.\n\n${reason}\n\nPlease try again. 🌿`,
+        isError: true,
+      };
+      setMessages(prev => [...prev, errorMsg]);
+    } finally {
+      setIsTyping(false);
+    }
   }
 
-  function handleCreateCarePlan() {
-    Alert.alert(
-      'Create Care Plan',
-      'First diagnose your plant to get a personalised treatment plan, or scroll down to use the Harvest Yield Predictor for farm planning.',
-      [
-        { text: 'Go to Diagnose', onPress: () => router.push('/(tabs)/diagnose' as any) },
-        { text: 'Later', style: 'cancel' },
-      ]
-    );
+  function handleOpenChat() {
+    setChatOpen(true);
+  }
+
+  function handleCloseChat() {
+    setChatOpen(false);
   }
 
   return (
@@ -94,17 +119,24 @@ export default function CarePlanOverviewScreen() {
           <View style={styles.actionsGrid}>
             <Button
               title="Create Care Plan"
-              onPress={handleCreateCarePlan}
+              onPress={() => Alert.alert(
+                'Create Care Plan',
+                'First diagnose your plant to get a personalised treatment plan, or scroll down to use the Harvest Yield Predictor for farm planning.',
+                [
+                  { text: 'Go to Diagnose', onPress: () => router.push('/(tabs)/diagnose' as any) },
+                  { text: 'Later', style: 'cancel' },
+                ]
+              )}
               variant="gradient"
               style={styles.actionButton}
               icon="➕"
             />
             <Button
-              title="Open Chatbot"
-              onPress={() => setChatOpen(true)}
+              title="Open AI Assistant"
+              onPress={handleOpenChat}
               variant="gradient"
               style={styles.actionButton}
-              icon="💬"
+              icon="🤖"
             />
           </View>
         </Card>
@@ -139,17 +171,22 @@ export default function CarePlanOverviewScreen() {
         <Card style={styles.chatbotCard}>
           <View style={styles.cardHeader}>
             <Text style={styles.cardIcon}>🤖</Text>
-            <Text style={styles.cardTitle}>AI Care Assistant</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.cardTitle}>AI Care Assistant</Text>
+              <View style={styles.aiBadge}>
+                <Text style={styles.aiBadgeText}>✦ Powered by Gemini AI</Text>
+              </View>
+            </View>
           </View>
           <Text style={styles.chatbotDescription}>
-            Get instant answers to your aloe vera care questions. Ask about watering, sunlight, disease treatment, soil, and more.
+            Ask anything about aloe vera care — watering, diseases, harvesting, soil, and more. Get expert AI-powered answers tailored to your plants.
           </Text>
           <Button
             title="Chat with AI Assistant"
-            onPress={() => setChatOpen(true)}
+            onPress={handleOpenChat}
             variant="gradient"
             style={styles.button}
-            icon="💬"
+            icon="🤖"
           />
         </Card>
 
@@ -171,55 +208,120 @@ export default function CarePlanOverviewScreen() {
           />
         </Card>
 
-        {/* Diagnose shortcut */}
-        <Card style={styles.diagnoseCard}>
-          <View style={styles.cardHeader}>
-            <Text style={styles.cardIcon}>🔬</Text>
-            <Text style={styles.cardTitle}>Diagnose Your Plant</Text>
-          </View>
-          <Text style={styles.yieldDescription}>
-            Take photos of your plant to detect diseases and receive a step-by-step treatment plan.
-          </Text>
-          <Button
-            title="Start Diagnosis"
-            onPress={() => router.push('/(tabs)/diagnose' as any)}
-            variant="gradient"
-            style={styles.button}
-            icon="📷"
-          />
-        </Card>
 
       </ScrollView>
 
       {/* Chatbot Modal */}
-      <Modal visible={chatOpen} animationType="slide" onRequestClose={() => setChatOpen(false)}>
+      <Modal visible={chatOpen} animationType="slide" onRequestClose={handleCloseChat}>
         <KeyboardAvoidingView style={styles.chatContainer} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+          {/* Chat Header */}
           <View style={styles.chatHeader}>
-            <Text style={styles.chatTitle}>🤖 AloeVera Care Assistant</Text>
-            <TouchableOpacity onPress={() => setChatOpen(false)} style={styles.chatClose}>
+            <View style={styles.chatHeaderLeft}>
+              <View style={styles.aiAvatarCircle}>
+                <Text style={styles.aiAvatarText}>🌿</Text>
+              </View>
+              <View>
+                <Text style={styles.chatTitle}>AI Care Assistant</Text>
+                <View style={styles.onlineRow}>
+                  <View style={styles.onlineDot} />
+                  <Text style={styles.onlineText}>Gemini AI · Online</Text>
+                </View>
+              </View>
+            </View>
+            <TouchableOpacity onPress={handleCloseChat} style={styles.chatClose}>
               <Text style={styles.chatCloseText}>✕</Text>
             </TouchableOpacity>
           </View>
 
-          <ScrollView style={styles.chatMessages} contentContainerStyle={{ padding: 16, paddingBottom: 8 }}>
-            {messages.map(msg => (
-              <View key={msg.id} style={[styles.bubble, msg.from === 'user' ? styles.bubbleUser : styles.bubbleBot]}>
-                <Text style={msg.from === 'user' ? styles.bubbleUserText : styles.bubbleBotText}>{msg.text}</Text>
-              </View>
+          {/* Quick Suggestions */}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.suggestionsBar}
+            contentContainerStyle={styles.suggestionsContent}
+          >
+            {QUICK_SUGGESTIONS.map(s => (
+              <TouchableOpacity
+                key={s}
+                style={styles.suggestionChip}
+                onPress={() => sendMessage(s)}
+                disabled={isTyping}
+              >
+                <Text style={styles.suggestionChipText}>{s}</Text>
+              </TouchableOpacity>
             ))}
           </ScrollView>
 
+          {/* Messages */}
+          <ScrollView
+            ref={scrollRef}
+            style={styles.chatMessages}
+            contentContainerStyle={{ padding: 16, paddingBottom: 8 }}
+          >
+            {messages.map(msg => (
+              <View
+                key={msg.id}
+                style={[
+                  styles.bubbleWrapper,
+                  msg.from === 'user' ? styles.bubbleWrapperUser : styles.bubbleWrapperBot,
+                ]}
+              >
+                {msg.from === 'bot' && (
+                  <View style={styles.botAvatarSmall}>
+                    <Text style={styles.botAvatarSmallText}>🌿</Text>
+                  </View>
+                )}
+                <View
+                  style={[
+                    styles.bubble,
+                    msg.from === 'user' ? styles.bubbleUser : styles.bubbleBot,
+                    msg.isError && styles.bubbleError,
+                  ]}
+                >
+                  <Text style={msg.from === 'user' ? styles.bubbleUserText : styles.bubbleBotText}>
+                    {msg.text}
+                  </Text>
+                </View>
+              </View>
+            ))}
+
+            {/* Typing indicator */}
+            {isTyping && (
+              <View style={[styles.bubbleWrapper, styles.bubbleWrapperBot]}>
+                <View style={styles.botAvatarSmall}>
+                  <Text style={styles.botAvatarSmallText}>🌿</Text>
+                </View>
+                <View style={[styles.bubble, styles.bubbleBot, styles.typingBubble]}>
+                  <ActivityIndicator size="small" color="#4CAF50" />
+                  <Text style={styles.typingText}>Thinking…</Text>
+                </View>
+              </View>
+            )}
+          </ScrollView>
+
+          {/* Input Row */}
           <View style={styles.chatInputRow}>
             <TextInput
               style={styles.chatInput}
               value={inputText}
               onChangeText={setInputText}
-              placeholder="Ask about watering, sunlight, diseases…"
+              placeholder="Ask about your aloe vera…"
+              placeholderTextColor="#9E9E9E"
               returnKeyType="send"
-              onSubmitEditing={sendMessage}
+              onSubmitEditing={() => sendMessage()}
+              editable={!isTyping}
+              multiline
             />
-            <TouchableOpacity onPress={sendMessage} style={styles.sendBtn}>
-              <Text style={styles.sendBtnText}>Send</Text>
+            <TouchableOpacity
+              onPress={() => sendMessage()}
+              style={[styles.sendBtn, (isTyping || !inputText.trim()) && styles.sendBtnDisabled]}
+              disabled={isTyping || !inputText.trim()}
+            >
+              {isTyping ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <Text style={styles.sendBtnText}>➤</Text>
+              )}
             </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
@@ -276,6 +378,21 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '700',
     color: '#1B5E20',
+  },
+  aiBadge: {
+    marginTop: 4,
+    backgroundColor: '#E8F5E9',
+    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    alignSelf: 'flex-start',
+    borderWidth: 1,
+    borderColor: '#A5D6A7',
+  },
+  aiBadgeText: {
+    fontSize: 11,
+    color: '#2E7D32',
+    fontWeight: '600',
   },
   emptyState: {
     alignItems: 'center',
@@ -369,10 +486,10 @@ const styles = StyleSheet.create({
     borderLeftWidth: 4,
     borderLeftColor: '#1976D2',
   },
-  // Chatbot modal styles
+  // ── Chatbot modal ──────────────────────────────────────────────
   chatContainer: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#F0F4F0',
   },
   chatHeader: {
     flexDirection: 'row',
@@ -380,81 +497,196 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingTop: 60,
-    paddingBottom: 16,
+    paddingBottom: 18,
     backgroundColor: '#1B5E20',
   },
+  chatHeaderLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  aiAvatarCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#2E7D32',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  aiAvatarText: {
+    fontSize: 22,
+  },
   chatTitle: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: '700',
     color: '#fff',
+  },
+  onlineRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 2,
+    gap: 5,
+  },
+  onlineDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    backgroundColor: '#69F0AE',
+  },
+  onlineText: {
+    fontSize: 11,
+    color: '#A5D6A7',
+    fontWeight: '500',
   },
   chatClose: {
     padding: 8,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    borderRadius: 20,
   },
   chatCloseText: {
-    fontSize: 18,
+    fontSize: 16,
     color: '#fff',
     fontWeight: '700',
   },
+  // Quick suggestions
+  suggestionsBar: {
+    maxHeight: 46,
+    backgroundColor: '#1B5E20',
+    borderBottomWidth: 1,
+    borderBottomColor: '#2E7D32',
+  },
+  suggestionsContent: {
+    paddingHorizontal: 14,
+    paddingBottom: 10,
+    gap: 8,
+    flexDirection: 'row',
+  },
+  suggestionChip: {
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    borderRadius: 16,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.3)',
+  },
+  suggestionChipText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  // Messages
   chatMessages: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
+    backgroundColor: '#F0F4F0',
+  },
+  bubbleWrapper: {
+    flexDirection: 'row',
+    marginBottom: 12,
+    alignItems: 'flex-end',
+    gap: 8,
+  },
+  bubbleWrapperUser: {
+    justifyContent: 'flex-end',
+  },
+  bubbleWrapperBot: {
+    justifyContent: 'flex-start',
+  },
+  botAvatarSmall: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#C8E6C9',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 2,
+  },
+  botAvatarSmallText: {
+    fontSize: 16,
   },
   bubble: {
-    maxWidth: '80%',
-    borderRadius: 16,
-    padding: 12,
-    marginBottom: 10,
+    maxWidth: '76%',
+    borderRadius: 18,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
   },
   bubbleUser: {
-    alignSelf: 'flex-end',
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#2E7D32',
+    borderBottomRightRadius: 4,
   },
   bubbleBot: {
-    alignSelf: 'flex-start',
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFFF',
+    borderBottomLeftRadius: 4,
     borderWidth: 1,
     borderColor: '#E0E0E0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 3,
+    elevation: 1,
+  },
+  bubbleError: {
+    backgroundColor: '#FFF3E0',
+    borderColor: '#FFCC02',
   },
   bubbleUserText: {
     color: '#fff',
     fontSize: 15,
-    lineHeight: 21,
+    lineHeight: 22,
   },
   bubbleBotText: {
     color: '#1B5E20',
     fontSize: 15,
-    lineHeight: 21,
+    lineHeight: 22,
   },
+  typingBubble: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingVertical: 12,
+  },
+  typingText: {
+    color: '#78909C',
+    fontSize: 13,
+    fontStyle: 'italic',
+  },
+  // Input
   chatInputRow: {
     flexDirection: 'row',
-    padding: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    paddingBottom: Platform.OS === 'ios' ? 24 : 12,
     borderTopWidth: 1,
     borderTopColor: '#E0E0E0',
     backgroundColor: '#fff',
-    gap: 8,
+    gap: 10,
+    alignItems: 'flex-end',
   },
   chatInput: {
     flex: 1,
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: '#C8E6C9',
     borderRadius: 24,
-    paddingHorizontal: 16,
+    paddingHorizontal: 18,
     paddingVertical: 10,
     fontSize: 15,
     color: '#212121',
     backgroundColor: '#F1F8E9',
+    maxHeight: 120,
   },
   sendBtn: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#2E7D32',
     borderRadius: 24,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    width: 46,
+    height: 46,
+    alignItems: 'center',
     justifyContent: 'center',
+  },
+  sendBtnDisabled: {
+    backgroundColor: '#A5D6A7',
   },
   sendBtnText: {
     color: '#fff',
     fontWeight: '700',
-    fontSize: 15,
+    fontSize: 18,
   },
 });
