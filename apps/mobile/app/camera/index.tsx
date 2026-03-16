@@ -27,11 +27,11 @@ const GUIDE_SIZE         = SCREEN_W * CNN_GUIDE_FRACTION;
 type CaptureStep = 'CNN' | 'CNN_EDIT' | 'GEO' | 'GEO_EDIT';
 
 const STATUS_STEPS = [
-  { label: 'Connecting to server…',  duration: 4000  },
-  { label: 'Uploading images…',      duration: 3000  },
-  { label: 'Running CNN model…',     duration: 5000  },
-  { label: 'Running Geo algorithm…', duration: 5000  },
-  { label: 'Calculating result…',    duration: 99999 },
+  { label: 'Connecting to server...',  duration: 4000  },
+  { label: 'Uploading images...',      duration: 3000  },
+  { label: 'Running CNN model...',     duration: 5000  },
+  { label: 'Running Geo algorithm...', duration: 5000  },
+  { label: 'Calculating result...',    duration: 99999 },
 ];
 
 function useStatusCycle(active: boolean) {
@@ -58,22 +58,58 @@ function useStatusCycle(active: boolean) {
   return STATUS_STEPS[idx].label;
 }
 
-// On Android, Image with explicit width+height fills the container fully
-// regardless of resizeMode (stretch behaviour). The rendered rect = full screen.
-// True photo dims (photoW/photoH) are kept so ResizableCircle normalises r correctly:
-//   normR = r_screen * (photoW/rendW) / min(photoW,photoH)
+/**
+ * ✅ FIXED: Compute the actual rendered rect of an image displayed with
+ * resizeMode="contain" inside a container of size (cW × cH).
+ *
+ * THE BUG IN THE OLD VERSION:
+ *   return { rendW: cW, rendH: cH, offsetX: 0, offsetY: 0, photoW: imgW, photoH: imgH }
+ *   This always returned full screen dimensions regardless of image aspect ratio.
+ *
+ * WHY THIS BREAKS GALLERY PREDICTIONS:
+ *   A landscape gallery photo (4032×3024) on a 390×844 portrait screen renders
+ *   at 390×292 with 276px black bars top and bottom (letterboxed).
+ *   The old code told ResizableCircle the rendered size was 390×844 (full screen).
+ *   ResizableCircle then computed roi_r using the wrong canvas height.
+ *   The computed area was (844/292)² = 8.4× too small → always below T1 → always IMMATURE.
+ *
+ * THE FIX:
+ *   Compute the true letterbox/pillarbox rectangle from the image aspect ratio.
+ *   - Image wider than screen  → fill width,  letterbox top/bottom
+ *   - Image taller than screen → fill height, pillarbox left/right
+ */
 function getContainRect(imgW: number, imgH: number, cW: number, cH: number) {
-  return { rendW: cW, rendH: cH, offsetX: 0, offsetY: 0, photoW: imgW, photoH: imgH };
+  const imageAspect  = imgW / imgH;
+  const screenAspect = cW  / cH;
+
+  let rendW: number, rendH: number, offsetX: number, offsetY: number;
+
+  if (imageAspect > screenAspect) {
+    // Image wider than container → fill width, letterbox top/bottom
+    rendW   = cW;
+    rendH   = cW / imageAspect;
+    offsetX = 0;
+    offsetY = (cH - rendH) / 2;
+  } else {
+    // Image taller than container → fill height, pillarbox left/right
+    rendH   = cH;
+    rendW   = cH * imageAspect;
+    offsetX = (cW - rendW) / 2;
+    offsetY = 0;
+  }
+
+  return { rendW, rendH, offsetX, offsetY, photoW: imgW, photoH: imgH };
 }
 
-// On mobile (Android especially), takePictureAsync may return swapped W/H
-// when the device is held in portrait but EXIF orientation differs.
-// We detect this by comparing aspect ratio to screen — if photo appears
-// landscape on a portrait screen, swap the dims so containRect is correct.
+/**
+ * If the screen orientation and photo orientation disagree
+ * (e.g. portrait screen but landscape photo dims from EXIF),
+ * swap the dimensions so min/max are always consistent with
+ * what the user actually sees on screen.
+ */
 function normalisePhotoDims(w: number, h: number): { w: number; h: number } {
   const screenIsPortrait = SCREEN_H > SCREEN_W;
   const photoIsPortrait  = h > w;
-  // If screen and photo orientation disagree, swap photo dims
   if (screenIsPortrait !== photoIsPortrait) {
     return { w: h, h: w };
   }
@@ -95,7 +131,7 @@ export default function CameraScreen() {
 
   const cameraRef = useRef<CameraView>(null);
   const router    = useRouter();
-  const roiRef    = useRef({ x: 0.5, y: 0.5, r: 0.35 });
+  const roiRef    = useRef({ x: 0.5, y: 0.5, r: 0.40 });
   const statusLabel = useStatusCycle(isAnalyzing);
 
   if (!permission) {
@@ -131,7 +167,7 @@ export default function CameraScreen() {
             value={plantAgeMonths}
             onChangeText={setPlantAgeMonths}
             placeholder="e.g. 6"
-            placeholderTextColor="#444"
+            placeholderTextColor="#9DB8A0"
             returnKeyType="done"
             autoFocus
           />
@@ -158,10 +194,23 @@ export default function CameraScreen() {
           <Text style={styles.cardEmoji}>📋</Text>
           <Text style={styles.cardTitle}>Camera Protocols</Text>
           <View style={styles.protocolList}>
-            <Text style={styles.protocolItem}>• <Text style={styles.bold}>Best Timing:</Text> Morning or Evening for optimal soft light.</Text>
-            <Text style={styles.protocolItem}>• <Text style={styles.bold}>Lighting:</Text> Ensure bright, direct light falls on the aloe leaf.</Text>
-            <Text style={styles.protocolItem}>• <Text style={styles.bold}>Step 1 (CNN):</Text> Keep leaf 5 cm from camera. Fit texture inside the square.</Text>
-            <Text style={styles.protocolItem}>• <Text style={styles.bold}>Step 2 (Geo):</Text> Keep 1 m distance (top view). Fit whole plant in circle.</Text>
+            <View style={styles.protocolRow}>
+              <View style={styles.protocolAccent} />
+              <Text style={styles.protocolItem}><Text style={styles.bold}>Best Timing:</Text> Morning or Evening for optimal soft light.</Text>
+            </View>
+            <View style={styles.protocolRow}>
+              <View style={styles.protocolAccent} />
+              <Text style={styles.protocolItem}><Text style={styles.bold}>Lighting:</Text> Ensure bright, direct light falls on the aloe leaf.</Text>
+            </View>
+            <View style={styles.protocolRow}>
+              <View style={styles.protocolAccent} />
+              <Text style={styles.protocolItem}><Text style={styles.bold}>Step 1 (CNN):</Text> Keep leaf 5 cm from camera. Fit texture inside the square.</Text>
+            </View>
+            <View style={styles.protocolRow}>
+              <View style={styles.protocolAccent} />
+              <Text style={styles.protocolItem}><Text style={styles.bold}>Step 2 (Geo):</Text> Keep 1 m distance (top view). Fit whole plant in circle.</Text>
+            </View>
+            <View style={styles.protocolDivider} />
             <Text style={styles.protocolHint}>Farmers can use a tripod at 1 m for best GEO results.</Text>
           </View>
           <TouchableOpacity style={styles.greenBtn} onPress={() => setShowGuidelines(false)}>
@@ -172,14 +221,21 @@ export default function CameraScreen() {
     );
   }
 
-  // ── Gallery: CNN ──────────────────────────────────────────────────────────
+  // ---------------------------------------------------------------------------
+  // Gallery: CNN
+  // Mirror live-camera crop: project GUIDE_SIZE onto the photo's pixel space
+  // using (imgW / SCREEN_W) as the scale factor.
+  // ---------------------------------------------------------------------------
   const handleGalleryPickCNN = async () => {
     try {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== 'granted') { Alert.alert('Permission Required', 'Please allow access to your photo library.'); return; }
+      if (status !== 'granted') {
+        Alert.alert('Permission Required', 'Please allow access to your photo library.');
+        return;
+      }
 
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: 'images' as any,   // ✅ new API, avoids MediaTypeOptions deprecation
+        mediaTypes: 'images' as any,
         allowsEditing: false,
         quality: 1,
       });
@@ -187,12 +243,23 @@ export default function CameraScreen() {
       const asset = result.assets[0];
 
       setIsCapturing(true);
-      const imgW     = asset.width  ?? SCREEN_W;
-      const imgH     = asset.height ?? SCREEN_H;
-      // Crop centre square proportional to actual image size (not screen size)
-      const cropSide = Math.round(Math.min(imgW, imgH) * CNN_GUIDE_FRACTION);
-      const originX  = Math.round((imgW - cropSide) / 2);
-      const originY  = Math.round((imgH - cropSide) / 2);
+
+      const imgW = asset.width  ?? SCREEN_W;
+      const imgH = asset.height ?? SCREEN_H;
+
+      // Scale the guide box to the photo's pixel space, then clamp to the
+      // shorter dimension so the crop square always fits inside the image.
+      // Without the clamp, wide landscape photos (e.g. 16:9 at 4032×2268)
+      // produce a cropSide larger than imgH, making originY negative and
+      // crashing expo-image-manipulator with "crop rectangle outside image".
+      const scale    = imgW / SCREEN_W;
+      const cropSide = Math.min(
+        Math.round(GUIDE_SIZE * scale),
+        imgW,
+        imgH,
+      );
+      const originX  = Math.max(0, Math.round((imgW - cropSide) / 2));
+      const originY  = Math.max(0, Math.round((imgH - cropSide) / 2));
 
       const manipulated = await manipulateAsync(
         asset.uri,
@@ -211,11 +278,17 @@ export default function CameraScreen() {
     }
   };
 
-  // ── Gallery: GEO ──────────────────────────────────────────────────────────
+  // ---------------------------------------------------------------------------
+  // Gallery: GEO
+  // Apply normalisePhotoDims() so min(w,h) always matches visual orientation.
+  // ---------------------------------------------------------------------------
   const handleGalleryPickGEO = async () => {
     try {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== 'granted') { Alert.alert('Permission Required', 'Please allow access to your photo library.'); return; }
+      if (status !== 'granted') {
+        Alert.alert('Permission Required', 'Please allow access to your photo library.');
+        return;
+      }
 
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: 'images' as any,
@@ -225,9 +298,6 @@ export default function CameraScreen() {
       if (result.canceled || !result.assets[0]) return;
       const asset = result.assets[0];
 
-      // Use Image.getSize to get TRUE pixel dimensions of the file.
-      // asset.width/height from ImagePicker can be thumbnail/compressed size
-      // on some Android devices, causing wrong ROI area calculation.
       const trueDims = await new Promise<{ w: number; h: number }>((resolve) => {
         Image.getSize(
           asset.uri,
@@ -236,16 +306,20 @@ export default function CameraScreen() {
         );
       });
 
-      setGeoPhotoSize(trueDims);
+      const normDims = normalisePhotoDims(trueDims.w, trueDims.h);
+
+      setGeoPhotoSize(normDims);
       setGeoImageUri(asset.uri);
-      roiRef.current = { x: 0.5, y: 0.5, r: 0.35 };
+      roiRef.current = { x: 0.5, y: 0.5, r: 0.40 };
       setStep('GEO_EDIT');
     } catch (e: unknown) {
       Alert.alert('Error', e instanceof Error ? e.message : 'Failed to pick image.');
     }
   };
 
-  // ── Camera capture ────────────────────────────────────────────────────────
+  // ---------------------------------------------------------------------------
+  // Live camera capture
+  // ---------------------------------------------------------------------------
   const handleCapture = async () => {
     if (!cameraRef.current || isCapturing) return;
     try {
@@ -261,7 +335,10 @@ export default function CameraScreen() {
         const originY  = Math.round((imgH - cropSide) / 2);
         const manipulated = await manipulateAsync(
           photo.uri,
-          [{ crop: { originX, originY, width: cropSide, height: cropSide } }, { resize: { width: 224, height: 224 } }],
+          [
+            { crop: { originX, originY, width: cropSide, height: cropSide } },
+            { resize: { width: 224, height: 224 } },
+          ],
           { compress: 1.0, format: SaveFormat.JPEG }
         );
         setCnnImageUri(manipulated.uri);
@@ -270,11 +347,10 @@ export default function CameraScreen() {
       }
 
       if (step === 'GEO') {
-        // Normalise dims — Android can return swapped W/H in portrait mode
         const normDims = normalisePhotoDims(imgW, imgH);
         setGeoPhotoSize(normDims);
         setGeoImageUri(photo.uri);
-        roiRef.current = { x: 0.5, y: 0.5, r: 0.35 };
+        roiRef.current = { x: 0.5, y: 0.5, r: 0.40 };
         setStep('GEO_EDIT');
         return;
       }
@@ -285,7 +361,9 @@ export default function CameraScreen() {
     }
   };
 
-  // ── Analyze ───────────────────────────────────────────────────────────────
+  // ---------------------------------------------------------------------------
+  // Analyze
+  // ---------------------------------------------------------------------------
   const handleAnalyze = async () => {
     if (!geoImageUri || !cnnImageUri || isCapturing || isAnalyzing) return;
     try {
@@ -294,7 +372,7 @@ export default function CameraScreen() {
       const result = await predictMaturity(cnnImageUri, geoImageUri, roiRef.current, age);
 
       router.push({
-        pathname: '/result',
+        pathname: '/result' as any,
         params: {
           imageUri:       geoImageUri,
           maturity:       result.ensemble_prediction.predicted_class,
@@ -310,9 +388,13 @@ export default function CameraScreen() {
         },
       });
 
-      setStep('CNN'); setCnnImageUri(null); setGeoImageUri(null);
-      setGeoPhotoSize(null); setShowAgeInput(true); setPlantAgeMonths('');
-      roiRef.current = { x: 0.5, y: 0.5, r: 0.35 };
+      setStep('CNN');
+      setCnnImageUri(null);
+      setGeoImageUri(null);
+      setGeoPhotoSize(null);
+      setShowAgeInput(true);
+      setPlantAgeMonths('');
+      roiRef.current = { x: 0.5, y: 0.5, r: 0.40 };
     } catch (e: unknown) {
       Alert.alert('Error', e instanceof Error ? e.message : 'Analysis failed. Please try again.');
     } finally {
@@ -325,7 +407,8 @@ export default function CameraScreen() {
   const isCnnEdit = step === 'CNN_EDIT';
   const isGeoEdit = step === 'GEO_EDIT';
 
-  // Compute contain rect for ROI mapping — pure math, always correct
+  // ✅ FIXED: getContainRect now returns the true letterbox/pillarbox rect.
+  // ResizableCircle uses this to compute roi_r correctly for gallery images.
   const geoContainRect = geoPhotoSize
     ? getContainRect(geoPhotoSize.w, geoPhotoSize.h, SCREEN_W, SCREEN_H)
     : { rendW: SCREEN_W, rendH: SCREEN_H, offsetX: 0, offsetY: 0, photoW: SCREEN_W, photoH: SCREEN_H };
@@ -343,13 +426,8 @@ export default function CameraScreen() {
           </View>
         </View>
       ) : (
-        // GEO edit — contain so full image visible, correct aspect, no zoom
         <View style={styles.geoEditBg}>
-          <Image
-            source={{ uri: geoImageUri! }}
-            style={styles.geoEditImage}
-            resizeMode="contain"
-          />
+          <Image source={{ uri: geoImageUri! }} style={styles.geoEditImage} resizeMode="contain" />
         </View>
       )}
 
@@ -380,7 +458,7 @@ export default function CameraScreen() {
             </View>
             <View style={[styles.darkMask, { width: (SCREEN_W - GUIDE_SIZE) / 2 }]} />
           </View>
-          <View style={[styles.darkMask, { flex: 1, width: SCREEN_W, alignItems: 'center', paddingTop: 12 }]}>
+          <View style={[styles.darkMask, { flex: 1, width: SCREEN_W, alignItems: 'center', paddingTop: 16 }]}>
             <Text style={styles.guideLabel}>Align leaf texture here</Text>
           </View>
         </View>
@@ -398,13 +476,19 @@ export default function CameraScreen() {
             onROIChange={(roi) => { roiRef.current = roi; }}
             containRect={geoContainRect}
           />
+          <View style={styles.geoResizeBadge} pointerEvents="none">
+            <Text style={styles.geoResizeBadgeText}>
+              ⚠️  Resize circle to cover all leaf tips exactly
+            </Text>
+          </View>
         </View>
       )}
 
       {isAnalyzing && (
         <View style={styles.analyzingOverlay}>
           <View style={styles.analyzingCard}>
-            <ActivityIndicator size="large" color="#4CAF50" style={{ marginBottom: 16 }} />
+            <View style={styles.analyzingTopBar} />
+            <ActivityIndicator size="large" color="#4CAF50" style={{ marginBottom: 20 }} />
             <Text style={styles.analyzingLabel}>{statusLabel}</Text>
             <Text style={styles.analyzingHint}>This may take up to 30 s on first run</Text>
           </View>
@@ -433,16 +517,19 @@ export default function CameraScreen() {
                 onPress={step === 'CNN' ? handleGalleryPickCNN : handleGalleryPickGEO}
                 disabled={isCapturing}
               >
-                <Text style={styles.galleryBtnText}>🖼️{'\n'}Gallery</Text>
+                <Text style={styles.galleryBtnIcon}>🖼️</Text>
+                <Text style={styles.galleryBtnText}>Gallery</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.shutter, isCapturing && styles.disabled]}
                 onPress={handleCapture}
                 disabled={isCapturing}
               >
-                {isCapturing ? <ActivityIndicator color="#4CAF50" size="large" /> : <View style={styles.shutterInner} />}
+                {isCapturing
+                  ? <ActivityIndicator color="#4CAF50" size="large" />
+                  : <View style={styles.shutterInner} />}
               </TouchableOpacity>
-              <View style={{ width: 64 }} />
+              <View style={{ width: 66 }} />
             </View>
           ) : (
             <TouchableOpacity
@@ -463,61 +550,217 @@ export default function CameraScreen() {
   );
 }
 
-const C_LEN = 24;
-const C_W   = 3;
+const C_LEN = 26;
+const C_W   = 3.5;
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: '#000' },
-  fullscreen: { position: 'absolute', top: 0, left: 0, width: SCREEN_W, height: SCREEN_H },
-  geoEditBg: { position: 'absolute', top: 0, left: 0, width: SCREEN_W, height: SCREEN_H, backgroundColor: '#000' },
-  geoEditImage: { width: SCREEN_W, height: SCREEN_H, resizeMode: 'contain' },
-  cnnEditBg: { position: 'absolute', top: 0, left: 0, width: SCREEN_W, height: SCREEN_H, backgroundColor: '#000', justifyContent: 'center', alignItems: 'center' },
-  cnnEditImage: { width: SCREEN_W * 0.80, height: SCREEN_W * 0.80 },
-  cnnEditLabel: { position: 'absolute', bottom: 180, left: 0, right: 0, alignItems: 'center' },
-  cnnEditLabelText: { color: '#4CAF50', fontSize: 12, backgroundColor: 'rgba(0,0,0,0.6)', paddingHorizontal: 14, paddingVertical: 6, borderRadius: 8, overflow: 'hidden' },
+  root:        { flex: 1, backgroundColor: '#000' },
+  fullscreen:  { position: 'absolute', top: 0, left: 0, width: SCREEN_W, height: SCREEN_H },
+
+  geoEditBg:        { position: 'absolute', top: 0, left: 0, width: SCREEN_W, height: SCREEN_H, backgroundColor: '#000' },
+  geoEditImage:     { width: SCREEN_W, height: SCREEN_H, resizeMode: 'contain' },
+  cnnEditBg:        { position: 'absolute', top: 0, left: 0, width: SCREEN_W, height: SCREEN_H, backgroundColor: '#000', justifyContent: 'center', alignItems: 'center' },
+  cnnEditImage:     { width: SCREEN_W * 0.80, height: SCREEN_W * 0.80, borderRadius: 14 },
+  cnnEditLabel:     { position: 'absolute', bottom: 180, left: 0, right: 0, alignItems: 'center' },
+  cnnEditLabelText: { color: '#4CAF50', fontSize: 13, fontWeight: '600', letterSpacing: 0.2, backgroundColor: 'rgba(0,0,0,0.68)', paddingHorizontal: 18, paddingVertical: 8, borderRadius: 12, overflow: 'hidden' },
+
   guideOverlay: { position: 'absolute', top: 0, left: 0, width: SCREEN_W, height: SCREEN_H },
-  darkMask: { backgroundColor: 'rgba(0,0,0,0.55)' },
-  guideBox: { width: GUIDE_SIZE, height: GUIDE_SIZE },
-  corner:   { position: 'absolute', borderColor: '#4CAF50' },
-  cornerTL: { top: 0,    left: 0,  width: C_LEN, height: C_LEN, borderTopWidth: C_W,    borderLeftWidth: C_W  },
-  cornerTR: { top: 0,    right: 0, width: C_LEN, height: C_LEN, borderTopWidth: C_W,    borderRightWidth: C_W },
-  cornerBL: { bottom: 0, left: 0,  width: C_LEN, height: C_LEN, borderBottomWidth: C_W, borderLeftWidth: C_W  },
-  cornerBR: { bottom: 0, right: 0, width: C_LEN, height: C_LEN, borderBottomWidth: C_W, borderRightWidth: C_W },
-  guideLabel: { color: '#4CAF50', fontSize: 13, backgroundColor: 'rgba(0,0,0,0.6)', paddingHorizontal: 12, paddingVertical: 5, borderRadius: 8, overflow: 'hidden' },
-  geoHintWrap: { position: 'absolute', bottom: 160, width: '100%', alignItems: 'center' },
+  darkMask:     { backgroundColor: 'rgba(0,0,0,0.55)' },
+  guideBox:     { width: GUIDE_SIZE, height: GUIDE_SIZE },
+  corner:       { position: 'absolute', borderColor: '#4CAF50' },
+  cornerTL:     { top: 0,    left: 0,  width: C_LEN, height: C_LEN, borderTopWidth: C_W,    borderLeftWidth: C_W  },
+  cornerTR:     { top: 0,    right: 0, width: C_LEN, height: C_LEN, borderTopWidth: C_W,    borderRightWidth: C_W },
+  cornerBL:     { bottom: 0, left: 0,  width: C_LEN, height: C_LEN, borderBottomWidth: C_W, borderLeftWidth: C_W  },
+  cornerBR:     { bottom: 0, right: 0, width: C_LEN, height: C_LEN, borderBottomWidth: C_W, borderRightWidth: C_W },
+  guideLabel:   { color: '#4CAF50', fontSize: 13, fontWeight: '600', letterSpacing: 0.3, backgroundColor: 'rgba(0,0,0,0.68)', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 12, overflow: 'hidden' },
+  geoHintWrap:  { position: 'absolute', bottom: 160, width: '100%', alignItems: 'center' },
+
   topOverlay: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20 },
-  stepBadge: { margin: 16, backgroundColor: 'rgba(0,0,0,0.72)', borderRadius: 16, padding: 14, alignItems: 'center', borderWidth: 1, borderColor: 'rgba(76,175,80,0.3)' },
-  stepDots:  { flexDirection: 'row', gap: 6, marginBottom: 6 },
-  dot:       { width: 7, height: 7, borderRadius: 4, backgroundColor: '#555' },
-  dotActive: { backgroundColor: '#4CAF50' },
-  stepNum:   { color: '#4CAF50', fontSize: 11, fontWeight: '600', marginBottom: 2 },
-  stepTitle: { color: '#fff', fontSize: 15, fontWeight: 'bold', marginBottom: 2 },
-  stepDesc:  { color: '#ccc', fontSize: 12 },
-  bottomControls: { position: 'absolute', bottom: 48, width: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', zIndex: 20, paddingHorizontal: 24, gap: 20 },
-  liveButtonGroup: { flexDirection: 'row', alignItems: 'center', gap: 24, flex: 1, justifyContent: 'center' },
-  galleryBtn: { width: 64, height: 64, borderRadius: 16, backgroundColor: 'rgba(255,255,255,0.15)', borderWidth: 1.5, borderColor: 'rgba(255,255,255,0.35)', justifyContent: 'center', alignItems: 'center' },
-  galleryBtnText: { color: '#fff', fontSize: 11, textAlign: 'center', lineHeight: 16 },
-  shutter: { width: 80, height: 80, borderRadius: 40, backgroundColor: 'rgba(255,255,255,0.95)', justifyContent: 'center', alignItems: 'center', borderWidth: 5, borderColor: '#4CAF50', shadowColor: '#4CAF50', shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.6, shadowRadius: 12, elevation: 10 },
-  shutterInner: { width: 58, height: 58, borderRadius: 29, backgroundColor: '#4CAF50' },
+  stepBadge: {
+    margin: 16,
+    backgroundColor: 'rgba(0,0,0,0.76)',
+    borderRadius: 18,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(76,175,80,0.35)',
+  },
+  stepDots:  { flexDirection: 'row', gap: 6, marginBottom: 8 },
+  dot:       { width: 7, height: 7, borderRadius: 4, backgroundColor: '#444' },
+  dotActive: { backgroundColor: '#4CAF50', width: 20, borderRadius: 4 },
+  stepNum:   { color: '#4CAF50', fontSize: 11, fontWeight: '700', letterSpacing: 1.2, textTransform: 'uppercase', marginBottom: 3 },
+  stepTitle: { color: '#fff', fontSize: 16, fontWeight: '800', marginBottom: 3, letterSpacing: 0.2 },
+  stepDesc:  { color: '#bbb', fontSize: 12, letterSpacing: 0.1 },
+
+  bottomControls: {
+    position: 'absolute',
+    bottom: 52,
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 20,
+    paddingHorizontal: 24,
+    gap: 20,
+  },
+  liveButtonGroup: { flexDirection: 'row', alignItems: 'center', gap: 28, flex: 1, justifyContent: 'center' },
+  galleryBtn: {
+    width: 66,
+    height: 66,
+    borderRadius: 18,
+    backgroundColor: 'rgba(255,255,255,0.14)',
+    borderWidth: 1.5,
+    borderColor: 'rgba(255,255,255,0.32)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 3,
+  },
+  galleryBtnIcon: { fontSize: 22 },
+  galleryBtnText: { color: '#fff', fontSize: 10, fontWeight: '600', letterSpacing: 0.4 },
+  shutter: {
+    width: 82,
+    height: 82,
+    borderRadius: 41,
+    backgroundColor: 'rgba(255,255,255,0.95)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 5,
+    borderColor: '#4CAF50',
+    shadowColor: '#4CAF50',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.7,
+    shadowRadius: 18,
+    elevation: 12,
+  },
+  shutterInner: { width: 60, height: 60, borderRadius: 30, backgroundColor: '#4CAF50' },
   disabled:     { opacity: 0.45 },
-  redoBtn: { backgroundColor: 'rgba(255,255,255,0.12)', paddingVertical: 10, paddingHorizontal: 16, borderRadius: 20, borderWidth: 1, borderColor: 'rgba(255,255,255,0.3)' },
-  redoBtnText: { color: '#fff', fontSize: 13, fontWeight: '500' },
-  confirmBtn: { backgroundColor: '#4CAF50', paddingVertical: 14, paddingHorizontal: 32, borderRadius: 30, minWidth: 160, alignItems: 'center', shadowColor: '#4CAF50', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 6 },
-  confirmBtnText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
-  analyzingOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.78)', justifyContent: 'center', alignItems: 'center', zIndex: 50 },
-  analyzingCard: { backgroundColor: '#FFFFFF', borderRadius: 20, padding: 32, alignItems: 'center', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 8, elevation: 4, minWidth: 260 },
-  analyzingLabel: { color: '#1B5E20', fontSize: 16, fontWeight: '800', marginBottom: 8, textAlign: 'center' },
-  analyzingHint:  { color: '#546E7A', fontSize: 12, textAlign: 'center' },
+  redoBtn: {
+    backgroundColor: 'rgba(255,255,255,0.12)',
+    paddingVertical: 12,
+    paddingHorizontal: 18,
+    borderRadius: 22,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.28)',
+  },
+  redoBtnText: { color: '#fff', fontSize: 13, fontWeight: '600', letterSpacing: 0.2 },
+  confirmBtn: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 16,
+    paddingHorizontal: 36,
+    borderRadius: 32,
+    minWidth: 172,
+    alignItems: 'center',
+    shadowColor: '#4CAF50',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.38,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  confirmBtnText: { color: '#fff', fontSize: 16, fontWeight: '800', letterSpacing: 0.3 },
+
+  analyzingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.80)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 50,
+  },
+  analyzingCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    paddingTop: 0,
+    paddingBottom: 36,
+    paddingHorizontal: 36,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.18,
+    shadowRadius: 20,
+    elevation: 10,
+    minWidth: 270,
+    overflow: 'hidden',
+  },
+  analyzingTopBar: {
+    height: 5,
+    width: '100%',
+    backgroundColor: '#4CAF50',
+    marginBottom: 32,
+    borderRadius: 0,
+  },
+  analyzingLabel: { color: '#1B5E20', fontSize: 16, fontWeight: '800', marginBottom: 8, textAlign: 'center', letterSpacing: 0.3 },
+  analyzingHint:  { color: '#78909C', fontSize: 12, textAlign: 'center', letterSpacing: 0.1 },
+
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F8F9FA', padding: 24 },
-  card: { width: '100%', alignItems: 'center', backgroundColor: '#FFFFFF', borderRadius: 20, padding: 28, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 8, elevation: 3 },
-  cardEmoji:    { fontSize: 52, marginBottom: 14 },
-  cardTitle:    { color: '#1B5E20', fontSize: 22, fontWeight: '800', marginBottom: 8 },
-  cardDesc:     { color: '#546E7A', textAlign: 'center', marginBottom: 24, lineHeight: 20, fontSize: 14 },
-  greenBtn:     { backgroundColor: '#4CAF50', paddingVertical: 14, paddingHorizontal: 44, borderRadius: 12 },
-  greenBtnText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
-  ageInput: { width: 160, padding: 14, fontSize: 26, textAlign: 'center', backgroundColor: '#F8F9FA', color: '#1B5E20', fontWeight: 'bold', borderWidth: 2, borderColor: '#4CAF50', borderRadius: 12, marginBottom: 22 },
-  protocolList: { width: '100%', marginVertical: 20, gap: 12 },
-  protocolItem: { color: '#546E7A', fontSize: 14, lineHeight: 20 },
-  bold:         { fontWeight: '700', color: '#1B5E20' },
-  protocolHint: { color: '#78909C', fontSize: 13, fontStyle: 'italic', marginTop: 8, textAlign: 'center' },
+  card: {
+    width: '100%',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    padding: 32,
+    shadowColor: '#1B5E20',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 16,
+    elevation: 4,
+  },
+  cardEmoji:    { fontSize: 56, marginBottom: 16 },
+  cardTitle:    { color: '#1B5E20', fontSize: 23, fontWeight: '800', marginBottom: 10, letterSpacing: 0.3, textAlign: 'center' },
+  cardDesc:     { color: '#546E7A', textAlign: 'center', marginBottom: 28, lineHeight: 22, fontSize: 15 },
+  greenBtn: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 16,
+    paddingHorizontal: 48,
+    borderRadius: 14,
+    shadowColor: '#4CAF50',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.28,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+  greenBtnText: { color: '#fff', fontWeight: '800', fontSize: 16, letterSpacing: 0.4 },
+  ageInput: {
+    width: 160,
+    paddingVertical: 16,
+    paddingHorizontal: 14,
+    fontSize: 28,
+    textAlign: 'center',
+    backgroundColor: '#F1F8F2',
+    color: '#1B5E20',
+    fontWeight: 'bold',
+    borderWidth: 2,
+    borderColor: '#4CAF50',
+    borderRadius: 14,
+    marginBottom: 24,
+  },
+
+  protocolList:    { width: '100%', marginVertical: 20, gap: 14 },
+  protocolRow:     { flexDirection: 'row', alignItems: 'flex-start', gap: 10 },
+  protocolAccent:  { width: 3, minHeight: 18, borderRadius: 2, backgroundColor: '#4CAF50', marginTop: 3, flexShrink: 0 },
+  protocolItem:    { color: '#546E7A', fontSize: 14, lineHeight: 22, flex: 1 },
+  bold:            { fontWeight: '700', color: '#1B5E20' },
+  protocolDivider: { height: 1, backgroundColor: '#E8F5E9', width: '100%', marginVertical: 4 },
+  protocolHint:    { color: '#78909C', fontSize: 13, fontStyle: 'italic', textAlign: 'center' },
+
+  // Resize hint badge shown on GEO_EDIT screen for gallery images
+  geoResizeBadge: {
+    position: 'absolute',
+    top: 60,
+    left: 20,
+    right: 20,
+    backgroundColor: 'rgba(0,0,0,0.75)',
+    borderRadius: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255,193,7,0.6)',
+    alignItems: 'center',
+  },
+  geoResizeBadgeText: {
+    color: '#FFC107',
+    fontSize: 13,
+    fontWeight: '700',
+    textAlign: 'center',
+    letterSpacing: 0.2,
+  },
 });
