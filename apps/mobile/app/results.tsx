@@ -24,6 +24,61 @@ interface DiseaseResponse {
   not_aloe_vera_message?: string;
 }
 
+type SeverityLevel = 'Mild' | 'Moderate' | 'Severe';
+
+function getSeverityLevel(prob: number): SeverityLevel {
+  if (prob >= 0.85) return 'Mild';
+  if (prob >= 0.6) return 'Moderate';
+  return 'Severe';
+}
+
+function getSeverityColor(level: SeverityLevel): string {
+  if (level === 'Mild') return '#2E7D32';
+  if (level === 'Moderate') return '#EF6C00';
+  return '#C62828';
+}
+
+function getLowConfidenceReasons(message?: string): string[] {
+  const text = (message || '').toLowerCase();
+  const reasons: string[] = [];
+
+  if (text.includes('blur') || text.includes('focus')) reasons.push('Image is blurry or out of focus');
+  if (text.includes('light') || text.includes('dark') || text.includes('shadow')) reasons.push('Lighting quality is low');
+  if (text.includes('distance') || text.includes('close') || text.includes('far')) reasons.push('Camera distance is not ideal');
+  if (text.includes('background') || text.includes('clutter')) reasons.push('Background is distracting');
+
+  if (reasons.length === 0) {
+    reasons.push('Symptoms are not clearly visible');
+    reasons.push('Photo angle or framing is not optimal');
+  }
+
+  return reasons;
+}
+
+function getActionTimeline(level: SeverityLevel): { title: string; detail: string }[] {
+  if (level === 'Severe') {
+    return [
+      { title: 'Next 24 hours', detail: 'Isolate the plant and begin treatment immediately.' },
+      { title: 'Next 3 days', detail: 'Track symptom spread daily and remove heavily affected tissue.' },
+      { title: 'Next 7 days', detail: 'Reassess with fresh photos and consult an expert if symptoms persist.' },
+    ];
+  }
+
+  if (level === 'Moderate') {
+    return [
+      { title: 'Next 24 hours', detail: 'Start the selected treatment and optimize watering/airflow.' },
+      { title: 'Next 3 days', detail: 'Check lesion size and color changes once per day.' },
+      { title: 'Next 7 days', detail: 'Upload follow-up photos to confirm recovery trend.' },
+    ];
+  }
+
+  return [
+    { title: 'Next 24 hours', detail: 'Apply early-stage treatment and keep plant in stable conditions.' },
+    { title: 'Next 3 days', detail: 'Observe any new spots while maintaining routine care.' },
+    { title: 'Next 7 days', detail: 'Retake photos only if symptoms increase or spread.' },
+  ];
+}
+
 export default function ResultsScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
@@ -52,6 +107,10 @@ export default function ResultsScreen() {
     : confidenceStatus === 'MEDIUM' 
     ? 'Medium' 
     : 'Low';
+  const severityLevel = getSeverityLevel(topPrediction.prob);
+  const severityColor = getSeverityColor(severityLevel);
+  const lowConfidenceReasons = getLowConfidenceReasons(result.retake_message);
+  const actionTimeline = getActionTimeline(severityLevel);
 
   const handleTreatment = (treatmentType: 'scientific' | 'ayurvedic') => {
     router.push({
@@ -60,6 +119,8 @@ export default function ResultsScreen() {
         diseaseId: topPrediction.disease_id,
         diseaseName: topPrediction.disease_name,
         treatmentType,
+        confidenceStatus: confidenceStatus,
+        severityLevel,
       },
     });
   };
@@ -175,6 +236,17 @@ export default function ResultsScreen() {
           </View>
         </Card>
 
+        <Card style={styles.reasonCard}>
+          <Text style={styles.reasonTitle}>Likely Quality Issues</Text>
+          <View style={styles.reasonTags}>
+            {lowConfidenceReasons.map((reason) => (
+              <View key={reason} style={styles.reasonTag}>
+                <Text style={styles.reasonTagText}>{reason}</Text>
+              </View>
+            ))}
+          </View>
+        </Card>
+
         {result.retake_message && (
           <Card style={styles.technicalCard}>
             <Text style={styles.technicalTitle}>Technical Details:</Text>
@@ -227,6 +299,9 @@ export default function ResultsScreen() {
           onInfoPress={() => setShowConfidenceInfo(true)}
         />
         <Text style={styles.mainDisease}>{topPrediction.disease_name}</Text>
+        <View style={[styles.severityBadge, { backgroundColor: `${severityColor}22`, borderColor: severityColor }]}> 
+          <Text style={[styles.severityBadgeText, { color: severityColor }]}>Severity: {severityLevel}</Text>
+        </View>
         {result.symptoms_summary && (
           <Text style={styles.description}>{result.symptoms_summary}</Text>
         )}
@@ -268,6 +343,16 @@ export default function ResultsScreen() {
           </Text>
         </Card>
       )}
+
+      <Card style={styles.timelineCard}>
+        <Text style={styles.timelineTitle}>Action Plan Timeline</Text>
+        {actionTimeline.map((item) => (
+          <View key={item.title} style={styles.timelineRow}>
+            <Text style={styles.timelineHeading}>{item.title}</Text>
+            <Text style={styles.timelineDetail}>{item.detail}</Text>
+          </View>
+        ))}
+      </Card>
 
       <Card>
         <Text style={styles.treatmentTitle}>💊 Choose Treatment Approach:</Text>
@@ -329,6 +414,17 @@ const styles = StyleSheet.create({
     color: '#666',
     textAlign: 'center',
     lineHeight: 22,
+  },
+  severityBadge: {
+    marginTop: 8,
+    borderWidth: 1,
+    borderRadius: 999,
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+  },
+  severityBadgeText: {
+    fontSize: 12,
+    fontWeight: '700',
   },
   sectionTitle: {
     fontSize: 18,
@@ -405,6 +501,31 @@ const styles = StyleSheet.create({
     color: '#E65100',
     lineHeight: 20,
   },
+  timelineCard: {
+    backgroundColor: '#E8F5E9',
+    borderLeftWidth: 4,
+    borderLeftColor: '#4CAF50',
+  },
+  timelineTitle: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: '#1B5E20',
+    marginBottom: 10,
+  },
+  timelineRow: {
+    marginBottom: 10,
+  },
+  timelineHeading: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#2E7D32',
+    marginBottom: 2,
+  },
+  timelineDetail: {
+    fontSize: 14,
+    color: '#355E3B',
+    lineHeight: 20,
+  },
   treatmentTitle: {
     fontSize: 18,
     fontWeight: 'bold',
@@ -437,6 +558,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontStyle: 'italic',
   },
+  retakeButton: {
+    marginTop: 6,
+  },
   // Low confidence styles
   uncertainCard: {
     alignItems: 'center',
@@ -462,10 +586,6 @@ const styles = StyleSheet.create({
   },
   retakeTipsCard: {
     backgroundColor: '#E3F2FD',
-  },
-  retakeButton: {
-    marginTop: 8,
-    marginBottom: 16,
   },
   retakeTipsTitle: {
     fontSize: 18,
@@ -525,6 +645,31 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#555',
     lineHeight: 22,
+  },
+  reasonCard: {
+    backgroundColor: '#F1F8E9',
+  },
+  reasonTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#33691E',
+    marginBottom: 10,
+  },
+  reasonTags: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  reasonTag: {
+    backgroundColor: '#DCEDC8',
+    borderRadius: 999,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  reasonTagText: {
+    fontSize: 12,
+    color: '#33691E',
+    fontWeight: '600',
   },
   technicalCard: {
     backgroundColor: '#f5f5f5',

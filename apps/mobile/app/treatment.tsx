@@ -4,7 +4,6 @@ import { useLocalSearchParams } from 'expo-router';
 import Card from '../components/Card';
 import GlobalError from '../components/GlobalError';
 import LoadingSpinner from '../components/LoadingSpinner';
-import ConfidenceBadge from '../components/ConfidenceBadge';
 import { apiClient, getErrorMessage, TreatmentResponse } from '../utils/apiClient';
 
 export default function TreatmentScreen() {
@@ -13,7 +12,7 @@ export default function TreatmentScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const { diseaseId, diseaseName, treatmentType } = params;
+  const { diseaseId, diseaseName, treatmentType, confidenceStatus, severityLevel } = params;
 
   useEffect(() => {
     fetchTreatment();
@@ -25,7 +24,10 @@ export default function TreatmentScreen() {
       setError(null);
       
       const mode = treatmentType === 'scientific' ? 'SCIENTIFIC' : 'AYURVEDIC';
-      const data = await apiClient.getTreatment(diseaseId as string, mode);
+      const data = await apiClient.getTreatment(diseaseId as string, mode, {
+        confidenceStatus: confidenceStatus as 'HIGH' | 'MEDIUM' | 'LOW' | undefined,
+        severityLevel: severityLevel as 'Mild' | 'Moderate' | 'Severe' | undefined,
+      });
 
       setTreatment(data);
     } catch (err) {
@@ -52,6 +54,12 @@ export default function TreatmentScreen() {
   const treatmentIcon = treatmentType === 'scientific' ? '🔬' : '🌿';
   const treatmentLabel = treatmentType === 'scientific' ? 'Scientific' : 'Ayurvedic';
 
+  const milestones = [
+    { title: 'Next 24 hours', detail: 'Start with the first treatment step and optimize plant environment.' },
+    { title: 'Next 3 days', detail: 'Track visible symptom changes and continue dosage schedule.' },
+    { title: 'Next 7 days', detail: 'Assess recovery trend and escalate to an expert if no improvement.' },
+  ];
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Card style={styles.headerCard}>
@@ -60,6 +68,16 @@ export default function TreatmentScreen() {
         <View style={styles.typeBadge}>
           <Text style={styles.typeBadgeText}>{treatmentLabel} Treatment</Text>
         </View>
+      </Card>
+
+      <Card style={styles.timelineCard}>
+        <Text style={styles.timelineTitle}>Recommended Timeline</Text>
+        {milestones.map((item) => (
+          <View key={item.title} style={styles.timelineItem}>
+            <Text style={styles.timelineItemTitle}>{item.title}</Text>
+            <Text style={styles.timelineItemText}>{item.detail}</Text>
+          </View>
+        ))}
       </Card>
 
       <Card>
@@ -173,6 +191,31 @@ const styles = StyleSheet.create({
   headerCard: {
     alignItems: 'center',
     paddingVertical: 20,
+  },
+  timelineCard: {
+    backgroundColor: '#E8F5E9',
+    borderLeftWidth: 4,
+    borderLeftColor: '#4CAF50',
+  },
+  timelineTitle: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: '#1B5E20',
+    marginBottom: 8,
+  },
+  timelineItem: {
+    marginBottom: 10,
+  },
+  timelineItemTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#2E7D32',
+    marginBottom: 3,
+  },
+  timelineItemText: {
+    fontSize: 14,
+    color: '#355E3B',
+    lineHeight: 20,
   },
   treatmentIcon: {
     fontSize: 48,

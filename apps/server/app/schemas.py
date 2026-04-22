@@ -49,6 +49,8 @@ class Citation(BaseModel):
 class TreatmentRequest(BaseModel):
     disease_id: str
     mode: Literal["SCIENTIFIC", "AYURVEDIC"]
+    confidence_status: Optional[Literal["HIGH", "MEDIUM", "LOW"]] = None
+    severity_level: Optional[Literal["Mild", "Moderate", "Severe"]] = None
 
 
 class TreatmentResponse(BaseModel):
@@ -97,7 +99,7 @@ class SensorReadingCreate(BaseModel):
     deviceId: str = Field(..., description="Unique device identifier")
     temperature: float = Field(..., description="Temperature in Celsius")
     humidity: float = Field(..., ge=0, le=100, description="Humidity percentage")
-    soilMoisture: Optional[float] = Field(None, ge=0, le=100, description="Soil moisture percentage (None if sensor not connected)")
+    soilMoisture: float = Field(..., ge=0, le=100, description="Soil moisture percentage")
 
 
 class SensorReadingResponse(BaseModel):

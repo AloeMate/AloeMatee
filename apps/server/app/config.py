@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings
+from pydantic import field_validator
 from typing import Optional
 
 
@@ -7,6 +8,15 @@ class Settings(BaseSettings):
     APP_NAME: str = "AloeVeraMate API"
     APP_VERSION: str = "1.0.0"
     DEBUG: bool = True
+
+    @field_validator('DEBUG', mode='before')
+    @classmethod
+    def parse_debug(cls, v):
+        if isinstance(v, bool):
+            return v
+        if isinstance(v, str):
+            return v.lower() in ('true', '1', 'yes', 'on')
+        return bool(v)
     
     # Server
     HOST: str = "0.0.0.0"
@@ -37,10 +47,6 @@ class Settings(BaseSettings):
     RAG_COLLECTION: str = "aloe_treatment_knowledge"
     RAG_TOP_K: int = 4                            # chunks to retrieve per query
     
-    # OpenWeather API (used by Harvest Yield Prediction)
-    OPENWEATHER_API_KEY: Optional[str] = None
-    OPENWEATHER_BASE_URL: str = "https://api.openweathermap.org"
-
     # MongoDB
     MONGODB_URI: Optional[str] = None
     

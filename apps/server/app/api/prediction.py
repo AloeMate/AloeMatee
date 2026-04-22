@@ -33,6 +33,76 @@ UPLOAD_DIR = Path("uploads")
 UPLOAD_DIR.mkdir(exist_ok=True)
 
 
+def _tailor_treatment_response(treatment: TreatmentResponse, request: TreatmentRequest) -> TreatmentResponse:
+    """
+    Safely tailor curated guidance using metadata from prediction confidence/severity.
+
+    This does NOT generate new treatment content. It only adds contextual urgency and
+    follow-up guardrails to the existing curated response.
+    """
+    severity = request.severity_level
+    confidence = request.confidence_status
+
+    if not severity and not confidence:
+        return treatment
+
+    steps = list(treatment.steps)
+    safety_warnings = list(treatment.safety_warnings)
+    consult_points = list(treatment.when_to_consult_expert)
+
+    if severity == "Severe":
+        steps.insert(
+            0,
+            {
+                "title": "Priority Action (within 24 hours)",
+                "details": "Treat this as urgent. Isolate the plant immediately, begin the first treatment step today, and monitor spread daily.",
+            },
+        )
+        safety_warnings.insert(
+            0,
+            "High-severity presentation: avoid treatment delays; disease progression may accelerate if left unmanaged.",
+        )
+    elif severity == "Moderate":
+        steps.insert(
+            0,
+            {
+                "title": "Early Action (today)",
+                "details": "Start treatment as soon as possible and review environmental stressors like watering, airflow, and humidity.",
+            },
+        )
+    elif severity == "Mild":
+        steps.insert(
+            0,
+            {
+                "title": "Stabilize and Observe",
+                "details": "Begin treatment early and document symptom changes to confirm improvement over 3-7 days.",
+            },
+        )
+
+    if confidence == "LOW":
+        consult_points.insert(
+            0,
+            "Prediction confidence is low: retake high-quality photos and seek expert confirmation before major interventions.",
+        )
+        safety_warnings.append(
+            "Low-confidence diagnosis: avoid combining multiple aggressive treatments until diagnosis is confirmed.",
+        )
+    elif confidence == "MEDIUM":
+        consult_points.append(
+            "If no visible improvement after 3-5 days, consult a plant disease specialist for confirmation.",
+        )
+
+    return TreatmentResponse(
+        disease_id=treatment.disease_id,
+        mode=treatment.mode,
+        steps=steps,
+        dosage_frequency=treatment.dosage_frequency,
+        safety_warnings=safety_warnings,
+        when_to_consult_expert=consult_points,
+        citations=treatment.citations,
+    )
+
+
 @router.post("/predict", response_model=PredictResponse)
 async def predict_disease(
     request: Request,
@@ -334,7 +404,7 @@ async def get_treatment(request: TreatmentRequest):
             }
         )
     
-    return treatment
+    return _tailor_treatment_response(treatment, request)
 
 
 @router.get("/model_info")

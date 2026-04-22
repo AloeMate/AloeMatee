@@ -53,7 +53,7 @@ module.exports = {
       typedRoutes: true
     },
     extra: {
-      apiUrl: process.env.EXPO_PUBLIC_API_URL || 'http://192.168.8.194:8000'
+      apiUrl: process.env.EXPO_PUBLIC_API_URL
     }
   }
 };

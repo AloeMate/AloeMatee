@@ -3,7 +3,30 @@ import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 
 // API Configuration
-const API_BASE_URL = Constants.expoConfig?.extra?.apiUrl || 'http://192.168.8.194:8000';
+const FALLBACK_WEB_URL = 'http://localhost:8000';
+const FALLBACK_NATIVE_URL = 'http://172.28.21.108:8000';
+
+function resolveApiBaseUrl(): string {
+  const envUrl = process.env.EXPO_PUBLIC_API_URL;
+  if (envUrl) return envUrl;
+
+  const extraApiUrl = (Constants.expoConfig as any)?.extra?.apiUrl;
+  if (extraApiUrl) return extraApiUrl;
+
+  const hostUri: string | undefined =
+    (Constants.expoConfig as any)?.hostUri ??
+    (Constants.manifest2 as any)?.extra?.expoClient?.hostUri ??
+    (Constants as any).manifest?.debuggerHost;
+
+  if (hostUri) {
+    const host = hostUri.split(':')[0];
+    return `http://${host}:8000`;
+  }
+
+  return Platform.OS === 'web' ? FALLBACK_WEB_URL : FALLBACK_NATIVE_URL;
+}
+
+const API_BASE_URL = resolveApiBaseUrl();
 const DEFAULT_TIMEOUT = 30000; // 30 seconds
 const RETRY_DELAY = 1000; // 1 second
 
@@ -58,6 +81,11 @@ export interface TreatmentResponse {
   safety_warnings: string[];
   when_to_consult_expert: string[];
   citations: Citation[];
+}
+
+export interface TreatmentRequestContext {
+  confidenceStatus?: 'HIGH' | 'MEDIUM' | 'LOW';
+  severityLevel?: 'Mild' | 'Moderate' | 'Severe';
 }
 
 export interface HealthResponse {
@@ -226,7 +254,8 @@ export const apiClient = {
    */
   async getTreatment(
     diseaseId: string,
-    mode: 'SCIENTIFIC' | 'AYURVEDIC'
+    mode: 'SCIENTIFIC' | 'AYURVEDIC',
+    context?: TreatmentRequestContext
   ): Promise<TreatmentResponse> {
     return apiCall<TreatmentResponse>({
       method: 'POST',
@@ -234,6 +263,8 @@ export const apiClient = {
       data: {
         disease_id: diseaseId,
         mode: mode,
+        confidence_status: context?.confidenceStatus,
+        severity_level: context?.severityLevel,
       },
       headers: {
         'Content-Type': 'application/json',

@@ -11,7 +11,7 @@ import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import Button from '../../components/Button';
 
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://192.168.8.194:8000';
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://172.28.21.108:8000';
 const DEVICE_ID = 'DEV001';
 
 export default function MonitorDashboardScreen() {

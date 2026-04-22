@@ -58,6 +58,17 @@ export default function HomeScreen() {
             <Text style={styles.moduleDescription}>
               Diagnose plant diseases using AI-powered image analysis and get personalized treatment plans.
             </Text>
+            <View style={styles.moduleMetaRow}>
+              <View style={styles.moduleMetaPill}>
+                <Text style={styles.moduleMetaText}>3 photos</Text>
+              </View>
+              <View style={styles.moduleMetaPill}>
+                <Text style={styles.moduleMetaText}>~2 min</Text>
+              </View>
+              <View style={styles.moduleMetaPill}>
+                <Text style={styles.moduleMetaText}>AI confidence</Text>
+              </View>
+            </View>
             <Button
               title="Open"
               onPress={() => router.push('/capture-guide')}
@@ -280,7 +291,26 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#546E7A',
     lineHeight: 20,
+    marginBottom: 12,
+  },
+  moduleMetaRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
     marginBottom: 16,
+  },
+  moduleMetaPill: {
+    backgroundColor: '#F1F8E9',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: '#C5E1A5',
+  },
+  moduleMetaText: {
+    fontSize: 11,
+    color: '#33691E',
+    fontWeight: '700',
   },
   moduleButton: {
     marginVertical: 0,
