@@ -43,8 +43,10 @@ class DiseasePredictor:
         """
         Detect if the image might not be an aloe vera plant
         
-        Strategy: If predictions are evenly distributed across multiple classes,
-        the model is confused, which often indicates non-aloe vera input
+        Strategy: Multiple checks:
+        1. If probabilities are evenly distributed, model is confused
+        2. If "healthy" has very high confidence (>0.85), might be non-aloe plant
+        3. If all predictions are low (<0.5), model is very uncertain
         
         Args:
             predictions: List of disease predictions with probabilities
@@ -57,36 +59,45 @@ class DiseasePredictor:
         
         # Get top predictions (sorted by probability)
         sorted_preds = sorted(predictions, key=lambda x: x.prob, reverse=True)
-        top_prob = sorted_preds[0].prob
+        top_pred = sorted_preds[0]
+        top_prob = top_pred.prob
         
-        # Check if probabilities are evenly distributed (model is confused)
+        # Check 1: If "healthy" has suspiciously high confidence (>0.85), 
+        # it might be a non-aloe plant the model thinks is healthy
+        if top_pred.disease_id == "healthy" and top_prob > 0.85:
+            return False, (
+                "⚠️ This doesn't appear to be an aloe vera plant!\n\n"
+                "The model detected a healthy plant but with unusual patterns.\n"
+                "This app is designed specifically for aloe vera plants.\n\n"
+                "Please ensure you're photographing an ALOE VERA plant."
+            )
+        
+        # Check 2: If probabilities are evenly distributed (model is confused)
         if len(sorted_preds) >= 3:
             second_prob = sorted_preds[1].prob
             third_prob = sorted_preds[2].prob
             
-            # If top 3 predictions are within 20% of each other, model is very uncertain
+            # If top 3 predictions are within 15% of each other, model is uncertain
             prob_range = top_prob - third_prob
-            if prob_range < 0.20 and top_prob < 0.50:
+            if prob_range < 0.15 and top_prob < 0.55:
                 return False, (
                     "⚠️ WARNING: This doesn't appear to be an aloe vera plant!\n\n"
                     "The AI model is trained specifically for aloe vera diseases and cannot "
-                    "identify other plants (like mango, tomato, etc.).\n\n"
-                    "Please ensure you're photographing an ALOE VERA plant. "
+                    "reliably identify other plants (like mango, banana, tomato, etc.).\n\n"
                     "The model detected very similar probabilities across multiple disease classes, "
-                    "which typically means the input is not an aloe vera plant."
+                    "which typically means the input is not an aloe vera plant.\n\n"
+                    "Please ensure you're photographing an ALOE VERA plant."
                 )
         
-        # Additional check: If highest confidence is still very low with distributed predictions
-        if top_prob < 0.35 and len(sorted_preds) >= 2:
-            second_prob = sorted_preds[1].prob
-            if abs(top_prob - second_prob) < 0.10:  # Very close probabilities
-                return False, (
-                    "⚠️ The image doesn't match aloe vera disease patterns.\n\n"
-                    "This app is designed specifically for aloe vera plants. "
-                    "If you're trying to identify diseases in other plants (mango, banana, etc.), "
-                    "please use a different plant disease detection app.\n\n"
-                    "If this IS an aloe vera plant, try taking clearer photos with better lighting."
-                )
+        # Check 3: If all predictions are very low (<0.35), model is very uncertain
+        if top_prob < 0.35:
+            return False, (
+                "⚠️ The image doesn't match aloe vera disease patterns.\n\n"
+                "This app is designed specifically for aloe vera plants. "
+                "If you're trying to identify diseases in other plants (mango, banana, etc.), "
+                "please use a different plant disease detection app.\n\n"
+                "If this IS an aloe vera plant, try taking clearer photos with better lighting and focus."
+            )
         
         return True, None
     
@@ -103,11 +114,22 @@ class DiseasePredictor:
         Returns:
             Tuple of (confidence_status, recommended_next_step, retake_message)
         """
-        # TEMPORARILY DISABLED: Skip aloe vera check to debug confidence issues
         # First check if this might not be an aloe vera plant
-        # is_aloe_vera, warning_msg = self._check_if_aloe_vera(predictions)
-        # if not is_aloe_vera:
-        #     return "LOW", "RETAKE", warning_msg
+        is_aloe_vera, warning_msg = self._check_if_aloe_vera(predictions)
+        if not is_aloe_vera:
+            return "LOW", "RETAKE", warning_msg
+        
+        # Check for suspiciously high confidence (over-confident predictions)
+        # If confidence is >0.95, it's likely the model is overfitting or the input is wrong
+        if max_prob > 0.95:
+            logger.warning(f"Over-confident prediction detected: {max_prob:.4f}. This may indicate wrong input.")
+            return "MEDIUM", "RETAKE", (
+                "⚠️ The model is unusually confident. Please verify:\n\n"
+                "✓ You're photographing an actual aloe vera plant\n"
+                "✓ The affected area is clearly visible\n"
+                "✓ Lighting is good\n\n"
+                "Try retaking photos with different angles or lighting."
+            )
         
         # Get thresholds from model info
         model_info = self.inference_service.get_model_info()

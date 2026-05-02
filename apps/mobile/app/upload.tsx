@@ -34,6 +34,17 @@ export default function UploadScreen() {
       setCurrentStep('Preparing images...');
       setUploadProgress(0.1);
 
+      // Check server connectivity first
+      setCurrentStep('Checking server connection...');
+      console.log('[Upload] Verifying server connectivity...');
+      try {
+        await apiClient.healthCheck();
+        console.log('[Upload] Server is reachable ✓');
+      } catch (healthErr) {
+        console.error('[Upload] Server connectivity check failed:', healthErr);
+        throw new Error(`Server not responding. Check that backend is running and network is connected.`);
+      }
+
       await new Promise(resolve => setTimeout(resolve, 300));
 
       setCurrentStep('Uploading to server...');

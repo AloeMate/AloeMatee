@@ -1,9 +1,19 @@
 import Constants from 'expo-constants';
 
+const getWebApiBaseUrl = () => {
+  if (typeof window !== 'undefined' && window.location?.hostname) {
+    return `${window.location.protocol}//${window.location.hostname}:8000`;
+  }
+
+  return undefined;
+};
+
 // API Configuration
-export const API_BASE_URL = Constants.expoConfig?.extra?.apiUrl || 
-  process.env.EXPO_PUBLIC_API_URL || 
-  'http://192.168.8.194:8000';
+export const API_BASE_URL =
+  getWebApiBaseUrl() ||
+  Constants.expoConfig?.extra?.apiUrl ||
+  process.env.EXPO_PUBLIC_API_URL ||
+  'http://127.0.0.1:8000';
 
 // API Endpoints
 export const API_ENDPOINTS = {

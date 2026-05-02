@@ -2,9 +2,29 @@ import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import Constants from 'expo-constants';
 
 // API Configuration
-const API_BASE_URL = Constants.expoConfig?.extra?.apiUrl || 'http://192.168.8.194:8000';
+const getWebApiBaseUrl = () => {
+  if (typeof window !== 'undefined' && window.location?.hostname) {
+    return `${window.location.protocol}//${window.location.hostname}:8000`;
+  }
+
+  return undefined;
+};
+
+const API_BASE_URL =
+  getWebApiBaseUrl() ||
+  Constants.expoConfig?.extra?.apiUrl ||
+  process.env.EXPO_PUBLIC_API_URL ||
+  'http://127.0.0.1:8000';
 const DEFAULT_TIMEOUT = 30000; // 30 seconds
 const RETRY_DELAY = 1000; // 1 second
+const IS_WEB = typeof window !== 'undefined' && typeof document !== 'undefined';
+
+// Log API configuration on startup for debugging
+console.log('[API] Configuration loaded:', {
+  baseUrl: API_BASE_URL,
+  publicApiUrl: process.env.EXPO_PUBLIC_API_URL,
+  isWeb: IS_WEB,
+});
 
 // Typed API responses
 export interface DiseasePrediction {
@@ -115,22 +135,63 @@ async function apiCall<T>(
 
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
-      const response = await axios({
-        ...config,
-        timeout: config.timeout || DEFAULT_TIMEOUT,
-        baseURL: API_BASE_URL,
-      });
+      const url = config.url || config.baseURL || '';
+      console.log(`[API] Attempt ${attempt + 1}/${retries + 1}: ${config.method?.toUpperCase()} ${API_BASE_URL}${url}`);
+      
+      // Special handling for FormData on React Native
+      let finalConfig = { ...config };
+      if (!IS_WEB && config.data instanceof FormData) {
+        // Don't use baseURL with FormData, use full URL instead
+        console.log('[API] Using full URL for FormData request (React Native)');
+        finalConfig = {
+          ...config,
+          url: API_BASE_URL + (config.url || ''),
+          baseURL: undefined,
+        };
+      } else {
+        finalConfig = {
+          ...config,
+          timeout: config.timeout || DEFAULT_TIMEOUT,
+          baseURL: API_BASE_URL,
+        };
+      }
+      
+      const response = await axios(finalConfig);
+      
+      console.log(`[API] Success: ${response.status} ${url}`);
       return response.data;
     } catch (error) {
       lastError = error as Error;
       
       const axiosError = error as AxiosError;
       
+      console.error(`[API] Error on attempt ${attempt + 1}:`, {
+        status: axiosError.response?.status,
+        statusText: axiosError.response?.statusText,
+        message: axiosError.message,
+        code: axiosError.code,
+        url: config.url,
+        baseURL: API_BASE_URL,
+      });
+      
       // Don't retry client errors (4xx)
       if (axiosError.response && axiosError.response.status >= 400 && axiosError.response.status < 500) {
         const errorData = axiosError.response.data as any;
+        const detail = errorData?.detail;
+        let message = 'Invalid request';
+
+        if (typeof detail === 'string') {
+          message = detail;
+        } else if (Array.isArray(detail)) {
+          message = detail
+            .map((item: any) => item?.msg || item?.message || JSON.stringify(item))
+            .join('; ');
+        } else if (detail && typeof detail === 'object' && typeof detail.message === 'string') {
+          message = detail.message;
+        }
+
         throw new ApiError(
-          errorData?.detail || 'Invalid request',
+          message,
           axiosError.response.status,
           error
         );
@@ -138,6 +199,7 @@ async function apiCall<T>(
       
       // Retry on network errors or 5xx errors
       if (attempt < retries) {
+        console.log(`[API] Retrying in ${RETRY_DELAY}ms...`);
         await sleep(RETRY_DELAY);
         continue;
       }
@@ -145,8 +207,14 @@ async function apiCall<T>(
   }
 
   // All retries failed
+  const errorMsg = lastError instanceof AxiosError && lastError.code === 'ECONNABORTED' 
+    ? `Connection timeout. Server at ${API_BASE_URL} not responding.`
+    : 'Network error. Please check your connection and try again.';
+    
+  console.error(`[API] Final error after ${retries + 1} attempts:`, lastError);
+  
   throw new ApiError(
-    'Network error. Please check your connection and try again.',
+    errorMsg,
     undefined,
     lastError
   );
@@ -168,31 +236,108 @@ export const apiClient = {
    * Predict disease from images
    */
   async predictDisease(imageUris: string[]): Promise<PredictResponse> {
+    console.log(`[API] Starting disease prediction with ${imageUris.length} images`);
+    
+    // Use fetch API directly for file uploads (better React Native support)
+    if (!IS_WEB && imageUris.length > 0) {
+      return this.predictDiseaseNative(imageUris);
+    }
+    
+    // Web fallback: use axios with FormData
     const formData = new FormData();
     
     const imageFields = ['image1', 'image2', 'image3'];
     for (let i = 0; i < imageUris.length && i < 3; i++) {
       const uri = imageUris[i];
-      const fileName = uri.split('/').pop() || `photo_${i + 1}.jpg`;
-      const fileType = `image/${fileName.split('.').pop() || 'jpg'}`;
+      const fileName = `photo_${i + 1}.jpg`;
 
-      // Expo FormData format
+      const response = await fetch(uri);
+      const blob = await response.blob();
+      const file = new File([blob], fileName, {
+        type: blob.type || 'image/jpeg',
+      });
+      formData.append(imageFields[i], file);
+    }
+
+    console.log(`[API] FormData prepared with ${imageUris.length} images`);
+    
+    return apiCall<PredictResponse>(
+      {
+        method: 'POST',
+        url: '/api/v1/predict',
+        data: formData,
+        timeout: 120000,
+      },
+      3
+    );
+  },
+
+  /**
+   * Native file upload using fetch API (React Native specific)
+   */
+  async predictDiseaseNative(imageUris: string[]): Promise<PredictResponse> {
+    const formData = new FormData();
+    
+    const imageFields = ['image1', 'image2', 'image3'];
+    for (let i = 0; i < imageUris.length && i < 3; i++) {
+      const uri = imageUris[i];
+      const fileName = `photo_${i + 1}.jpg`;
+
+      console.log(`[API] Adding image ${i + 1}: ${uri}`);
+
+      // React Native FormData with file object
       formData.append(imageFields[i], {
         uri,
-        type: fileType,
+        type: 'image/jpeg',
         name: fileName,
       } as any);
     }
 
-    return apiCall<PredictResponse>({
-      method: 'POST',
-      url: '/api/v1/predict',
-      data: formData,
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-      timeout: 60000, // 60 seconds for image upload
-    });
+    console.log(`[API] Native FormData prepared with ${imageUris.length} images`);
+    console.log(`[API] Uploading to: ${API_BASE_URL}/api/v1/predict`);
+
+    for (let attempt = 0; attempt <= 3; attempt++) {
+      try {
+        console.log(`[API] Native Attempt ${attempt + 1}/4: POST ${API_BASE_URL}/api/v1/predict`);
+        
+        const response = await fetch(`${API_BASE_URL}/api/v1/predict`, {
+          method: 'POST',
+          body: formData,
+          timeout: 120000,
+        });
+
+        console.log(`[API] Native response status: ${response.status}`);
+
+        if (!response.ok) {
+          const errorData = await response.text();
+          console.error(`[API] Native error response:`, errorData);
+          throw new ApiError(
+            `Upload failed with status ${response.status}`,
+            response.status
+          );
+        }
+
+        const result = await response.json();
+        console.log(`[API] Native upload success`);
+        return result;
+      } catch (error) {
+        console.error(`[API] Native error on attempt ${attempt + 1}:`, {
+          message: error instanceof Error ? error.message : String(error),
+          code: (error as any).code,
+        });
+
+        if (attempt < 3) {
+          console.log(`[API] Retrying in 1000ms...`);
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          continue;
+        }
+      }
+    }
+
+    throw new ApiError(
+      'Network error uploading images. Please check your connection and try again.',
+      undefined
+    );
   },
 
   /**
@@ -255,9 +400,6 @@ export const apiClient = {
       method: 'POST',
       url: '/api/v4/harvest/detect_card',
       data: formData,
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
       timeout: 45000, // 45 seconds for image processing
     });
   },
@@ -309,9 +451,6 @@ export const apiClient = {
       method: 'POST',
       url: '/api/v4/harvest/measure_length',
       data: formData,
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
       timeout: 45000, // 45 seconds for image processing
     });
   },
