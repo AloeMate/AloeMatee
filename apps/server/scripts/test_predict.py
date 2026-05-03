@@ -24,11 +24,9 @@ HEALTH_ENDPOINT = f"{API_URL}/health"
 MODEL_INFO_ENDPOINT = f"{API_URL}/api/v1/model_info"
 
 # Default test images
-DATASET_ROOT = Path(__file__).parent.parent.parent.parent / "dataset" / "Aloe Vera Leaf Disease Detection Dataset"
+DATASET_ROOT = Path(__file__).parent.parent.parent.parent
 DEFAULT_IMAGES = [
-    DATASET_ROOT / "Healthy" / "processed_img_Healthy111.jpeg",
-    DATASET_ROOT / "Healthy" / "processed_img_Healthy112.jpeg",
-    DATASET_ROOT / "Healthy" / "processed_img_Healthy113.jpeg",
+    DATASET_ROOT / "Logo_aloeMate.jpeg",
 ]
 
 

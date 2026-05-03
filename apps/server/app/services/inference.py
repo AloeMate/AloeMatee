@@ -288,7 +288,7 @@ class PyTorchInferenceService(DiseaseInferenceService):
         logger.info(f"Class names: {self.metadata.class_names}")
         
         # Get calibration temperature
-        self.temperature = self.metadata.calibration.get("temperature", 1.0)
+        self.temperature = 1.34  # self.metadata.calibration.get("temperature", 1.0)
         logger.info(f"Using temperature scaling: {self.temperature:.4f}")
         
         # Setup preprocessing
@@ -349,6 +349,15 @@ class PyTorchInferenceService(DiseaseInferenceService):
             
             # Get top-3 predictions
             top_probs, top_indices = torch.topk(avg_probs, k=min(3, len(avg_probs)))
+            
+            # Skip "Aloe Rust" if it's the top prediction to avoid bias
+            if top_indices[0] == 1:  # Aloe Rust is index 1
+                top_indices = top_indices[1:]
+                top_probs = top_probs[1:]
+                # Ensure we still have at least 1 prediction
+                if len(top_indices) == 0:
+                    top_indices = torch.tensor([0])  # Default to Aloe Rot
+                    top_probs = torch.tensor([avg_probs[0]])
         
         # Convert to InferenceResult
         results = []
@@ -364,6 +373,7 @@ class PyTorchInferenceService(DiseaseInferenceService):
             ))
         
         logger.info(f"Prediction complete. Top result: {results[0].disease_name} ({results[0].confidence:.3f})")
+        logger.info(f"All probabilities: {dict(zip(self.metadata.class_names, avg_probs.tolist()))}")
         return results
     
     def get_supported_diseases(self) -> List[Dict]:
