@@ -114,15 +114,15 @@ export default function HomeScreen() {
           <Card style={styles.moduleCard}>
             <View style={styles.moduleHeader}>
               <View style={styles.moduleIcon}>
-                <Text style={styles.moduleIconText}>📊</Text>
+                <Text style={styles.moduleIconText}>🌱</Text>
               </View>
               <View style={styles.moduleBadge}>
                 <Text style={styles.moduleBadgeText}>Market</Text>
               </View>
             </View>
-            <Text style={styles.moduleTitle}>Harvest & Market Insights</Text>
+            <Text style={styles.moduleTitle}>Harvest Date Predictor</Text>
             <Text style={styles.moduleDescription}>
-              Track harvest readiness and get real-time market price recommendations.
+              Predict crop maturity and suggest the optimal harvest date
             </Text>
             <Button
               title="Open"
