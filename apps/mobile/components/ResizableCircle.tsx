@@ -197,7 +197,7 @@ export default function ResizableCircle({ onROIChange, containRect }: Props) {
             {
               borderRadius:  radius,
               borderWidth:   2.5,
-              borderColor:   '#4CAF50',
+              borderColor:   '#030202',
               borderStyle:   'dashed',
             },
           ]}
@@ -248,14 +248,14 @@ const styles = StyleSheet.create({
     position:        'absolute',
     width:           2,
     height:          26,
-    backgroundColor: 'rgba(76,175,80,0.9)',
+    backgroundColor: '#030202',
     borderRadius:    1,
   },
   crossH: {
     position:        'absolute',
     width:           26,
     height:          2,
-    backgroundColor: 'rgba(76,175,80,0.9)',
+    backgroundColor: '#030202',
     borderRadius:    1,
   },
   resizeHandle: {
