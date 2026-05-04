@@ -37,7 +37,7 @@ export default function HomeScreen() {
 
         <TouchableOpacity
           style={styles.startButton}
-          onPress={() => router.push('/camera')}
+          onPress={() => router.push('/maturity/camera')}
           activeOpacity={0.85}
         >
           <Text style={styles.startButtonText}>Start Scan</Text>
