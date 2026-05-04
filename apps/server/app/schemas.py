@@ -55,6 +55,7 @@ class Citation(BaseModel):
 class TreatmentRequest(BaseModel):
     disease_id: str
     mode: Literal["SCIENTIFIC", "AYURVEDIC"]
+    query: Optional[str] = None
 
 
 class TreatmentResponse(BaseModel):

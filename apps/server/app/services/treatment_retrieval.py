@@ -8,8 +8,10 @@ expert consultation guidance, and citations.
 import json
 from pathlib import Path
 from typing import Optional, Dict, List
+import re
 
 from app.schemas import TreatmentResponse, TreatmentStep, Citation
+from app.config import settings
 
 
 class TreatmentRetriever:
@@ -19,6 +21,168 @@ class TreatmentRetriever:
         self.scientific_dir = self.knowledge_dir / "scientific"
         self.ayurvedic_dir = self.knowledge_dir / "ayurvedic"
         self.knowledge_cache = {}
+        self.rag_index: Dict[str, List[Dict]] = {"scientific": [], "ayurvedic": []}
+        self.rag_index_built = False
+
+    def _tokenize(self, text: str) -> List[str]:
+        """Simple tokenizer for lightweight in-memory retrieval."""
+        if not text:
+            return []
+        return [token for token in re.findall(r"[a-z0-9_]+", text.lower()) if len(token) > 1]
+
+    def _compose_document_text(self, knowledge: Dict) -> str:
+        """Create searchable text from curated treatment fields."""
+        parts: List[str] = [
+            knowledge.get("disease_id", ""),
+            knowledge.get("disease_name", ""),
+            knowledge.get("category", ""),
+            knowledge.get("dosage_frequency", ""),
+            knowledge.get("evidence_level", ""),
+        ]
+
+        for step in knowledge.get("treatment_steps", []):
+            parts.append(step.get("title", ""))
+            parts.append(step.get("description", ""))
+
+        parts.extend(knowledge.get("safety_warnings", []))
+        parts.extend(knowledge.get("when_to_consult_expert", []))
+
+        for citation in knowledge.get("citations", []):
+            parts.append(citation.get("title", ""))
+            parts.append(citation.get("key_findings", ""))
+
+        return " ".join(parts)
+
+    def _build_rag_index(self):
+        """Build in-memory retrieval index from curated JSON files."""
+        if self.rag_index_built:
+            return
+
+        for mode in ["scientific", "ayurvedic"]:
+            mode_dir = self.scientific_dir if mode == "scientific" else self.ayurvedic_dir
+            documents: List[Dict] = []
+
+            if not mode_dir.exists():
+                self.rag_index[mode] = documents
+                continue
+
+            for knowledge_file in mode_dir.glob("*.json"):
+                try:
+                    with open(knowledge_file, "r", encoding="utf-8") as f:
+                        knowledge = json.load(f)
+
+                    if not self._validate_safety_fields(knowledge):
+                        continue
+
+                    doc_text = self._compose_document_text(knowledge)
+                    documents.append(
+                        {
+                            "mode": mode,
+                            "file": str(knowledge_file),
+                            "knowledge": knowledge,
+                            "tokens": set(self._tokenize(doc_text)),
+                            "category": knowledge.get("category", ""),
+                            "disease_id": knowledge.get("disease_id", ""),
+                            "disease_name": knowledge.get("disease_name", ""),
+                        }
+                    )
+                except Exception:
+                    # Skip malformed files; API will fail safely if nothing is retrievable
+                    continue
+
+            self.rag_index[mode] = documents
+
+        self.rag_index_built = True
+
+    def _retrieve_knowledge_with_rag(
+        self,
+        disease_id: str,
+        mode: str,
+        query: Optional[str] = None,
+    ) -> Optional[Dict]:
+        """Retrieve best matching curated knowledge using lightweight RAG scoring."""
+        self._build_rag_index()
+
+        mode_key = mode.lower()
+        candidates = self.rag_index.get(mode_key, [])
+        if not candidates:
+            return None
+
+        mapped_category = self._map_disease_to_category(disease_id)
+        query_text = f"{disease_id} {query or ''}".strip()
+        query_tokens = set(self._tokenize(query_text))
+
+        if not query_tokens:
+            query_tokens = {disease_id.lower()}
+
+        scored: List[tuple[float, Dict]] = []
+        for doc in candidates:
+            score = 0.0
+
+            # Strong exact-id signal
+            if doc["disease_id"] == disease_id:
+                score += 8.0
+
+            # Category routing prior (preserves domain logic)
+            if mapped_category and doc["category"] == mapped_category:
+                score += 4.0
+
+            # Token overlap signal
+            overlap = len(query_tokens & doc["tokens"])
+            if overlap:
+                score += overlap * 1.25
+
+            # Weak lexical name match
+            disease_id_lex = disease_id.replace("_", " ").lower()
+            if disease_id_lex and disease_id_lex in str(doc["disease_name"]).lower():
+                score += 1.0
+
+            scored.append((score, doc))
+
+        scored.sort(key=lambda item: item[0], reverse=True)
+        best_score, best_doc = scored[0]
+
+        # Require at least one meaningful retrieval signal.
+        if best_score <= 0:
+            return None
+
+        return best_doc["knowledge"]
+
+    def _build_treatment_response(self, disease_id: str, mode: str, knowledge: Dict) -> TreatmentResponse:
+        """Build TreatmentResponse from a validated curated knowledge document."""
+        steps = []
+        for step_data in knowledge.get("treatment_steps", []):
+            steps.append(
+                TreatmentStep(
+                    title=f"{step_data.get('step_number', '')}. {step_data.get('title', '')}",
+                    details=step_data.get('description', ''),
+                    duration=step_data.get('duration'),
+                    frequency=None  # Not used in new structure
+                )
+            )
+
+        citations = []
+        for cite_data in knowledge.get("citations", []):
+            authors_str = ", ".join(cite_data.get("authors", []))
+            snippet = f"{cite_data.get('key_findings', '')} (Authors: {authors_str})"
+
+            citations.append(
+                Citation(
+                    title=cite_data.get("title", ""),
+                    source=f"{cite_data.get('source', '')} ({cite_data.get('year', 'N/A')})",
+                    snippet=snippet
+                )
+            )
+
+        return TreatmentResponse(
+            disease_id=knowledge.get("disease_id", disease_id),
+            mode=mode,
+            steps=steps,
+            dosage_frequency=knowledge.get("dosage_frequency", ""),
+            safety_warnings=knowledge.get("safety_warnings", []),
+            when_to_consult_expert=knowledge.get("when_to_consult_expert", []),
+            citations=citations
+        )
     
     def _load_curated_knowledge(self, category: str, mode: str) -> Optional[Dict]:
         """
@@ -131,55 +295,26 @@ class TreatmentRetriever:
         SAFETY: This function will NEVER generate treatment steps.
         It ONLY retrieves from pre-validated, expert-reviewed sources.
         """
-        # Map disease to knowledge category
+        # RAG path (enabled by default via config) retrieves best curated context.
+        if settings.RAG_ENABLED:
+            rag_knowledge = self._retrieve_knowledge_with_rag(
+                disease_id=disease_id,
+                mode=mode,
+                query=query,
+            )
+            if rag_knowledge:
+                return self._build_treatment_response(disease_id, mode, rag_knowledge)
+
+        # Deterministic fallback: map disease to category and read exact curated file.
         category = self._map_disease_to_category(disease_id)
         if not category:
-            # NO MAPPING = NO HALLUCINATION
-            # Return None to trigger safe fallback in API
             return None
-        
-        # Load curated knowledge
+
         knowledge = self._load_curated_knowledge(category, mode)
         if not knowledge:
-            # Knowledge file not found or validation failed
             return None
-        
-        # Build treatment steps from curated data
-        steps = []
-        for step_data in knowledge.get("treatment_steps", []):
-            steps.append(
-                TreatmentStep(
-                    title=f"{step_data.get('step_number', '')}. {step_data.get('title', '')}",
-                    details=step_data.get('description', ''),
-                    duration=step_data.get('duration'),
-                    frequency=None  # Not used in new structure
-                )
-            )
-        
-        # Build citations - REQUIRED for credibility
-        citations = []
-        for cite_data in knowledge.get("citations", []):
-            # Build citation snippet from key findings
-            authors_str = ", ".join(cite_data.get("authors", []))
-            snippet = f"{cite_data.get('key_findings', '')} (Authors: {authors_str})"
-            
-            citations.append(
-                Citation(
-                    title=cite_data.get("title", ""),
-                    source=f"{cite_data.get('source', '')} ({cite_data.get('year', 'N/A')})",
-                    snippet=snippet
-                )
-            )
-        
-        return TreatmentResponse(
-            disease_id=knowledge.get("disease_id", disease_id),
-            mode=mode,
-            steps=steps,
-            dosage_frequency=knowledge.get("dosage_frequency", ""),
-            safety_warnings=knowledge.get("safety_warnings", []),
-            when_to_consult_expert=knowledge.get("when_to_consult_expert", []),
-            citations=citations
-        )
+
+        return self._build_treatment_response(disease_id, mode, knowledge)
     
     def list_available_treatments(self) -> Dict[str, List[str]]:
         """

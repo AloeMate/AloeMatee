@@ -29,7 +29,7 @@ class Settings(BaseSettings):
     RATE_LIMIT_WINDOW: int = 60  # seconds
     
     # RAG
-    RAG_ENABLED: bool = False
+    RAG_ENABLED: bool = True
     RAG_MODEL: Optional[str] = None
 
     # Google Vision API

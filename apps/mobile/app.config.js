@@ -13,6 +13,9 @@ module.exports = {
       backgroundColor: '#ffffff'
     },
     updates: {
+      // Disable OTA updates for local development to avoid remote download errors
+      // Set to true for production/EAS builds where you host updates.
+      enabled: false,
       fallbackToCacheTimeout: 0
     },
     assetBundlePatterns: [

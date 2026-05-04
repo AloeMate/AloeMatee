@@ -290,7 +290,8 @@ async def get_treatment(request: TreatmentRequest):
     """
     treatment = treatment_retriever.get_treatment(
         disease_id=request.disease_id,
-        mode=request.mode
+        mode=request.mode,
+        query=request.query,
     )
     
     if not treatment:
