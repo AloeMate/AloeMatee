@@ -50,7 +50,8 @@ module.exports = {
         {
           photosPermission: 'Allow AloeVeraMate to access your photos to select plant images.'
         }
-      ]
+      ],
+      '@react-native-community/datetimepicker'  // ← added
     ],
     experiments: {
       typedRoutes: true
