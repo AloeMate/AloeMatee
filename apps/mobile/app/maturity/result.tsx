@@ -123,7 +123,7 @@ export default function ResultScreen() {
             </Text>
           </View>
 
-          <TouchableOpacity style={s.primaryBtn} onPress={() => router.replace('/camera')}>
+          <TouchableOpacity style={s.primaryBtn} onPress={() => router.replace('/maturity/camera')}>
             <Text style={s.primaryBtnText}>Scan Again</Text>
           </TouchableOpacity>
           <TouchableOpacity style={s.secondaryBtn} onPress={() => router.replace('/')}>
@@ -185,7 +185,7 @@ export default function ResultScreen() {
             <TouchableOpacity
               style={[s.primaryBtn, { marginHorizontal: 0, marginTop: 14 }]}
               onPress={() => router.push({
-                pathname: '/cultivation',
+                pathname: '/maturity/cultivation',
                 params: {
                   cnnClass:      safeStr(p.cnnClass),
                   geoClass:      safeStr(p.geoClass),
@@ -215,7 +215,7 @@ export default function ResultScreen() {
                 <TouchableOpacity
                   style={[s.primaryBtn, { marginHorizontal: 0, marginTop: 12, padding: 12, backgroundColor: '#E65100' }]}
                   onPress={() => router.push({
-                    pathname: '/cultivation',
+                    pathname: '/maturity/cultivation',
                     params: {
                       // Pass geoClass as cnnClass to prioritize Geo algorithm
                       cnnClass:      safeStr(p.geoClass), 
@@ -285,7 +285,7 @@ export default function ResultScreen() {
           <Row label="Confidence" value={toPercent(p.cnnConfidence)} last />
         </SectionCard>
 
-        <TouchableOpacity style={s.primaryBtn} onPress={() => router.replace('/camera')}>
+        <TouchableOpacity style={s.primaryBtn} onPress={() => router.replace('/maturity/camera')}>
           <Text style={s.primaryBtnText}>Scan Another Plant</Text>
         </TouchableOpacity>
         <TouchableOpacity style={s.secondaryBtn} onPress={() => router.replace('/')}>
