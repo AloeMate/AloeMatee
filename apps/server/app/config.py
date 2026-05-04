@@ -31,6 +31,9 @@ class Settings(BaseSettings):
     # RAG
     RAG_ENABLED: bool = False
     RAG_MODEL: Optional[str] = None
+
+    # Google Vision API
+    GOOGLE_VISION_API_KEY: Optional[str] = None
     
     # MongoDB
     MONGODB_URI: Optional[str] = None

@@ -1,0 +1,44 @@
+{
+  "model_name": "MobileNetV2_fallback",
+  "model_version": "1.0.0",
+  "num_classes": 6,
+  "architecture": "mobilenet_v2",
+  "image_size": 224,
+  "class_names": [
+    "Aloe_Rot",
+    "Aloe_Rust",
+    "Anthracnose",
+    "Healthy",
+    "Leaf_Spot",
+    "Sunburn"
+  ],
+  "class_to_idx": {
+    "Aloe_Rot": 0,
+    "Aloe_Rust": 1,
+    "Anthracnose": 2,
+    "Healthy": 3,
+    "Leaf_Spot": 4,
+    "Sunburn": 5
+  },
+  "normalization": {
+    "mean": [
+      0.485,
+      0.456,
+      0.406
+    ],
+    "std": [
+      0.229,
+      0.224,
+      0.225
+    ]
+  },
+  "calibration": {
+    "temperature": 1.0,
+    "thresholds": {
+      "HIGH": 0.80,
+      "MEDIUM": 0.60
+    }
+  },
+  "best_val_acc": 75.0,
+  "threshold": 0.35
+}

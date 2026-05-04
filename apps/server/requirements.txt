@@ -7,6 +7,7 @@ pydantic-settings==2.1.0
 pillow==10.2.0
 numpy==1.26.3
 opencv-python==4.9.0.80
+google-cloud-vision==3.8.1
 
 # For ML inference (placeholder - replace with actual model dependencies)
 # torch==2.1.2

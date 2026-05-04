@@ -12,16 +12,109 @@ from pathlib import Path
 import json
 import io
 import logging
+import os
+import base64
+from PIL import Image
+
+from app.config import settings
 
 logger = logging.getLogger(__name__)
 
 
+def check_with_vision_api(image_bytes: bytes):
+    """Stage 3: Use Google Vision API to detect plant disease labels."""
+    import requests
+
+    api_key = settings.GOOGLE_VISION_API_KEY or os.getenv("GOOGLE_VISION_API_KEY")
+    if not api_key:
+        return None
+
+    encoded = base64.b64encode(image_bytes).decode("utf-8")
+    url = f"https://vision.googleapis.com/v1/images:annotate?key={api_key}"
+    body = {
+        "requests": [{
+            "image": {"content": encoded},
+            "features": [
+                {"type": "LABEL_DETECTION", "maxResults": 10},
+                {"type": "WEB_DETECTION", "maxResults": 5}
+            ]
+        }]
+    }
+
+    try:
+        response = requests.post(url, json=body, timeout=12)
+        response.raise_for_status()
+        result = response.json()
+
+        aloe_keywords = ["aloe", "aloe vera", "succulent", "plant disease", "leaf", "plant pathology"]
+        disease_keywords = {
+            "rust": "Aloe_Rust",
+            "rot": "Aloe_Rot",
+            "anthracnose": "Anthracnose",
+            "spot": "Leaf_Spot",
+            "burn": "Sunburn",
+            "healthy": "Healthy",
+            "disease": "Aloe_Rust"
+        }
+
+        labels = []
+        try:
+            for label in result.get("responses", [{}])[0].get("labelAnnotations", []):
+                description = label.get("description")
+                if description:
+                    labels.append(description.lower())
+
+            for web in result.get("responses", [{}])[0].get("webDetection", {}).get("webEntities", []):
+                description = web.get("description")
+                if description:
+                    labels.append(description.lower())
+        except Exception:
+            return None
+
+        joined_labels = " ".join(labels)
+        is_aloe = any(keyword in joined_labels for keyword in aloe_keywords)
+        if not is_aloe:
+            return None
+
+        for keyword, disease in disease_keywords.items():
+            if any(keyword in label for label in labels):
+                return {
+                    "disease_id": disease.lower(),
+                    "disease_name": disease.replace("_", " "),
+                    "confidence": 0.60,
+                    "inference_stage": "vision_api",
+                    "vision_labels": labels[:5],
+                    "message": "Identified using Google Vision AI"
+                }
+
+        return {
+            "disease_id": "healthy",
+            "disease_name": "Healthy",
+            "confidence": 0.55,
+            "inference_stage": "vision_api",
+            "vision_labels": labels[:5],
+            "message": "Aloe vera detected — appears healthy"
+        }
+    except Exception as exc:
+        logger.warning(f"Google Vision API check failed: {exc}")
+        return None
+
+
 class InferenceResult:
     """Result from inference"""
-    def __init__(self, disease_id: str, disease_name: str, confidence: float):
+    def __init__(
+        self,
+        disease_id: str,
+        disease_name: str,
+        confidence: float,
+        inference_stage: Optional[str] = None,
+        message: Optional[str] = None
+    ):
         self.disease_id = disease_id
         self.disease_name = disease_name
         self.confidence = confidence
+        self.inference_stage = inference_stage
+        self.message = message
 
 
 class ModelMetadata:
@@ -29,8 +122,19 @@ class ModelMetadata:
     def __init__(self, metadata_dict: Dict):
         self.model_name = metadata_dict.get("model_name", "unknown")
         self.model_version = metadata_dict.get("model_version", "unknown")
-        self.num_classes = metadata_dict.get("num_classes", 6)
-        self.class_names = metadata_dict.get("class_names", [])
+        self.num_classes = metadata_dict.get("num_classes", 7)
+        self.class_names = metadata_dict.get(
+            "class_names",
+            [
+                "Aloe_Rot",
+                "Aloe_Rust",
+                "Anthracnose",
+                "Healthy",
+                "Leaf_Spot",
+                "Sunburn",
+                "Unknown"
+            ]
+        )
         self.image_size = metadata_dict.get("image_size", 384)
         self.normalization = metadata_dict.get("normalization", {})
         self.calibration = metadata_dict.get("calibration", {})
@@ -240,7 +344,7 @@ class PyTorchInferenceService(DiseaseInferenceService):
     def __init__(self):
         import torch
         from torchvision import models, transforms
-        from PIL import Image
+        from PIL import Image, ImageOps
         
         self.data_dir = Path(__file__).parent.parent.parent / "data"
         self.artifacts_dir = Path(__file__).parent.parent.parent / "artifacts"
@@ -283,97 +387,309 @@ class PyTorchInferenceService(DiseaseInferenceService):
         self.model.to(self.device)
         self.model.eval()
         
-        logger.info(f"Model loaded successfully: {self.metadata.model_name}")
-        logger.info(f"Number of classes: {self.metadata.num_classes}")
-        logger.info(f"Class names: {self.metadata.class_names}")
+        logger.info(f"Main model loaded successfully: {self.metadata.model_name}")
+        logger.info(f"Number of main classes: {self.metadata.num_classes}")
+        logger.info(f"Main class names: {self.metadata.class_names}")
         
         # Get calibration temperature
-        self.temperature = 1.34  # self.metadata.calibration.get("temperature", 1.0)
+        self.temperature = self.metadata.calibration.get("temperature", 1.0)
         logger.info(f"Using temperature scaling: {self.temperature:.4f}")
         
+        # Load fallback metadata and model (optional)
+        fallback_metadata_path = self.artifacts_dir / "fallback_metadata.json"
+        fallback_model_path = self.artifacts_dir / "fallback_model.pt"
+        
+        self.fallback_model = None
+        self.fallback_metadata = None
+        
+        if fallback_model_path.exists() and fallback_metadata_path.exists():
+            try:
+                logger.info(f"Loading fallback metadata from {fallback_metadata_path}")
+                with open(fallback_metadata_path, "r", encoding="utf-8") as f:
+                    fallback_metadata_dict = json.load(f)
+                    fallback_metadata_dict["image_size"] = fallback_metadata_dict.get("img_size", 224)
+                    fallback_metadata_dict["normalization"] = {
+                        "mean": fallback_metadata_dict.get("mean", [0.485, 0.456, 0.406]),
+                        "std": fallback_metadata_dict.get("std", [0.229, 0.224, 0.225])
+                    }
+                    fallback_metadata_dict["num_classes"] = len(fallback_metadata_dict.get("class_names", []))
+                    self.fallback_metadata = ModelMetadata(fallback_metadata_dict)
+
+                logger.info(f"Loading fallback model from {fallback_model_path}")
+                fallback_checkpoint = torch.load(fallback_model_path, map_location=self.device)
+                self.fallback_model = models.mobilenet_v2(weights=None)
+                self.fallback_model.classifier[-1] = torch.nn.Linear(
+                    self.fallback_model.last_channel,
+                    self.fallback_metadata.num_classes
+                )
+                self.fallback_model.load_state_dict(fallback_checkpoint["model_state_dict"])
+                self.fallback_model.to(self.device)
+                self.fallback_model.eval()
+                logger.info(f"Fallback model loaded successfully: {self.fallback_metadata.model_name}")
+                logger.info(f"Number of fallback classes: {self.fallback_metadata.num_classes}")
+                logger.info(f"Fallback class names: {self.fallback_metadata.class_names}")
+            except Exception as e:
+                logger.warning(f"Failed to load fallback model: {e}")
+                self.fallback_model = None
+                self.fallback_metadata = None
+        else:
+            logger.info("Fallback model files not found. Cascade inference disabled.")
+
         # Setup preprocessing
         norm_mean = self.metadata.normalization.get("mean", [0.485, 0.456, 0.406])
         norm_std = self.metadata.normalization.get("std", [0.229, 0.224, 0.225])
-        
-        self.transform = transforms.Compose([
+
+        self.main_transform = transforms.Compose([
             transforms.Resize(self.metadata.image_size + 32),
             transforms.CenterCrop(self.metadata.image_size),
             transforms.ToTensor(),
             transforms.Normalize(mean=norm_mean, std=norm_std)
         ])
-        
+
+        fallback_norm_mean = self.fallback_metadata.normalization.get("mean", norm_mean)
+        fallback_norm_std = self.fallback_metadata.normalization.get("std", norm_std)
+        self.fallback_transform = transforms.Compose([
+            transforms.Resize(self.fallback_metadata.image_size + 32),
+            transforms.CenterCrop(self.fallback_metadata.image_size),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=fallback_norm_mean, std=fallback_norm_std)
+        ])
+
         logger.info("PyTorch inference service initialized successfully")
     
+    def _pad_to_square(self, image):
+        from PIL import ImageOps
+
+        width, height = image.size
+        if width == height:
+            return image
+
+        max_side = max(width, height)
+        delta_w = max_side - width
+        delta_h = max_side - height
+        padding = (
+            delta_w // 2,
+            delta_h // 2,
+            delta_w - (delta_w // 2),
+            delta_h - (delta_h // 2)
+        )
+        return ImageOps.expand(image, padding, fill=0)
+
+    def _resize_large_image(self, image):
+        """Resize very large images before preprocessing."""
+        max_side = max(image.size)
+        if max_side <= 1500:
+            return image
+
+        scale = 800.0 / max_side
+        new_size = (int(image.width * scale), int(image.height * scale))
+        return image.resize(new_size, resample=Image.LANCZOS)
+
+    def _apply_clahe_lab(self, image):
+        """Apply CLAHE in LAB color space to normalize lighting."""
+        try:
+            import cv2
+            import numpy as np
+
+            rgb = np.array(image)
+            bgr = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR)
+            lab = cv2.cvtColor(bgr, cv2.COLOR_BGR2LAB)
+            l, a, b = cv2.split(lab)
+
+            clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+            cl = clahe.apply(l)
+            lab = cv2.merge((cl, a, b))
+            bgr = cv2.cvtColor(lab, cv2.COLOR_LAB2BGR)
+            rgb = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
+            return Image.fromarray(rgb)
+        except Exception as e:
+            logger.warning(f"CLAHE preprocessing failed: {e}")
+            return image
+
+    def _generate_tta_variants(self, image):
+        """Generate 5 test-time augmentation variants for a single image."""
+        from PIL import ImageEnhance
+
+        variants = [image]
+        variants.append(image.transpose(Image.FLIP_LEFT_RIGHT))
+
+        variants.append(ImageEnhance.Brightness(image).enhance(1.2))
+        variants.append(ImageEnhance.Brightness(image).enhance(0.8))
+
+        w, h = image.size
+        crop_w = int(round(w * 0.9))
+        crop_h = int(round(h * 0.9))
+        left = (w - crop_w) // 2
+        top = (h - crop_h) // 2
+        center_crop = image.crop((left, top, left + crop_w, top + crop_h))
+        variants.append(center_crop.resize((w, h), resample=Image.LANCZOS))
+
+        return variants
+
+    def _preprocess_main_image(self, image):
+        image = self._resize_large_image(image)
+        image = self._apply_clahe_lab(image)
+        image = self._pad_to_square(image)
+        return self.main_transform(image)
+
+    def _preprocess_fallback_image(self, image):
+        image = self._resize_large_image(image)
+        image = self._apply_clahe_lab(image)
+        image = self._pad_to_square(image)
+        return self.fallback_transform(image)
+
     def predict(self, images: List[bytes]) -> List[InferenceResult]:
         """
-        Predict disease from image bytes with temperature scaling
-        
-        Aggregates multiple images by averaging probabilities
+        Predict disease from image bytes with temperature scaling.
+
+        Runs main model first and cascades to fallback when confidence is low.
         """
         import torch
-        from PIL import Image
-        
+
         if not images:
             return []
-        
-        # Preprocess all images
-        tensors = []
-        for img_bytes in images:
-            try:
-                img = Image.open(io.BytesIO(img_bytes)).convert("RGB")
-                tensor = self.transform(img)
-                tensors.append(tensor)
-            except Exception as e:
-                logger.error(f"Failed to preprocess image: {e}")
-                continue
-        
-        if not tensors:
-            logger.error("No valid images to process")
+
+        def build_tensors(image_bytes, preprocess_fn):
+            tensors = []
+            for img_bytes in image_bytes:
+                try:
+                    img = Image.open(io.BytesIO(img_bytes)).convert("RGB")
+                    base_img = self._resize_large_image(img)
+                    base_img = self._apply_clahe_lab(base_img)
+                    for tta_img in self._generate_tta_variants(base_img):
+                        tensors.append(preprocess_fn(tta_img))
+                except Exception as e:
+                    logger.error(f"Failed to preprocess image for inference: {e}")
+            return tensors
+
+        main_tensors = build_tensors(images, self._preprocess_main_image)
+        if not main_tensors:
+            logger.error("No valid images to process for main model")
             return []
-        
-        # Stack into batch
-        batch = torch.stack(tensors).to(self.device)
-        
-        # Inference
+
         with torch.no_grad():
-            logits = self.model(batch)
-            
-            # Apply temperature scaling
-            calibrated_logits = logits / self.temperature
-            
-            # Get probabilities
-            probs = torch.softmax(calibrated_logits, dim=1)
-            
-            # Average probabilities across all images
-            avg_probs = probs.mean(dim=0)
-            
-            # Get top-3 predictions
-            top_probs, top_indices = torch.topk(avg_probs, k=min(3, len(avg_probs)))
-            
-            # Skip "Aloe Rust" if it's the top prediction to avoid bias
-            if top_indices[0] == 1:  # Aloe Rust is index 1
-                top_indices = top_indices[1:]
-                top_probs = top_probs[1:]
-                # Ensure we still have at least 1 prediction
-                if len(top_indices) == 0:
-                    top_indices = torch.tensor([0])  # Default to Aloe Rot
-                    top_probs = torch.tensor([avg_probs[0]])
-        
-        # Convert to InferenceResult
-        results = []
-        for prob, idx in zip(top_probs, top_indices):
-            class_name = self.metadata.class_names[idx.item()]
-            # Map class name to disease_id (lowercase with underscores)
+            main_batch = torch.stack(main_tensors).to(self.device)
+            main_logits = self.model(main_batch)
+            main_calibrated = main_logits / self.temperature
+            main_probs = torch.softmax(main_calibrated, dim=1)
+            main_avg_probs = main_probs.mean(dim=0)
+            main_top_probs, main_top_indices = torch.topk(main_avg_probs, k=min(3, len(main_avg_probs)))
+
+        main_confidence = float(main_top_probs[0].item())
+        # Lowered threshold: treat main model as confident at >= 0.25
+        if main_confidence >= 0.25:
+            results = []
+            for prob, idx in zip(main_top_probs, main_top_indices):
+                class_name = self.metadata.class_names[idx.item()]
+                disease_id = class_name.lower().replace(" ", "_")
+                results.append(InferenceResult(
+                    disease_id=disease_id,
+                    disease_name=class_name,
+                    confidence=float(prob.item()),
+                    inference_stage="main"
+                ))
+
+            logger.info(f"Main model selected with top confidence {main_confidence:.3f}")
+            logger.info(f"Main probabilities: {dict(zip(self.metadata.class_names, main_avg_probs.tolist()))}")
+            return results
+
+        logger.info(f"Main model confidence too low ({main_confidence:.3f})")
+
+        # Check if fallback model is available
+        if self.fallback_model is None or self.fallback_metadata is None:
+            logger.info("Fallback model not loaded; returning Unknown")
+            # Main result selected Unknown or is below threshold, return Unknown
+            return [
+                InferenceResult(
+                    disease_id="unknown",
+                    disease_name="Unknown / Not Aloe Vera",
+                    confidence=main_confidence,
+                    inference_stage="not_aloe",
+                    message="Unable to confidently identify"
+                )
+            ]
+
+        logger.info(f"Main model confidence too low ({main_confidence:.3f}); falling back to MobileNetV2")
+
+        fallback_tensors = build_tensors(images, self._preprocess_fallback_image)
+        if not fallback_tensors:
+            logger.error("No valid images to process for fallback model")
+            return []
+
+        with torch.no_grad():
+            fallback_batch = torch.stack(fallback_tensors).to(self.device)
+            fallback_logits = self.fallback_model(fallback_batch)
+            fallback_probs = torch.softmax(fallback_logits, dim=1)
+            fallback_avg_probs = fallback_probs.mean(dim=0)
+            fallback_top_probs, fallback_top_indices = torch.topk(fallback_avg_probs, k=min(3, len(fallback_avg_probs)))
+
+        fallback_confidence = float(fallback_top_probs[0].item())
+        # Lowered threshold: treat fallback model as confident at >= 0.25
+        if fallback_confidence >= 0.25:
+            results = []
+            for prob, idx in zip(fallback_top_probs, fallback_top_indices):
+                class_name = self.fallback_metadata.class_names[idx.item()]
+                disease_id = class_name.lower().replace(" ", "_")
+                results.append(InferenceResult(
+                    disease_id=disease_id,
+                    disease_name=class_name,
+                    confidence=float(prob.item()),
+                    inference_stage="fallback",
+                    message="Identified by fallback model"
+                ))
+
+            logger.info(f"Fallback model selected with top confidence {fallback_confidence:.3f}")
+            logger.info(f"Fallback probabilities: {dict(zip(self.fallback_metadata.class_names, fallback_avg_probs.tolist()))}")
+            return results
+
+        logger.info(f"Fallback model confidence too low ({fallback_confidence:.3f}); checking Google Vision API")
+
+        for image_bytes in images:
+            vision_result = check_with_vision_api(image_bytes)
+            if vision_result:
+                logger.info(
+                    f"Vision API selected with disease={vision_result['disease_id']} "
+                    f"confidence={vision_result['confidence']:.3f}"
+                )
+                return [
+                    InferenceResult(
+                        disease_id=vision_result["disease_id"],
+                        disease_name=vision_result["disease_name"],
+                        confidence=float(vision_result["confidence"]),
+                        inference_stage=vision_result["inference_stage"],
+                        message=vision_result.get("message")
+                    )
+                ]
+
+        closest_idx = fallback_top_indices[0].item()
+        closest_name = self.fallback_metadata.class_names[closest_idx]
+        closest_confidence = float(fallback_top_probs[0].item())
+
+        logger.warning(
+            f"Fallback model also low confidence ({closest_confidence:.3f}). "
+            f"Returning Unknown / Not Aloe Vera. Closest match: {closest_name}."
+        )
+
+        results = [
+            InferenceResult(
+                disease_id="unknown",
+                disease_name="Unknown / Not Aloe Vera",
+                confidence=closest_confidence,
+                inference_stage="not_aloe",
+                message="Fallback model also uncertain"
+            )
+        ]
+
+        for prob, idx in zip(fallback_top_probs[:2], fallback_top_indices[:2]):
+            class_name = self.fallback_metadata.class_names[idx.item()]
             disease_id = class_name.lower().replace(" ", "_")
-            
             results.append(InferenceResult(
                 disease_id=disease_id,
                 disease_name=class_name,
-                confidence=float(prob.item())
+                confidence=float(prob.item()),
+                inference_stage="fallback"
             ))
-        
-        logger.info(f"Prediction complete. Top result: {results[0].disease_name} ({results[0].confidence:.3f})")
-        logger.info(f"All probabilities: {dict(zip(self.metadata.class_names, avg_probs.tolist()))}")
+
         return results
     
     def get_supported_diseases(self) -> List[Dict]:

@@ -15,6 +15,14 @@ class PredictResponse(BaseModel):
     confidence_status: Literal["HIGH", "MEDIUM", "LOW"]
     recommended_next_step: Literal["RETAKE", "SHOW_TREATMENT"]
     symptoms_summary: str
+    inference_stage: Literal["main", "fallback", "vision_api", "not_aloe"] = Field(
+        "main",
+        description="Whether the prediction came from the main model, fallback model, Google Vision API, or not_aloe final stage"
+    )
+    message: Optional[str] = Field(
+        None,
+        description="Additional inference message, set when fallback model is used"
+    )
     retake_message: Optional[str] = Field(None, description="Message with tips for retaking photos (only for LOW confidence)")
 
 

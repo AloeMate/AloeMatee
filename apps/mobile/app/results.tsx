@@ -19,6 +19,9 @@ interface DiseaseResponse {
   confidence_status: 'HIGH' | 'MEDIUM' | 'LOW';
   recommended_next_step: 'RETAKE' | 'SHOW_TREATMENT';
   symptoms_summary: string;
+  inference_stage?: 'main' | 'fallback' | 'vision_api' | 'not_aloe';
+  confidence?: number;
+  message?: string;
   retake_message?: string;
 }
 
@@ -51,6 +54,17 @@ export default function ResultsScreen() {
     ? 'Medium' 
     : 'Low';
 
+  const isUnknownPlant =
+    topPrediction.disease_id === 'unknown' ||
+    topPrediction.disease_name.toLowerCase().includes('unknown');
+
+  const isFallbackResult = result.inference_stage === 'fallback';
+  const isVisionApiResult = result.inference_stage === 'vision_api';
+  const isNotAloeStage = result.inference_stage === 'not_aloe';
+
+  const showLowConfidencePage = false; // deprecated: always show result panel
+  const lowCertainty = topPrediction.prob < 0.35;
+
   const handleTreatment = (treatmentType: 'scientific' | 'ayurvedic') => {
     router.push({
       pathname: '/treatment',
@@ -66,97 +80,27 @@ export default function ResultsScreen() {
     router.replace('/camera-capture');
   };
 
-  // Low confidence - suggest retake
-  if (result.recommended_next_step === 'RETAKE') {
+  // Note: low confidence warning page removed. We'll always show the result
+  // panel. When the top prediction probability is below 0.35, the UI will
+  // display a small yellow "Low Certainty" badge and a short note below the
+  // result encouraging the user to retake a clearer photo.
+
+  if (isUnknownPlant) {
     return (
       <ScrollView contentContainerStyle={styles.container}>
-        <ConfidenceInfoModal
-          visible={showConfidenceInfo}
-          onClose={() => setShowConfidenceInfo(false)}
-          currentConfidence="LOW"
-        />
-
-        <Card style={styles.uncertainCard}>
-          <Text style={styles.uncertainIcon}>⚠️</Text>
-          <Text style={styles.uncertainTitle}>Low Confidence Detection</Text>
-          <ConfidenceBadge 
-            status="Low" 
-            confidence={topPrediction.prob}
-            onInfoPress={() => setShowConfidenceInfo(true)}
-          />
-          <Text style={styles.uncertainSubtitle}>
-            We're not confident about this diagnosis. Better photos will help!
+        <Card style={styles.unknownCard}>
+          <Text style={styles.unknownIcon}>❓</Text>
+          <Text style={styles.unknownTitle}>Unknown / Not Aloe Vera</Text>
+          <Text style={styles.unknownSubtitle}>
+            The model cannot confidently identify this as aloe vera. Please try again with a clearer aloe plant photo.
           </Text>
         </Card>
 
-        {/* Retake Tips Card */}
-        <Card style={styles.retakeTipsCard}>
-          <Text style={styles.retakeTipsTitle}>📸 How to Take Better Photos</Text>
-          <Text style={styles.retakeTipsSubtitle}>Follow these 3 key tips:</Text>
-          
-          <View style={styles.retakeTip}>
-            <Text style={styles.retakeTipNumber}>1</Text>
-            <View style={styles.retakeTipContent}>
-              <Text style={styles.retakeTipTitle}>☀️ Good Lighting</Text>
-              <Text style={styles.retakeTipText}>
-                Take photos in bright, natural daylight. Avoid direct harsh sunlight or shadows.
-              </Text>
-            </View>
-          </View>
-
-          <View style={styles.retakeTip}>
-            <Text style={styles.retakeTipNumber}>2</Text>
-            <View style={styles.retakeTipContent}>
-              <Text style={styles.retakeTipTitle}>🎯 Clear Focus</Text>
-              <Text style={styles.retakeTipText}>
-                Tap on the affected area to focus. Hold camera steady and wait for image to sharpen.
-              </Text>
-            </View>
-          </View>
-
-          <View style={styles.retakeTip}>
-            <Text style={styles.retakeTipNumber}>3</Text>
-            <View style={styles.retakeTipContent}>
-              <Text style={styles.retakeTipTitle}>📏 Right Distance</Text>
-              <Text style={styles.retakeTipText}>
-                Get close enough to see details clearly, but not so close that image becomes blurry.
-              </Text>
-            </View>
-          </View>
-        </Card>
-
-        {/* Why Low Confidence Card */}
         <Card style={styles.whyCard}>
-          <Text style={styles.whyTitle}>🤔 Why might it be uncertain?</Text>
-          <View style={styles.whyList}>
-            <Text style={styles.whyItem}>📷 Blurry or out-of-focus image</Text>
-            <Text style={styles.whyItem}>🌑 Low light or poor lighting</Text>
-            <Text style={styles.whyItem}>📏 Camera too far or too close</Text>
-            <Text style={styles.whyItem}>🎨 Background clutter</Text>
-            <Text style={styles.whyItem}>👁️ Symptoms not clearly visible</Text>
-          </View>
-        </Card>
-
-        {result.retake_message && (
-          <Card style={styles.technicalCard}>
-            <Text style={styles.technicalTitle}>Technical Details:</Text>
-            <Text style={styles.retakeMessageText}>{result.retake_message}</Text>
-          </Card>
-        )}
-
-        <Card>
-          <Text style={styles.sectionTitle}>🔍 What We Detected (Uncertain):</Text>
-          {result.predictions.slice(0, 2).map((prediction, index) => (
-            <View key={prediction.disease_id} style={styles.uncertainPrediction}>
-              <Text style={styles.uncertainRank}>#{index + 1}</Text>
-              <View style={styles.uncertainInfo}>
-                <Text style={styles.uncertainName}>{prediction.disease_name}</Text>
-                <Text style={styles.uncertainConfidence}>
-                  {(prediction.prob * 100).toFixed(0)}% confidence
-                </Text>
-              </View>
-            </View>
-          ))}
+          <Text style={styles.whyTitle}>What this means</Text>
+          <Text style={styles.whyItem}>• The plant image may not show aloe vera clearly.</Text>
+          <Text style={styles.whyItem}>• The detected features are outside the aloe disease set.</Text>
+          <Text style={styles.whyItem}>• Retaking photos with better focus and lighting helps.</Text>
         </Card>
 
         <Button
@@ -165,10 +109,6 @@ export default function ResultsScreen() {
           variant="warning"
           style={styles.button}
         />
-
-        <Text style={styles.note}>
-          Taking clearer photos will help us provide accurate diagnosis and treatment recommendations.
-        </Text>
       </ScrollView>
     );
   }
@@ -183,14 +123,26 @@ export default function ResultsScreen() {
       />
 
       <Card style={styles.statusCard}>
-        <ConfidenceBadge 
-          status={confidenceLevel as any} 
-          confidence={topPrediction.prob}
-          onInfoPress={() => setShowConfidenceInfo(true)}
-        />
-        <Text style={styles.mainDisease}>{topPrediction.disease_name}</Text>
+            <View style={styles.statusHeader}>
+              <ConfidenceBadge 
+                status={confidenceLevel as any} 
+                confidence={topPrediction.prob}
+                onInfoPress={() => setShowConfidenceInfo(true)}
+              />
+            </View>
+            <Text style={styles.mainDisease}>{topPrediction.disease_name}</Text>
+        {(isFallbackResult || isVisionApiResult) && (
+          <View style={isVisionApiResult ? styles.visionBadge : styles.fallbackBadge}>
+            <Text style={isVisionApiResult ? styles.visionBadgeText : styles.fallbackBadgeText}>
+              {isVisionApiResult ? 'Google Vision AI' : 'Enhanced Detection'}
+            </Text>
+          </View>
+        )}
         {result.symptoms_summary && (
           <Text style={styles.description}>{result.symptoms_summary}</Text>
+        )}
+        {lowCertainty && (
+          <Text style={styles.lowCertaintyNote}>Take a clearer photo for better accuracy</Text>
         )}
       </Card>
 
@@ -466,6 +418,65 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#555',
     lineHeight: 20,
+  },
+  unknownCard: {
+    alignItems: 'center',
+    paddingVertical: 30,
+    backgroundColor: '#E8F5E9',
+  },
+  unknownIcon: {
+    fontSize: 48,
+    marginBottom: 10,
+  },
+  unknownTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#2E7D32',
+    marginBottom: 12,
+  },
+  unknownSubtitle: {
+    fontSize: 15,
+    color: '#555',
+    textAlign: 'center',
+    paddingHorizontal: 20,
+    lineHeight: 22,
+  },
+  fallbackBadge: {
+    marginTop: 8,
+    alignSelf: 'center',
+    backgroundColor: '#E3F2FD',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 12,
+  },
+  fallbackBadgeText: {
+    color: '#1565C0',
+    fontWeight: '700',
+    fontSize: 12,
+  },
+  visionBadge: {
+    marginTop: 8,
+    alignSelf: 'center',
+    backgroundColor: '#F3E5F5',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 12,
+  },
+  visionBadgeText: {
+    color: '#7B1FA2',
+    fontWeight: '700',
+    fontSize: 12,
+  },
+  statusHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  lowCertaintyNote: {
+    marginTop: 10,
+    fontSize: 13,
+    color: '#E65100',
+    textAlign: 'center',
   },
   whyCard: {
     backgroundColor: '#FFF9E6',

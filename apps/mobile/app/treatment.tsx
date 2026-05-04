@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import Button from '../components/Button';
 import Card from '../components/Card';
 import GlobalError from '../components/GlobalError';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -8,16 +9,24 @@ import ConfidenceBadge from '../components/ConfidenceBadge';
 import { apiClient, getErrorMessage, TreatmentResponse } from '../utils/apiClient';
 
 export default function TreatmentScreen() {
+  const router = useRouter();
   const params = useLocalSearchParams();
   const [treatment, setTreatment] = useState<TreatmentResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const { diseaseId, diseaseName, treatmentType } = params;
+  const isUnknownPlant =
+    diseaseId === 'unknown' ||
+    String(diseaseName).toLowerCase().includes('unknown');
 
   useEffect(() => {
+    if (isUnknownPlant) {
+      setLoading(false);
+      return;
+    }
     fetchTreatment();
-  }, []);
+  }, [isUnknownPlant]);
 
   const fetchTreatment = async () => {
     try {
@@ -38,6 +47,34 @@ export default function TreatmentScreen() {
 
   if (loading) {
     return <LoadingSpinner message="Loading treatment plan..." />;
+  }
+
+  if (isUnknownPlant) {
+    return (
+      <ScrollView contentContainerStyle={styles.container}>
+        <Card style={styles.unknownCard}>
+          <Text style={styles.unknownIcon}>❌</Text>
+          <Text style={styles.diseaseTitle}>Unknown / Not Aloe Vera</Text>
+          <Text style={styles.unknownSubtitle}>
+            No specific treatment plan is available because the model cannot identify this as an aloe vera disease.
+          </Text>
+        </Card>
+
+        <Card style={styles.warningCard}>
+          <Text style={styles.sectionTitle}>What to do next</Text>
+          <Text style={styles.sectionText}>
+            Try retaking photos with a clearer view of an aloe vera leaf, good lighting, and steady focus.
+          </Text>
+        </Card>
+
+        <Button
+          title="📷 Retake Photos"
+          onPress={() => router.replace('/camera-capture')}
+          variant="warning"
+          style={styles.button}
+        />
+      </ScrollView>
+    );
   }
 
   if (error || !treatment) {
@@ -318,6 +355,23 @@ const styles = StyleSheet.create({
     color: '#555',
     marginBottom: 6,
     lineHeight: 20,
+  },
+  unknownCard: {
+    alignItems: 'center',
+    paddingVertical: 30,
+    backgroundColor: '#E8F5E9',
+    marginBottom: 16,
+  },
+  unknownIcon: {
+    fontSize: 48,
+    marginBottom: 10,
+  },
+  unknownSubtitle: {
+    fontSize: 15,
+    color: '#555',
+    textAlign: 'center',
+    paddingHorizontal: 20,
+    lineHeight: 22,
   },
   tipsCard: {
     backgroundColor: '#F3E5F5',

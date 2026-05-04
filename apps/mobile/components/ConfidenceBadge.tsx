@@ -15,7 +15,7 @@ export default function ConfidenceBadge({ status, confidence, onInfoPress }: Bad
       case 'Medium':
         return '#FF9800';
       case 'Low':
-        return '#F44336';
+        return '#F9A825';
       default:
         return '#999';
     }
@@ -34,12 +34,25 @@ export default function ConfidenceBadge({ status, confidence, onInfoPress }: Bad
     }
   };
 
+  const getLabel = () => {
+    switch (status) {
+      case 'High':
+        return 'High Confidence';
+      case 'Medium':
+        return 'Medium Confidence';
+      case 'Low':
+        return 'Low Certainty';
+      default:
+        return `${status} Confidence`;
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={[styles.badge, { backgroundColor: getColor() }]}>
         <Text style={styles.icon}>{getIcon()}</Text>
         <Text style={styles.text}>
-          {status} Confidence
+          {getLabel()}
           {confidence !== undefined && ` (${(confidence * 100).toFixed(0)}%)`}
         </Text>
       </View>

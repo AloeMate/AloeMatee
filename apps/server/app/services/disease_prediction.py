@@ -114,23 +114,6 @@ class DiseasePredictor:
         Returns:
             Tuple of (confidence_status, recommended_next_step, retake_message)
         """
-        # First check if this might not be an aloe vera plant
-        is_aloe_vera, warning_msg = self._check_if_aloe_vera(predictions)
-        if not is_aloe_vera:
-            return "LOW", "RETAKE", warning_msg
-        
-        # Check for suspiciously high confidence (over-confident predictions)
-        # If confidence is >0.95, it's likely the model is overfitting or the input is wrong
-        if max_prob > 0.95:
-            logger.warning(f"Over-confident prediction detected: {max_prob:.4f}. This may indicate wrong input.")
-            return "MEDIUM", "RETAKE", (
-                "⚠️ The model is unusually confident. Please verify:\n\n"
-                "✓ You're photographing an actual aloe vera plant\n"
-                "✓ The affected area is clearly visible\n"
-                "✓ Lighting is good\n\n"
-                "Try retaking photos with different angles or lighting."
-            )
-        
         # Get thresholds from model info
         model_info = self.inference_service.get_model_info()
         thresholds = model_info.get("calibration", {}).get("thresholds", {"HIGH": 0.80, "MEDIUM": 0.60})
@@ -208,10 +191,12 @@ class DiseasePredictor:
                 quality_result = check_image_quality(image)
                 
                 # Log quality metrics for debugging
+                blur_score = quality_result.blur_score if quality_result.blur_score is not None else 0.0
+                brightness_score = quality_result.brightness_score if quality_result.brightness_score is not None else 0.0
                 logger.info(f"Request {request_id}: Image {i+1} quality - "
                           f"Resolution: {quality_result.resolution}, "
-                          f"Blur score: {quality_result.blur_score:.2f}, "
-                          f"Brightness: {quality_result.brightness_score:.2f}, "
+                          f"Blur score: {blur_score:.2f}, "
+                          f"Brightness: {brightness_score:.2f}, "
                           f"Status: {quality_result.issue.value}")
                 
                 if not quality_result.is_acceptable:
@@ -257,6 +242,12 @@ class DiseasePredictor:
             for result in inference_results
         ]
         
+        inference_stage = None
+        inference_message = None
+        if inference_results:
+            inference_stage = inference_results[0].inference_stage or "main"
+            inference_message = inference_results[0].message
+
         # Compute confidence as max(probabilities)
         max_prob = max(pred.prob for pred in predictions)
         
@@ -264,8 +255,15 @@ class DiseasePredictor:
         confidence_status, recommended_next_step, retake_message = self._determine_confidence_status(
             max_prob, len(image_paths), predictions
         )
+
+        if inference_stage in {"fallback", "vision_api"} and max_prob >= 0.35:
+            recommended_next_step = "SHOW_TREATMENT"
+            # Keep confidence status accurate, but ensure fallback results are shown.
+            if confidence_status == "LOW":
+                confidence_status = "MEDIUM"
+            retake_message = None
         
-        logger.info(f"Request {request_id}: Confidence={confidence_status} (max_prob={max_prob:.3f}), Action={recommended_next_step}")
+        logger.info(f"Request {request_id}: Confidence={confidence_status} (max_prob={max_prob:.3f}), Action={recommended_next_step}, Stage={inference_stage}")
         
         # Generate symptoms summary
         symptoms_summary = self._generate_symptoms_summary(predictions)
@@ -277,6 +275,8 @@ class DiseasePredictor:
             confidence_status=confidence_status,
             recommended_next_step=recommended_next_step,
             symptoms_summary=symptoms_summary,
+            inference_stage=inference_stage or "main",
+            message=inference_message,
             retake_message=retake_message
         )
     

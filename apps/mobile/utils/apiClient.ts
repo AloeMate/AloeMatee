@@ -40,6 +40,7 @@ export interface PredictResponse {
   confidence_status: 'HIGH' | 'MEDIUM' | 'LOW';
   recommended_next_step: 'RETAKE' | 'SHOW_TREATMENT';
   symptoms_summary: string;
+  inference_stage?: 'main' | 'fallback' | 'vision_api' | 'not_aloe';
   retake_message?: string;
 }
 
