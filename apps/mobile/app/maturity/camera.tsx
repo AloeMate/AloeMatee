@@ -15,7 +15,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 import ResizableCircle, { ContainRect } from '../../components/ResizableCircle';
-import { predictMaturity } from '../../services/api';
+import { predictMaturity } from '../../utils/maturity_api';
 
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 
@@ -299,7 +299,7 @@ export default function CameraScreen() {
       const result = await predictMaturity(cnnImageUri, geoImageUri, roi);
 
       router.push({
-        pathname: '/result',
+        pathname: '/maturity/result',
         params: {
           imageUri:        geoImageUri,
           isAloeVera:      String(result.is_aloe_vera),
