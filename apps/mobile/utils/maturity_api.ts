@@ -85,7 +85,7 @@ export async function predictMaturity(
 
   let response: Response;
   try {
-    response = await fetch(`${BASE_URL}/predict`, {
+    response = await fetch(`${BASE_URL}/maturity/predict`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
