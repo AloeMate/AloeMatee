@@ -117,7 +117,7 @@ export default function HomeScreen() {
                 <Text style={styles.moduleIconText}>🌱</Text>
               </View>
               <View style={styles.moduleBadge}>
-                <Text style={styles.moduleBadgeText}>Market</Text>
+                <Text style={styles.moduleBadgeText}>AI + Computer vision</Text>
               </View>
             </View>
             <Text style={styles.moduleTitle}>Harvest Date Predictor</Text>
@@ -126,7 +126,7 @@ export default function HomeScreen() {
             </Text>
             <Button
               title="Open"
-              onPress={() => router.push('/(tabs)/harvest')}
+              onPress={() => router.push('/maturity')}
               variant="gradient"
               style={styles.moduleButton}
             />
