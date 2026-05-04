@@ -1,13 +1,18 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { LinearGradient as ExpoLinearGradient } from 'expo-linear-gradient';
 import Button from '../components/Button';
 import Card from '../components/Card';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { user, logout } = useAuth();
+
+  // Extract first name for greeting
+  const firstName = user?.full_name?.split(' ')[0] || 'there';
 
   return (
     <View style={styles.wrapper}>
@@ -19,6 +24,11 @@ export default function HomeScreen() {
         end={{ x: 1, y: 1 }}
       >
         <View style={styles.header}>
+          {/* Logout Button */}
+          <TouchableOpacity style={styles.logoutButton} onPress={logout} activeOpacity={0.7}>
+            <Text style={styles.logoutText}>Logout</Text>
+          </TouchableOpacity>
+
           <View style={styles.logoContainer}>
             <Image 
               source={require('../assets/logo.jpeg')}
@@ -28,7 +38,7 @@ export default function HomeScreen() {
           </View>
           <Text style={styles.title}>Aloe Mate</Text>
           <View style={styles.taglineContainer}>
-            <Text style={styles.subtitle}>AI-Powered Plant Health Assistant</Text>
+            <Text style={styles.subtitle}>Hello, {firstName} 👋</Text>
             <View style={styles.badge}>
               <Text style={styles.badgeText}>✨ Smart Detection</Text>
             </View>
@@ -131,6 +141,28 @@ export default function HomeScreen() {
               style={styles.moduleButton}
             />
           </Card>
+
+          {/* Module 5: Harvest Yield Predictor */}
+          <Card style={styles.moduleCard}>
+            <View style={styles.moduleHeader}>
+              <View style={styles.moduleIcon}>
+                <Text style={styles.moduleIconText}>🌾</Text>
+              </View>
+              <View style={styles.moduleBadge}>
+                <Text style={styles.moduleBadgeText}>ML + Weather</Text>
+              </View>
+            </View>
+            <Text style={styles.moduleTitle}>Harvest Yield Predictor</Text>
+            <Text style={styles.moduleDescription}>
+              Predict your aloe vera crop yield in kg using AI + live weather data.
+            </Text>
+            <Button
+              title="Open"
+              onPress={() => router.push('/harvest-yield')}
+              variant="gradient"
+              style={styles.moduleButton}
+            />
+          </Card>
         </View>
 
       <Card style={styles.tipsCard}>
@@ -176,6 +208,22 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
+    position: 'relative',
+  },
+  logoutButton: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    zIndex: 10,
+  },
+  logoutText: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '700',
   },
   logoContainer: {
     width: 100,

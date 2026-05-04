@@ -71,7 +71,7 @@ export default function TreatmentScreen() {
           title="📷 Retake Photos"
           onPress={() => router.replace('/camera-capture')}
           variant="warning"
-          style={styles.button}
+          style={{ marginTop: 16 }}
         />
       </ScrollView>
     );

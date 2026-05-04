@@ -35,6 +35,11 @@ class Settings(BaseSettings):
     # Google Vision API
     GOOGLE_VISION_API_KEY: Optional[str] = None
     
+    # Authentication (JWT)
+    JWT_SECRET_KEY: str = "aloemate-dev-secret-change-in-production"
+    JWT_ALGORITHM: str = "HS256"
+    JWT_EXPIRY_HOURS: int = 24
+
     # MongoDB
     MONGODB_URI: Optional[str] = None
     

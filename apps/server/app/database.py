@@ -49,7 +49,9 @@ async def connect_to_mongo():
         await database.sensor_readings.create_index([("deviceId", 1), ("recordedAt", -1)])
         await database.predictions.create_index([("deviceId", 1), ("timestamp", -1)])
         await database.alerts.create_index([("deviceId", 1), ("timestamp", -1)])
-        logger.info("✅ Database indexes created")
+        # Auth: unique email index for users collection
+        await database.users.create_index("email", unique=True)
+        logger.info("✅ Database indexes created (including users)")
         
     except asyncio.CancelledError:
         # Handle cancellation gracefully

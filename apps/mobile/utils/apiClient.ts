@@ -301,11 +301,14 @@ export const apiClient = {
       try {
         console.log(`[API] Native Attempt ${attempt + 1}/4: POST ${API_BASE_URL}/api/v1/predict`);
         
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 120000);
         const response = await fetch(`${API_BASE_URL}/api/v1/predict`, {
           method: 'POST',
           body: formData,
-          timeout: 120000,
+          signal: controller.signal,
         });
+        clearTimeout(timeoutId);
 
         console.log(`[API] Native response status: ${response.status}`);
 

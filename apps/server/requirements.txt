@@ -9,6 +9,12 @@ pillow==10.2.0
 numpy==1.26.3
 opencv-python==4.9.0.80
 google-cloud-vision==3.8.1
+httpx>=0.26.0
+
+# Authentication
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+bcrypt>=4.0.0
 
 # For ML inference (placeholder - replace with actual model dependencies)
 torch==2.1.2

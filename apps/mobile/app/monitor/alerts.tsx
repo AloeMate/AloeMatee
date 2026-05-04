@@ -375,7 +375,7 @@ const styles = StyleSheet.create({
   emptySubtext: {
     fontSize: 14,
     color: '#9E9E9E',
-  },sContainer: {
+  },alertsContainer: {
     padding: 16,
     paddingTop: 0,
   },

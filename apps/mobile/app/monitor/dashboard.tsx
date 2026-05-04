@@ -110,7 +110,7 @@ export default function MonitorDashboardScreen() {
             title="Back to Home"
             onPress={() => router.back()}
             style={styles.backHomeButton}
-            variant="outline"
+            variant="secondary"
           />
         </View>
       </View>
