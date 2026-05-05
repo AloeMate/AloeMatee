@@ -10,7 +10,7 @@ const STAGE_DETAILS: Record<string, any> = {
   immature: {
     title: 'No Mature (Young stage)',
     ageRange: '0 – 180 days (0–6 months)',
-    leafLength: '< 40 cm',
+    leafLength: '8 – 15 cm',
     leafThickness: '< 10 mm',
     leaves: '< 10',
     gel: 'Low',
@@ -22,7 +22,7 @@ const STAGE_DETAILS: Record<string, any> = {
   intermediate: {
     title: 'Intermediate (Semi-mature)',
     ageRange: '180 – 365 days (6–12 months)',
-    leafLength: '40 – 60 cm',
+    leafLength: '15 – 30 cm',
     leafThickness: '10 – 15 mm',
     leaves: '10 – 15',
     gel: 'Medium',
@@ -34,7 +34,7 @@ const STAGE_DETAILS: Record<string, any> = {
   mature: {
     title: 'Mature (Full harvest stage)',
     ageRange: '365+ days (12+ months)',
-    leafLength: '> 60 cm',
+    leafLength: '30 – 60 cm',
     leafThickness: '> 15 mm',
     leaves: '15 – 20',
     gel: 'High (best quality)',
