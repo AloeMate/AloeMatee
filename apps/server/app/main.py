@@ -5,7 +5,7 @@ from pathlib import Path
 
 from app.config import settings
 from app.schemas import HealthCheckResponse
-from app.api import prediction, harvest, iot, maturity, harvest_yield, auth
+from app.api import prediction, harvest, iot, maturity, harvest_yield, auth, fertilizer
 from app.services.knowledge_validator import validate_knowledge_base
 from app.services.inference import get_inference_service
 from app.database import connect_to_mongo, close_mongo_connection
@@ -100,6 +100,7 @@ def create_app() -> FastAPI:
     app.include_router(iot.router)          # Component 2: IoT Monitoring
     app.include_router(maturity.router)     # Maturity Prediction Module
     app.include_router(harvest_yield.router)  # Harvest Yield Prediction (kg)
+    app.include_router(fertilizer.router)      # Fertilizer Advisor
     
     # Startup event - Connect to MongoDB
     @app.on_event("startup")

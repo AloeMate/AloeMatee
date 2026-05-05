@@ -110,6 +110,28 @@ export default function HomeScreen() {
             />
           </Card>
 
+          {/* Module 4: Fertilizer Advisor */}
+          <Card style={styles.moduleCard}>
+            <View style={styles.moduleHeader}>
+              <View style={[styles.moduleIcon, { backgroundColor: '#FFF8E1' }]}>
+                <Text style={styles.moduleIconText}>🌱</Text>
+              </View>
+              <View style={[styles.moduleBadge, { backgroundColor: '#FF9800' }]}>
+                <Text style={styles.moduleBadgeText}>Smart</Text>
+              </View>
+            </View>
+            <Text style={styles.moduleTitle}>Fertilizer Advisor</Text>
+            <Text style={styles.moduleDescription}>
+              Get AI-powered fertilizer recommendations based on live IoT sensor data — temperature, humidity, and soil moisture.
+            </Text>
+            <Button
+              title="Open"
+              onPress={() => router.push('/fertilizer-advisor' as any)}
+              variant="gradient"
+              style={styles.moduleButton}
+            />
+          </Card>
+
         </View>
 
       <Card style={styles.tipsCard}>
@@ -133,6 +155,10 @@ export default function HomeScreen() {
           <View style={styles.tipRow}>
             <Text style={styles.tipBullet}>✓</Text>
             <Text style={styles.tipText}>Monitor market trends weekly</Text>
+          </View>
+          <View style={styles.tipRow}>
+            <Text style={styles.tipBullet}>✓</Text>
+            <Text style={styles.tipText}>Apply fertilizer based on sensor readings for best results</Text>
           </View>
         </View>
       </Card>

@@ -101,6 +101,10 @@ function RootLayoutContent() {
           name="treatment"
           options={{ title: 'Treatment Plan' }}
         />
+        <Stack.Screen
+          name="fertilizer-advisor"
+          options={{ headerShown: false }}
+        />
       </Stack>
     </AuthGate>
   );
