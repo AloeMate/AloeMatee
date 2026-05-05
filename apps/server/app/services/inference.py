@@ -446,14 +446,17 @@ class PyTorchInferenceService(DiseaseInferenceService):
             transforms.Normalize(mean=norm_mean, std=norm_std)
         ])
 
-        fallback_norm_mean = self.fallback_metadata.normalization.get("mean", norm_mean)
-        fallback_norm_std = self.fallback_metadata.normalization.get("std", norm_std)
-        self.fallback_transform = transforms.Compose([
-            transforms.Resize(self.fallback_metadata.image_size + 32),
-            transforms.CenterCrop(self.fallback_metadata.image_size),
-            transforms.ToTensor(),
-            transforms.Normalize(mean=fallback_norm_mean, std=fallback_norm_std)
-        ])
+        # Only setup fallback transform if fallback model is available
+        self.fallback_transform = None
+        if self.fallback_metadata is not None:
+            fallback_norm_mean = self.fallback_metadata.normalization.get("mean", norm_mean)
+            fallback_norm_std = self.fallback_metadata.normalization.get("std", norm_std)
+            self.fallback_transform = transforms.Compose([
+                transforms.Resize(self.fallback_metadata.image_size + 32),
+                transforms.CenterCrop(self.fallback_metadata.image_size),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=fallback_norm_mean, std=fallback_norm_std)
+            ])
 
         logger.info("PyTorch inference service initialized successfully")
     
