@@ -10,6 +10,7 @@ numpy==1.26.3
 opencv-python==4.9.0.80
 google-cloud-vision==3.8.1
 httpx>=0.26.0
+pyserial>=3.5
 
 # Authentication
 python-jose[cryptography]>=3.3.0
