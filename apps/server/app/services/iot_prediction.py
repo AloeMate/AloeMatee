@@ -137,9 +137,20 @@ class IoTPredictionService:
         """
         if self.model is None:
             logger.warning("IoT model not available, returning default prediction")
+            risk_score = self._calculate_risk_score(temperature, humidity, soil_moisture)
             return {
                 "disease": "No Risk",
                 "confidence": 0.0,
+                "risk_score": risk_score,
+                "predicted_risk_diseases": [
+                    {
+                        "disease": "No Risk",
+                        "probability": 1.0,
+                    }
+                ],
+                "recommended_preventive_actions": self._get_preventive_actions(
+                    temperature, humidity, soil_moisture, "No Risk"
+                ),
                 "environmental_factors": {
                     "temperature": temperature,
                     "humidity": humidity,
@@ -207,6 +218,17 @@ class IoTPredictionService:
             return {
                 "disease": "Error",
                 "confidence": 0.0,
+                "risk_score": 1.0,
+                "predicted_risk_diseases": [
+                    {
+                        "disease": "Error",
+                        "probability": 1.0,
+                    }
+                ],
+                "recommended_preventive_actions": [
+                    "Check the IoT model/service configuration",
+                    "Verify sensor input and backend logs",
+                ],
                 "environmental_factors": {
                     "temperature": temperature,
                     "humidity": humidity,

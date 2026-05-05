@@ -39,6 +39,7 @@ async def create_sensor_reading(reading: SensorReadingCreate):
             "temperature": reading.temperature,
             "humidity": reading.humidity,
             "soilMoisture": reading.soilMoisture,
+            "soilRaw": reading.soilRaw,
             "recordedAt": datetime.utcnow()
         }
         result = await db.sensor_readings.insert_one(reading_doc)
@@ -86,6 +87,7 @@ async def create_sensor_reading(reading: SensorReadingCreate):
                 "temperature": reading.temperature,
                 "humidity": reading.humidity,
                 "soilMoisture": reading.soilMoisture,
+                "soilRaw": reading.soilRaw,
                 "recordedAt": reading_doc["recordedAt"].isoformat()
             },
             "prediction": prediction,

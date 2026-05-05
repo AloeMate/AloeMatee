@@ -10,8 +10,8 @@ import {
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import Button from '../../components/Button';
+import { API_BASE_URL } from '../../config';
 
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://192.168.8.139:8000';
 const DEVICE_ID = 'DEV001';
 
 export default function MonitorDashboardScreen() {
@@ -171,6 +171,17 @@ export default function MonitorDashboardScreen() {
                   {reading.soilMoisture}%
                 </Text>
               </View>
+              {reading.soilRaw !== undefined && reading.soilRaw !== null && (
+                <>
+                  <View style={styles.divider} />
+                  <View style={styles.metricRow}>
+                    <Text style={styles.metricLabel}>Soil Raw ADC</Text>
+                    <Text style={styles.metricValue}>
+                      {reading.soilRaw}
+                    </Text>
+                  </View>
+                </>
+              )}
             </>
           ) : (
             <Text style={styles.noData}>No data available yet. Start sending sensor readings.</Text>

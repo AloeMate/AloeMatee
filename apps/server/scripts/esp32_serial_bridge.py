@@ -36,6 +36,7 @@ def normalize_payload(data: Dict[str, Any], fallback_device_id: str) -> Dict[str
             "temperature": float(data["temperature"]),
             "humidity": float(data["humidity"]),
             "soilMoisture": float(data["soilMoisture"]),
+            "soilRaw": int(data["soilRaw"]) if "soilRaw" in data and data["soilRaw"] is not None else None,
         }
     except (KeyError, TypeError, ValueError):
         return None

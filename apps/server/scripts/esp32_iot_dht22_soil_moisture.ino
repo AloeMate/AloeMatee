@@ -10,48 +10,93 @@ const char* DEVICE_ID = "DEV001";
 // =========================
 const int DHT_PIN = 4;
 const int DHT_TYPE = DHT22;
-const int SOIL_MOISTURE_PIN = 34;
+const int SOIL_MOISTURE_PIN = 1;
 
-// Soil sensor calibration values.
-// Adjust these after checking dry and wet raw readings on your board.
-const int SOIL_DRY_RAW = 3200;
-const int SOIL_WET_RAW = 1400;
+// Soil sensor calibration values (runtime adjustable).
+// Initialize with measured defaults; use serial 'd' (dry) and 'w' (wet) to calibrate.
+int soilDryRaw = 3200;
+int soilWetRaw = 1400;
+const int SOIL_SAMPLES = 8;
 
 DHT dht(DHT_PIN, DHT_TYPE);
 
 unsigned long lastSendMs = 0;
-const unsigned long SEND_INTERVAL_MS = 15000;
+const unsigned long SEND_INTERVAL_MS = 5000; // shorter for testing
+unsigned long lastHeartbeatMs = 0;
+const unsigned long HEARTBEAT_INTERVAL_MS = 1000;
+
+// On-board LED for visual heartbeat. Change if your board uses a different pin.
+const int LED_PIN = 13;
+
+void logLine(const String& msg) {
+  Serial.println(msg);
+  Serial0.println(msg);
+}
+
+// expose raw ADC for debugging
+int lastSoilRaw = 0;
 
 float readSoilMoisturePercent() {
-  int raw = analogRead(SOIL_MOISTURE_PIN);
-  raw = constrain(raw, SOIL_WET_RAW, SOIL_DRY_RAW);
+  long sum = 0;
+  for (int i = 0; i < SOIL_SAMPLES; ++i) {
+    sum += analogRead(SOIL_MOISTURE_PIN);
+    delay(5);
+  }
+  int raw = (int)(sum / SOIL_SAMPLES);
+  lastSoilRaw = raw;
+  raw = constrain(raw, soilWetRaw, soilDryRaw);
 
-  int mapped = map(raw, SOIL_DRY_RAW, SOIL_WET_RAW, 0, 100);
+  int mapped = map(raw, soilDryRaw, soilWetRaw, 0, 100);
   return constrain(mapped, 0, 100);
 }
 
 void emitReading(float temperature, float humidity, float soilMoisture) {
-  Serial.print("{\"deviceId\":\"");
-  Serial.print(DEVICE_ID);
-  Serial.print("\",\"temperature\":");
-  Serial.print(temperature, 2);
-  Serial.print(",\"humidity\":");
-  Serial.print(humidity, 2);
-  Serial.print(",\"soilMoisture\":");
-  Serial.print(soilMoisture, 2);
-  Serial.println("}");
+  String payload = "{\"deviceId\":\"";
+  payload += DEVICE_ID;
+  payload += "\",\"temperature\":";
+  payload += String(temperature, 2);
+  payload += ",\"humidity\":";
+  payload += String(humidity, 2);
+  payload += ",\"soilMoisture\":";
+  payload += String(soilMoisture, 2);
+  payload += ",\"soilRaw\":";
+  payload += String(lastSoilRaw);
+  payload += "}";
+
+  logLine(payload);
 }
 
 void setup() {
   Serial.begin(115200);
-  delay(1000);
+  Serial0.begin(115200);
+  delay(200);
+
+  // On ESP32-S3, wait briefly for USB CDC serial to attach.
+  unsigned long waitStart = millis();
+  while (!Serial && (millis() - waitStart) < 5000) {
+    delay(10);
+  }
 
   analogReadResolution(12);
   dht.begin();
-  Serial.println("ESP32 sensor bridge ready");
+  // Initialize LED pin
+  pinMode(LED_PIN, OUTPUT);
+  digitalWrite(LED_PIN, LOW);
+
+  // Force an immediate sensor send on first loop
+  lastSendMs = millis() - SEND_INTERVAL_MS;
+  logLine("ESP32-S3 sensor bridge ready");
+  logLine("If you can read this, app serial output is working");
 }
 
 void loop() {
+  if (millis() - lastHeartbeatMs >= HEARTBEAT_INTERVAL_MS) {
+    lastHeartbeatMs = millis();
+    logLine("[alive]");
+    // Toggle LED for visual heartbeat
+    digitalWrite(LED_PIN, !digitalRead(LED_PIN));
+  }
+
   if (millis() - lastSendMs < SEND_INTERVAL_MS) {
     delay(200);
     return;
@@ -64,17 +109,14 @@ void loop() {
   float soilMoisture = readSoilMoisturePercent();
 
   if (isnan(humidity) || isnan(temperature)) {
-    Serial.println("Failed to read from DHT22 sensor");
+    logLine("Failed to read from DHT22 sensor");
     return;
   }
 
-  Serial.println("Sensor readings:");
-  Serial.print("Temperature: ");
-  Serial.println(temperature);
-  Serial.print("Humidity: ");
-  Serial.println(humidity);
-  Serial.print("Soil moisture: ");
-  Serial.println(soilMoisture);
+  logLine("Sensor readings:");
+  logLine(String("Temperature: ") + String(temperature, 2));
+  logLine(String("Humidity: ") + String(humidity, 2));
+  logLine(String("Soil moisture: ") + String(soilMoisture, 2));
 
   emitReading(temperature, humidity, soilMoisture);
 }

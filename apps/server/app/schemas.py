@@ -105,6 +105,7 @@ class SensorReadingCreate(BaseModel):
     temperature: float = Field(..., description="Temperature in Celsius")
     humidity: float = Field(..., ge=0, le=100, description="Humidity percentage")
     soilMoisture: float = Field(..., ge=0, le=100, description="Soil moisture percentage")
+    soilRaw: Optional[int] = Field(None, ge=0, description="Raw soil ADC reading")
 
 
 class SensorReadingResponse(BaseModel):
@@ -113,6 +114,7 @@ class SensorReadingResponse(BaseModel):
     temperature: float
     humidity: float
     soilMoisture: float
+    soilRaw: Optional[int] = None
     recordedAt: str
 
 
