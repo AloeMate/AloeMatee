@@ -49,7 +49,7 @@ function SectionCard({ title, children }: { title: string; children: React.React
 
 // ── Screen ─────────────────────────────────────────────────────────────────────
 export default function ResultScreen() {
-  // FIX: removed duplicate harvestSuggestion key from the type
+
   const p = useLocalSearchParams<{
     imageUri: string;
     isAloeVera: string;
